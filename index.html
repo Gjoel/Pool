@@ -181,22 +181,52 @@
   .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; align-items: start; }
   .bar { height: 10px; background: var(--accent); border-radius: 4px; }
 
-  /* Card sheets (printed from Settings) */
-  .sheet { width: 170mm; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 80mm); gap: 4mm 10mm; justify-content: center; page-break-after: always; }
+  /* Card sheets (printed from Settings). Cell = trim size 80 x 48 mm; the front bleeds 2 mm into a 6 mm gutter; crop marks sit in the gutter. */
+  .sheet { width: 166mm; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 80mm); grid-auto-rows: 48mm; gap: 6mm 6mm; justify-content: center; page-break-after: always; }
   .sheet:last-child { page-break-after: auto; }
-  .pcard { width: 80mm; height: 48mm; border: 0.2mm solid #9A9A9A; position: relative; overflow: hidden; background: #fff; color: #333; font-family: Arial, Helvetica, sans-serif; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .pcard .band { height: 14mm; padding: 2.4mm 3.5mm 0; display: flex; justify-content: space-between; align-items: flex-start; }
-  .pcard .wm1 { font-size: 4.6pt; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; display: block; }
-  .pcard .wm2 { font-size: 7.8pt; font-weight: 700; display: block; line-height: 1.1; }
-  .pcard .ttl { font-size: 11pt; font-weight: 700; text-transform: uppercase; letter-spacing: -.01em; text-align: right; line-height: .95; }
-  .pcard .bc { position: absolute; left: 0; right: 0; top: 16.5mm; text-align: center; }
-  .pcard .bc svg { display: block; margin: 0 auto; }
-  .pcard .bc .num { font-family: Consolas, "Liberation Mono", monospace; font-size: 8pt; letter-spacing: .2em; color: #333; margin-top: 0.6mm; }
-  .pcard .foot { position: absolute; left: 3.5mm; right: 3.5mm; bottom: 1.8mm; font-size: 4.3pt; color: #6B7280; display: flex; justify-content: space-between; }
-  .pcard.standard .band { background: #12205A; color: #fff; }
-  .pcard.standard .wm1 { color: #88C9F7; }
-  .pcard.corporate .band { background: #F5A623; color: #12205A; }
-  .pcard.corporate .wm1 { color: #12205A; }
+  .pcard { width: 80mm; height: 48mm; position: relative; background: #fff; color: #333; font-family: Arial, Helvetica, sans-serif; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pcard .mark { position: absolute; background: #777; }
+  .pcard .mark.h { width: 2mm; height: 0.2mm; }
+  .pcard .mark.v { width: 0.2mm; height: 2mm; }
+  .pcard .mark.tl-h { left: -4mm; top: -0.1mm; } .pcard .mark.tl-v { top: -4mm; left: -0.1mm; }
+  .pcard .mark.tr-h { right: -4mm; top: -0.1mm; } .pcard .mark.tr-v { top: -4mm; right: -0.1mm; }
+  .pcard .mark.bl-h { left: -4mm; bottom: -0.1mm; } .pcard .mark.bl-v { bottom: -4mm; left: -0.1mm; }
+  .pcard .mark.br-h { right: -4mm; bottom: -0.1mm; } .pcard .mark.br-v { bottom: -4mm; right: -0.1mm; }
+  /* front: full-bleed brand face */
+  .pcard.front .bleed { position: absolute; left: -2mm; top: -2mm; right: -2mm; bottom: -2mm; overflow: hidden; }
+  .pcard.front.standard .bleed { background: #12205A; color: #fff; }
+  .pcard.front.corporate .bleed { background: #F5A623; color: #12205A; }
+  .pcard.front .waves { position: absolute; left: 0; bottom: 0; width: 100%; height: 19mm; }
+  .pcard.front .safe { position: absolute; left: 6mm; top: 5.5mm; right: 6mm; bottom: 5.5mm; }
+  .pcard.front .wm1 { font-size: 4.8pt; letter-spacing: .22em; text-transform: uppercase; font-weight: 700; display: block; }
+  .pcard.front.standard .wm1 { color: #88C9F7; } .pcard.front.corporate .wm1 { color: #12205A; }
+  .pcard.front .wm2 { font-size: 8.2pt; font-weight: 700; display: block; line-height: 1.1; }
+  .pcard.front .ttl { font-size: 19pt; font-weight: 700; text-transform: uppercase; letter-spacing: -.02em; line-height: .92; margin-top: 4mm; }
+  .pcard.front .rule { width: 12mm; height: 1mm; border-radius: 1mm; margin-top: 2mm; }
+  .pcard.front.standard .rule { background: #F5A623; } .pcard.front.corporate .rule { background: #12205A; }
+  .pcard.front .tag { font-size: 5pt; letter-spacing: .04em; margin-top: 1.8mm; opacity: .85; }
+  .pcard.front .fno { position: absolute; right: 0; bottom: 0; font-family: Consolas, "Liberation Mono", monospace; font-size: 5pt; letter-spacing: .12em; opacity: .55; }
+  /* back: barcode face, everything 4 mm inside the trim so a slightly offset print still cuts cleanly */
+  .pcard.back .row1 { position: absolute; left: 5mm; right: 5mm; top: 4.5mm; display: flex; justify-content: space-between; font-size: 4.6pt; color: #6B7280; white-space: nowrap; }
+  .pcard.back .row1 b { color: #12205A; letter-spacing: .04em; text-transform: uppercase; }
+  .pcard.back.corporate .row1 b { color: #12205A; }
+  .pcard.back .terms { position: absolute; left: 5mm; right: 5mm; top: 8.5mm; font-size: 4.8pt; line-height: 1.32; color: #333; }
+  .pcard.back .bc { position: absolute; left: 0; right: 0; bottom: 6.5mm; text-align: center; }
+  .pcard.back .bc svg { display: block; margin: 0 auto; }
+  .pcard.back .num { font-family: Consolas, "Liberation Mono", monospace; font-size: 8pt; letter-spacing: .2em; color: #333; margin-top: .4mm; }
+  .pcard.back .addr { position: absolute; left: 0; right: 0; bottom: 3.6mm; text-align: center; font-size: 4.2pt; color: #6B7280; }
+  /* single-sided: brand band plus barcode on one face */
+  .pcard.single { border: 0.2mm solid #9A9A9A; overflow: hidden; }
+  .pcard.single .band { height: 14mm; padding: 2.4mm 3.5mm 0; display: flex; justify-content: space-between; align-items: flex-start; }
+  .pcard.single .wm1 { font-size: 4.6pt; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; display: block; }
+  .pcard.single .wm2 { font-size: 7.8pt; font-weight: 700; display: block; line-height: 1.1; }
+  .pcard.single .ttl { font-size: 11pt; font-weight: 700; text-transform: uppercase; letter-spacing: -.01em; text-align: right; line-height: .95; }
+  .pcard.single .bc { position: absolute; left: 0; right: 0; top: 16.5mm; text-align: center; }
+  .pcard.single .bc svg { display: block; margin: 0 auto; }
+  .pcard.single .bc .num { font-family: Consolas, "Liberation Mono", monospace; font-size: 8pt; letter-spacing: .2em; color: #333; margin-top: 0.6mm; }
+  .pcard.single .foot { position: absolute; left: 3.5mm; right: 3.5mm; bottom: 1.8mm; font-size: 4.3pt; color: #6B7280; display: flex; justify-content: space-between; }
+  .pcard.single.standard .band { background: #12205A; color: #fff; } .pcard.single.standard .wm1 { color: #88C9F7; }
+  .pcard.single.corporate .band { background: #F5A623; color: #12205A; } .pcard.single.corporate .wm1 { color: #12205A; }
   .ro-hint { font-size: 14px; color: var(--muted); }
 
   /* Print (statements and card sheets) */
@@ -442,13 +472,14 @@
       </div>
 
       <div class="panel">
-        <div class="panel-head"><h3>Print cards</h3><span class="small muted">A4 sheets of 10, each 80 &times; 48 mm for a 54 &times; 86 mm pouch. Print at 100%, laminate, cut on the grey line.</span></div>
+        <div class="panel-head"><h3>Print cards</h3><span class="small muted">A4 sheets of 10, each 80 &times; 48 mm for a 54 &times; 86 mm pouch. Print at 100% on card stock, cut at the corner marks, laminate.</span></div>
         <div class="grid2">
           <div class="field"><label for="pc-variant">Card</label><select id="pc-variant"><option value="standard">Standard pool pass</option><option value="corporate">Corporate pass</option></select></div>
+          <div class="field"><label for="pc-sides">Sides</label><select id="pc-sides"><option value="long">Double-sided, flip on long edge</option><option value="short">Double-sided, flip on short edge</option><option value="single">Single-sided, barcode on the front</option></select></div>
           <div class="field"><label for="pc-start">First number</label><input id="pc-start" type="number" min="100001" step="1"></div>
           <div class="field"><label for="pc-count">How many</label><select id="pc-count"><option>10</option><option>20</option><option>30</option><option>50</option><option>100</option></select></div>
         </div>
-        <p class="small muted" id="pc-note">The first number is the next one after the last sheet printed or the highest card in use, whichever is higher.</p>
+        <p class="small muted" id="pc-note">The first number is the next one after the last sheet printed or the highest card in use, whichever is higher. Double-sided prints the brand on the front and the barcode on the back of the same sheet; set the printer to print on both sides and match the flip setting here. The small number on the front should match the barcode behind it.</p>
         <div class="actions"><button class="primary" id="pc-print" type="button">Print sheet</button></div>
       </div>
 
@@ -1599,25 +1630,62 @@ async function suggestCardStart() {
   } catch (err) { showError(err); }
 }
 $('#pc-variant').addEventListener('change', suggestCardStart);
+const CARD_WAVES = '<svg class="waves" viewBox="0 0 856 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">' +
+  '<path d="M-20 120 C 120 60, 220 60, 340 120 S 560 180, 700 120 S 840 70, 900 110" fill="none" stroke="#0367AC" stroke-width="14" stroke-linecap="round" opacity="0.9"/>' +
+  '<path d="M-20 150 C 120 90, 220 90, 340 150 S 560 210, 700 150 S 840 100, 900 140" fill="none" stroke="{c2}" stroke-width="9" stroke-linecap="round" opacity="0.7"/>' +
+  '<path d="M-20 178 C 120 118, 220 118, 340 178 S 560 238, 700 178 S 840 128, 900 168" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity="0.5"/></svg>';
+const CARD_MARKS = ['tl-h', 'tl-v', 'tr-h', 'tr-v', 'bl-h', 'bl-v', 'br-h', 'br-v'].map(c => '<i class="mark ' + (c.endsWith('-h') ? 'h ' : 'v ') + c + '"></i>').join('');
+function cardFront(n, corp) {
+  return '<div class="pcard front ' + (corp ? 'corporate' : 'standard') + '"><div class="bleed">' + CARD_WAVES.replace('{c2}', corp ? '#12205A' : '#88C9F7') +
+    '<div class="safe"><span class="wm1">Wollongong</span><span class="wm2">Surf Leisure Resort</span>' +
+    '<div class="ttl">' + (corp ? 'Corporate<br>pass' : 'Pool<br>pass') + '</div><div class="rule"></div>' +
+    '<div class="tag">' + (corp ? 'Practice account &middot; client visits invoiced monthly' : 'Pool entry &middot; present at reception before every swim') + '</div>' +
+    '<div class="fno">' + n + '</div></div></div>' + CARD_MARKS + '</div>';
+}
+function cardBack(n, corp) {
+  const terms = corp ? 'Client visits are recorded against your practice account and invoiced monthly. Present this card at reception with each group. Not transferable.'
+    : 'Present this card at reception before every swim. Entries are recorded against the card and expire 12 months from purchase. Not transferable. Lost cards are replaced at reception and your balance moves across.';
+  return '<div class="pcard back ' + (corp ? 'corporate' : 'standard') + '"><div class="row1"><b>Wollongong Surf Leisure Resort</b><span>wslr.com.au &middot; 02 4283 6999</span></div>' +
+    '<div class="terms">' + terms + '</div><div class="bc"><svg data-code="' + n + '"></svg><div class="num">' + n + '</div></div>' +
+    '<div class="addr">201 Pioneer Road, Fairy Meadow NSW 2519</div></div>';
+}
+function cardSingle(n, corp) {
+  return '<div class="pcard single ' + (corp ? 'corporate' : 'standard') + '">' +
+    '<div class="band"><div><span class="wm1">Wollongong</span><span class="wm2">Surf Leisure Resort</span></div><div class="ttl">' + (corp ? 'Corporate<br>pass' : 'Pool<br>pass') + '</div></div>' +
+    '<div class="bc"><svg data-code="' + n + '"></svg><div class="num">' + n + '</div></div>' +
+    '<div class="foot"><span>' + (corp ? 'Client visits invoiced monthly' : 'Present at reception before every swim') + '</span><span>wslr.com.au &middot; 02 4283 6999</span></div></div>';
+}
+// Ten cards per A4 sheet, two columns by five rows. For double-sided printing the back
+// sheet is laid out mirrored so each barcode lands behind its own front: left-right for a
+// long-edge flip (the usual portrait setting), top-bottom for a short-edge flip.
+function buildSheets(numbers, sides, corp) {
+  let html = '';
+  for (let s = 0; s < numbers.length; s += 10) {
+    const batch = numbers.slice(s, s + 10);
+    if (sides === 'single') { html += '<div class="sheet">' + batch.map(n => cardSingle(n, corp)).join('') + '</div>'; continue; }
+    html += '<div class="sheet">' + batch.map(n => cardFront(n, corp)).join('') + '</div>';
+    const slots = new Array(10).fill('');
+    batch.forEach((n, i) => {
+      const c = i % 2, r = Math.floor(i / 2);
+      const bc = sides === 'long' ? 1 - c : c, br = sides === 'short' ? 4 - r : r;
+      slots[br * 2 + bc] = cardBack(n, corp);
+    });
+    // fill blanks so the grid keeps its shape, and trim empty trailing rows on a short last sheet
+    const lastRow = Math.floor((batch.length - 1) / 2);
+    const keep = sides === 'short' ? slots : slots.slice(0, (lastRow + 1) * 2);
+    html += '<div class="sheet">' + keep.map(x => x || '<div class="pcard"></div>').join('') + '</div>';
+  }
+  return html;
+}
 $('#pc-print').addEventListener('click', async () => {
-  const v = $('#pc-variant').value, start = Number($('#pc-start').value), count = Number($('#pc-count').value), range = CARD_RANGES[v];
+  const v = $('#pc-variant').value, start = Number($('#pc-start').value), count = Number($('#pc-count').value), range = CARD_RANGES[v], sides = $('#pc-sides').value;
   if (!(start >= range[0] && start + count - 1 <= range[1])) { toast((v === 'corporate' ? 'Corporate' : 'Standard') + ' cards use numbers ' + range[0] + ' to ' + range[1], true); return; }
   const btn = $('#pc-print'); btn.disabled = true;
   try {
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.12.3/JsBarcode.all.min.js');
-    const corp = v === 'corporate';
-    let html = '';
-    for (let i = 0; i < count; i++) {
-      if (i % 10 === 0) html += '<div class="sheet">';
-      const n = String(start + i);
-      html += '<div class="pcard ' + v + '">' +
-        '<div class="band"><div><span class="wm1">Wollongong</span><span class="wm2">Surf Leisure Resort</span></div><div class="ttl">' + (corp ? 'Corporate<br>pass' : 'Pool<br>pass') + '</div></div>' +
-        '<div class="bc"><svg data-code="' + n + '"></svg><div class="num">' + n + '</div></div>' +
-        '<div class="foot"><span>' + (corp ? 'Client visits invoiced monthly' : 'Present at reception before every swim') + '</span><span>wslr.com.au &middot; 02 4283 6999</span></div></div>';
-      if (i % 10 === 9 || i === count - 1) html += '</div>';
-    }
+    const numbers = []; for (let i = 0; i < count; i++) numbers.push(String(start + i));
     const area = $('#print-area');
-    area.innerHTML = html;
+    area.innerHTML = buildSheets(numbers, sides, v === 'corporate');
     // 1.5 px per module prints as 0.40 mm; 16 px margin is a 4.2 mm quiet zone; 46 px bars are 12 mm tall
     $$('svg[data-code]', area).forEach(svg => JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: 1.5, height: 46, margin: 16, displayValue: false, lineColor: '#000', background: '#fff' }));
     document.body.setAttribute('data-printing', '');
