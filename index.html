@@ -256,14 +256,18 @@
   .pcard.back .bc svg { display: block; margin: 0 auto; }
   .pcard.back .num { font-family: Consolas, "Liberation Mono", monospace; font-size: 8pt; letter-spacing: .2em; color: #333; margin-top: .4mm; }
   .pcard.back .addr { position: absolute; left: 0; right: 0; bottom: 3.6mm; text-align: center; font-size: 4.2pt; color: #6B7280; }
-  /* family back: adult and child barcodes side by side, each with its own label and quiet zone */
+  /* family back: adult and child barcodes one above the other (never side by side, so a laser
+     sweep can only cross one), label and number to the left of each, a clear band between */
   .pcard.back.family .terms { top: 8mm; font-size: 4.5pt; line-height: 1.28; }
-  .pcard .bc2 { display: flex; justify-content: space-between; align-items: flex-end; }
-  .pcard.back .bc2 { left: 4mm; right: 4mm; }
-  .pcard .bc2 .bcx { text-align: center; width: 35mm; }
-  .pcard .bc2 .lbl { font-size: 4.6pt; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: #12205A; margin-bottom: .4mm; white-space: nowrap; }
-  .pcard .bc2 .bcx svg { display: block; margin: 0 auto; }
-  .pcard .bc2 .num { font-size: 7pt; letter-spacing: .14em; }
+  .pcard .bc2 { display: flex; flex-direction: column; justify-content: space-between; text-align: left; }
+  .pcard.back .bc2 { left: 4mm; right: 4mm; top: 15.5mm; bottom: 7.5mm; text-align: left; }
+  .pcard .bc2 .bcx { display: flex; align-items: center; justify-content: space-between; gap: 2mm; }
+  .pcard .bc2 .lab { flex: 1; min-width: 0; line-height: 1.15; }
+  .pcard .bc2 .lbl { font-size: 7pt; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: #12205A; white-space: nowrap; }
+  .pcard .bc2 .hint { font-size: 4.8pt; color: #6B7280; margin-top: .2mm; white-space: nowrap; }
+  .pcard .bc2 .num { font-size: 7pt; letter-spacing: .14em; margin-top: .6mm; }
+  .pcard .bc2 .bcx svg { display: block; flex: none; }
+  .pcard .bc2 .gap { height: 0; border-top: 0.2mm dashed #C9CED6; margin: 0 8mm 0 0; }
   /* single-sided: brand band plus barcode on one face */
   .pcard.single { border: 0.2mm solid #9A9A9A; overflow: hidden; }
   .pcard.single .band { height: 14mm; padding: 2.4mm 3.5mm 0; display: flex; justify-content: space-between; align-items: flex-start; }
@@ -277,8 +281,8 @@
   .pcard.single.standard .band { background: #12205A; color: #fff; } .pcard.single.standard .wm1 { color: #88C9F7; }
   .pcard.single.corporate .band { background: #F5A623; color: #12205A; } .pcard.single.corporate .wm1 { color: #12205A; }
   .pcard.single.family .band { background: #0367AC; color: #fff; } .pcard.single.family .wm1 { color: #D0EDFF; }
-  .pcard.single .bc2 { top: 15.5mm; left: 3.5mm; right: 3.5mm; }
-  .pcard.single .bc2 .num { margin-top: .4mm; }
+  .pcard.single .bc2 { top: 15.5mm; bottom: 5.5mm; left: 3.5mm; right: 3.5mm; text-align: left; }
+  .pcard.single .bc2 .bcx svg, .pcard.back .bc2 .bcx svg { margin: 0; }
   .ro-hint { font-size: 14px; color: var(--muted); }
 
   /* Print (statements and card sheets) */
@@ -2060,14 +2064,16 @@ const FACE = {
 const TERMS = {
   standard:  'Present this card at reception before every swim. Entries are recorded against the card and expire 12 months from purchase. Not transferable. Lost cards are replaced at reception and your balance moves across.',
   corporate: 'Client visits are recorded against your practice account and invoiced monthly. Present this card at reception with each group. Not transferable.',
-  family:    'At reception, scan the ADULT barcode once for each adult (2 punches) and the CHILD barcode once for each child aged 5 to 17 (1 punch). Under-5s are free with a paying adult. Punches expire 12 months from purchase. Not transferable.'
+  family:    'Scan the ADULT barcode once per adult (2 punches) and the CHILD barcode once per child aged 5 to 17 (1 punch). Under-5s are free with a paying adult. Punches expire 12 months from purchase. Not transferable.'
 };
-// The barcode block: one barcode, or the adult and child pair on a family card.
+// The barcode block: one barcode, or the adult and child pair on a family card. The pair is
+// stacked one above the other with a clear gap, never side by side, so a laser sweep across
+// the card can only ever cross one of them.
 function barcodeBlock(n, variant, cls) {
   const child = variant === 'family' ? familyChild(n) : null;
   if (!child) return '<div class="' + cls + '"><svg data-code="' + n + '"></svg><div class="num">' + n + '</div></div>';
-  return '<div class="' + cls + ' bc2"><div class="bcx"><div class="lbl">Adult &middot; 2 punches</div><svg data-code="' + n + '" data-small="1"></svg><div class="num">' + n + '</div></div>' +
-    '<div class="bcx"><div class="lbl">Child &middot; 1 punch</div><svg data-code="' + child + '" data-small="1"></svg><div class="num">' + child + '</div></div></div>';
+  const row = (label, hint, code) => '<div class="bcx"><div class="lab"><div class="lbl">' + label + '</div><div class="hint">' + hint + '</div><div class="num">' + code + '</div></div><svg data-code="' + code + '" data-small="1"></svg></div>';
+  return '<div class="' + cls + ' bc2">' + row('Adult', '2 punches', n) + '<div class="gap"></div>' + row('Child', '1 punch', child) + '</div>';
 }
 function cardFront(n, variant) {
   const f = FACE[variant];
@@ -2117,10 +2123,11 @@ async function printCards(numbers, sides, variant) {
   const area = $('#print-area');
   area.innerHTML = buildSheets(numbers, sides, variant);
   // 1.5 px per module prints as 0.40 mm; 16 px margin is a 4.2 mm quiet zone; 46 px bars are 12 mm tall.
-  // The two barcodes on a family card use 1.4 px modules (0.37 mm) so both fit side by side with full quiet zones.
+  // The two barcodes on a family card are stacked, so they keep the same module width and quiet
+  // zones and are only shorter (32 px, 8.5 mm of bars), with a clear band between them.
   $$('svg[data-code]', area).forEach(svg => {
     const small = !!svg.dataset.small;
-    JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: small ? 1.4 : 1.5, height: small ? 40 : 46, margin: small ? 14 : 16, displayValue: false, lineColor: '#000', background: '#fff' });
+    JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: 1.5, height: small ? 32 : 46, margin: 16, marginTop: small ? 3 : 16, marginBottom: small ? 3 : 16, displayValue: false, lineColor: '#000', background: '#fff' });
   });
   document.body.setAttribute('data-printing', '');
   const done = () => { document.body.removeAttribute('data-printing'); window.removeEventListener('afterprint', done); };
