@@ -16,6 +16,12 @@
     --good: #1E7B44; --good-soft: #DFF2E5;
     --warn: #A8640B; --warn-soft: #FBEDD8;
     --code-bg: #EEF2F0;
+    /* pass types: one colour each, used on every pill, tile and button that names a type */
+    --k-adult: #1D5FBF;    --k-adult-soft: #DCE8FA;
+    --k-senior: #6B4FBB;   --k-senior-soft: #E9E3F8;
+    --k-family: #C2571A;   --k-family-soft: #FBE5D6;
+    --k-resident: #1E7B44; --k-resident-soft: #DFF2E5;
+    --k-account: #8A6100;  --k-account-soft: #FBEFC9;
     --shadow: 0 1px 2px rgba(23,34,32,.06), 0 10px 28px -14px rgba(23,34,32,.22);
     --display: 'Bricolage Grotesque', 'Atkinson Hyperlegible', system-ui, sans-serif;
     --body: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -30,6 +36,11 @@
       --good: #5AD08A; --good-soft: #163222;
       --warn: #E9AC4E; --warn-soft: #332610;
       --code-bg: #1F2A28;
+      --k-adult: #7FB0F5;    --k-adult-soft: #16294A;
+      --k-senior: #B39CF0;   --k-senior-soft: #2A2246;
+      --k-family: #F0955C;   --k-family-soft: #3D2314;
+      --k-resident: #5AD08A; --k-resident-soft: #163222;
+      --k-account: #F0C15C;  --k-account-soft: #3A2E0C;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
     }
   }
@@ -113,6 +124,38 @@
   .pill.warn { background: var(--warn-soft); color: var(--warn); }
   .pill.red  { background: var(--red-soft); color: var(--red); }
   .pill.accent { background: var(--accent-soft); color: var(--accent); }
+  .pill.old { background: var(--code-bg); color: var(--muted); }
+
+  /* Pass-type colours. Anything carrying kind-<type> gets --kc and --kc-soft. */
+  .kind-adult    { --kc: var(--k-adult);    --kc-soft: var(--k-adult-soft); }
+  .kind-senior   { --kc: var(--k-senior);   --kc-soft: var(--k-senior-soft); }
+  .kind-family   { --kc: var(--k-family);   --kc-soft: var(--k-family-soft); }
+  .kind-resident { --kc: var(--k-resident); --kc-soft: var(--k-resident-soft); }
+  .kind-account  { --kc: var(--k-account);  --kc-soft: var(--k-account-soft); }
+  .pill.kind { background: var(--kc-soft); color: var(--kc); font-weight: 600; }
+  .seg { display: flex; flex-wrap: wrap; gap: 6px; }
+  .seg button { border-color: var(--kc, var(--line-strong)); color: var(--kc, var(--ink)); background: var(--surface); padding: 8px 12px; }
+  .seg button:hover { background: var(--kc-soft, var(--code-bg)); }
+  .seg button[aria-pressed="true"] { background: var(--kc, var(--accent)); border-color: var(--kc, var(--accent)); color: #fff; }
+  .prow { display: flex; gap: 10px; align-items: center; padding: 9px 12px; border: 1px solid var(--line); border-left: 6px solid var(--kc, var(--line-strong)); border-radius: 8px; margin: 0 0 6px; cursor: pointer; font-weight: 400; color: var(--ink); font-size: 16px; }
+  .prow input { width: auto; margin: 0; }
+  .prow b { color: var(--kc, var(--ink)); }
+  .prow.on, .prow:has(input:checked) { background: var(--kc-soft, var(--accent-soft)); border-color: var(--kc, var(--accent)); }
+  td.kc { box-shadow: inset 5px 0 0 var(--kc, transparent); }
+  button.x { color: var(--red); border: 0; background: none; font-size: 18px; line-height: 1; padding: 2px 8px; font-weight: 700; }
+  button.x:hover { background: var(--red-soft); border-radius: 6px; }
+  .card-row { display: flex; gap: 6px 12px; align-items: center; flex-wrap: wrap; margin-top: 12px; font-size: 14px; color: var(--muted); }
+  .card-row .pill { font-size: 13px; padding: 3px 10px; }
+  .card-row .link { padding: 2px 4px; font-size: 14px; }
+  .found { background: var(--accent-soft); border-radius: 10px; padding: 10px 12px; margin-top: 6px; font-size: 14px; line-height: 1.45; }
+  .found b { color: var(--accent); }
+  .found .link { padding: 0 2px; font-size: 14px; }
+  .modal.wide { width: min(940px, 100%); }
+  .dupe { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+  .dupe table { margin-top: 6px; font-size: 14px; }
+  .dupe td, .dupe th { padding: 6px 8px; }
+  .dupe .keep td:first-child { font-weight: 700; }
+  .dupe .head { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
 
   /* Scan page */
   .scan-layout { display: grid; grid-template-columns: 1fr; gap: 16px; }
@@ -297,6 +340,7 @@
             <div class="idle" id="r-idle">Hold the card under the scanner. The entry is recorded and the balance shown here. Nothing to click.</div>
             <div id="r-body"></div>
             <div class="actions" id="r-actions"></div>
+            <div class="card-row" id="r-card" hidden></div>
           </div>
 
           <div class="panel" style="margin-top:16px">
@@ -312,7 +356,7 @@
             <div class="stats">
               <div class="stat"><div class="v" id="t-entries">–</div><div class="k">entries</div></div>
               <div class="stat"><div class="v" id="t-people">–</div><div class="k">people through the gate</div></div>
-              <div class="stat"><div class="v" id="t-sales">–</div><div class="k">passes sold</div></div>
+              <div class="stat"><div class="v" id="t-sales">–</div><div class="k">passes sold <span id="t-money"></span></div></div>
             </div>
             <div class="scroll" style="margin-top:14px">
               <table class="recent">
@@ -331,15 +375,19 @@
       <div class="scan-layout">
         <div>
           <div class="panel">
-            <div class="panel-head"><h2>Punch card to barcode card</h2><span class="small muted">Scan the new card, fill in the old one, transfer.</span></div>
+            <div class="panel-head"><h2>Punch card to barcode card</h2><span class="small muted">Scan the new card, type the old one, transfer.</span></div>
             <form id="ro-form">
+              <input type="hidden" id="ro-member-id" value="">
               <div class="field"><label for="ro-card">New card (scan it)</label><input id="ro-card" class="mono" autocomplete="off" placeholder="scan the new barcode card" required><div id="ro-card-note" class="small muted" style="margin-top:4px"></div></div>
               <div class="grid2">
-                <div class="field"><label for="ro-name">Name</label><input id="ro-name" autocomplete="off" required></div>
-                <div class="field"><label for="ro-phone">Phone</label><input id="ro-phone" autocomplete="off" inputmode="tel"></div>
-                <div class="field"><label for="ro-old">Old punch card number</label><input id="ro-old" class="mono" autocomplete="off"></div>
+                <div class="field"><label for="ro-old">Old punch card number</label><input id="ro-old" class="mono" autocomplete="off" inputmode="numeric" placeholder="the number on the punch card"></div>
                 <div class="field"><label for="ro-punches">Punches left on it</label><input id="ro-punches" type="number" min="0" step="1" value="0" required></div>
-                <div class="field"><label for="ro-kind">Pass type</label><select id="ro-kind"><option value="adult">Adult</option><option value="senior">Senior</option><option value="family">Family</option><option value="resident">Resident</option></select></div>
+              </div>
+              <div id="ro-found" class="found" hidden></div>
+              <div class="grid2" style="margin-top:12px">
+                <div class="field"><label for="ro-name">Name</label><input id="ro-name" autocomplete="off" required><div id="ro-name-note" class="found" hidden></div></div>
+                <div class="field"><label for="ro-phone">Phone</label><input id="ro-phone" autocomplete="off" inputmode="tel"></div>
+                <div class="field"><label>Pass type</label><div id="ro-kind-seg"></div></div>
                 <div class="field"><label for="ro-expiry">Entries expire on</label><input id="ro-expiry" type="date"></div>
               </div>
               <div class="actions"><button class="primary big" type="submit" id="ro-go">Transfer to new card</button><button type="button" id="ro-clear">Clear</button></div>
@@ -359,11 +407,12 @@
               <div class="stat"><div class="v" id="ro-today">–</div><div class="k">today</div></div>
               <div class="stat"><div class="v" id="ro-total">–</div><div class="k">in total</div></div>
               <div class="stat"><div class="v" id="ro-punches-total">–</div><div class="k">punches carried over</div></div>
+              <div class="stat"><div class="v" id="ro-left">–</div><div class="k">still on punch cards</div></div>
             </div>
             <div class="scroll" style="margin-top:14px">
               <table>
-                <thead><tr><th>When</th><th>Who</th><th>Old card</th><th class="num">Punches</th><th>New card</th></tr></thead>
-                <tbody id="ro-body-list"><tr><td colspan="5" class="empty">Nothing rolled over yet.</td></tr></tbody>
+                <thead><tr><th>When</th><th>Who</th><th>Old card</th><th class="num">Punches</th><th>New card</th><th></th></tr></thead>
+                <tbody id="ro-body-list"><tr><td colspan="6" class="empty">Nothing rolled over yet.</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -385,6 +434,7 @@
         </select>
         <label style="margin:0;display:flex;align-items:center;gap:6px;font-weight:400;color:var(--ink)"><input type="checkbox" id="m-inactive" style="width:auto"> show inactive</label>
         <div class="spacer" style="flex:1"></div>
+        <button id="m-dupes" type="button">Duplicates</button>
         <button class="primary" id="m-add" type="button">Add member</button>
       </div>
       <div class="members-layout">
@@ -484,6 +534,13 @@
       </div>
 
       <div class="panel">
+        <div class="panel-head"><h3>Guest balance check</h3><span class="small muted">A separate page where a pass holder types their card number and phone number and sees entries left and the expiry date. Nothing else is shown.</span></div>
+        <label style="display:flex;gap:8px;align-items:center;font-weight:400;color:var(--ink);font-size:16px"><input type="checkbox" id="s-guest" style="width:auto"> Guests can check their balance online</label>
+        <p class="small muted" style="margin-top:8px">Page address: <span class="mono" id="s-guest-url"></span>. Off means the page answers every request with "not switched on"; nothing about any card is reachable until the box is ticked.</p>
+        <div class="actions"><button class="primary" id="s-guest-save" type="button">Save</button></div>
+      </div>
+
+      <div class="panel">
         <div class="panel-head"><h3>Import a member list</h3></div>
         <p class="small muted">A CSV with a header row. Recognised columns (any order, any case): <span class="mono">name, phone, kind, remaining, barcode, expires_on, note, rate, email</span>. Kind is adult, senior, family, resident or account (default adult). Remaining becomes an opening balance. Cards are assigned later at the desk, or now if the barcode column is filled.</p>
         <div class="row" style="margin-top:10px">
@@ -539,6 +596,7 @@ const TOKEN_KEY = 'poolpass.session';
 
 const KINDS = { adult: 'Adult', senior: 'Senior', family: 'Family', resident: 'Resident', account: 'Practice account' };
 const PAYING = ['adult', 'senior', 'family'];
+const OLD_SYSTEM_BELOW = 10000;    // card numbers under this are punch cards from the old register, not barcodes
 
 // Desk logins live in the database (pool_users). Signing in returns a session
 // token; it rides on every request as the x-pool-token header and every table
@@ -664,6 +722,47 @@ function bindSteppers(root, onChange) {
   });
 }
 const stepperValue = (root, id) => Number($('.stepper[data-stepper="' + id + '"] .val', root).textContent);
+
+// Pass types as a row of coloured buttons, with a hidden input carrying the value
+// (so forms and FormData see it like a select).
+function kindSeg(id, kinds, selected, name) {
+  return '<div class="seg" data-seg="' + id + '"><input type="hidden" id="' + id + '"' + (name ? ' name="' + name + '"' : '') + ' value="' + esc(selected) + '">' +
+    kinds.map(k => '<button type="button" class="kind-' + k + '" data-value="' + k + '" aria-pressed="' + (k === selected) + '">' + esc(KINDS[k]) + '</button>').join('') + '</div>';
+}
+function bindSeg(root, onChange) {
+  $$('.seg', root).forEach(seg => seg.addEventListener('click', e => {
+    const b = e.target.closest('button[data-value]'); if (!b) return;
+    setSeg(seg, b.dataset.value);
+    if (onChange) onChange(b.dataset.value, seg);
+  }));
+}
+function setSeg(seg, value) {
+  $$('button[data-value]', seg).forEach(x => x.setAttribute('aria-pressed', String(x.dataset.value === value)));
+  $('input[type="hidden"]', seg).value = value;
+}
+
+// Passes for sale as coloured tiles (radio buttons underneath), coloured by who they are for.
+function productTiles(name, list, selected) {
+  return list.map(p => '<label class="prow kind-' + esc(p.holder_kind) + (selected && p.id === selected.id ? ' on' : '') + '">' +
+    '<input type="radio" name="' + name + '" value="' + p.id + '"' + (selected && p.id === selected.id ? ' checked' : '') + '>' +
+    '<span style="flex:1"><b>' + esc(p.name) + '</b> <span class="muted small">' + kindPill(p.holder_kind) + ' ' + p.entries + ' ' + (p.holder_kind === 'family' ? 'punches' : 'entries') + ', ' + (p.expiry_months ? p.expiry_months + ' months' : 'no expiry') + '</span></span>' +
+    '<span class="mono">' + money(p.price) + '</span></label>').join('');
+}
+function bindTiles(root) {
+  $$('.prow input[type="radio"]', root).forEach(r => r.addEventListener('change', () => {
+    $$('.prow', root).forEach(l => l.classList.toggle('on', !!(l.querySelector('input') && l.querySelector('input').checked)));
+  }));
+}
+
+// Card numbers: the old register used plain numbers under 10000; barcode cards are 100001 up.
+const cardNum = code => (/^\d{1,12}$/.test(String(code || '')) ? Number(code) : null);
+const isOldCard = code => code != null && code !== '' && (cardNum(code) == null || cardNum(code) < OLD_SYSTEM_BELOW);
+function cardLabel(code, opts) {
+  opts = opts || {};
+  if (code == null || code === '') return '<span class="pill ' + (opts.warnNone ? 'warn' : 'old') + '">no card</span>';
+  if (isOldCard(code)) return '<span class="pill old" title="Old register number, not a barcode card">punch card ' + esc(code) + '</span>';
+  return '<span class="pill ' + (opts.plain ? 'mono' : 'accent') + '">card ' + esc(code) + '</span>';
+}
 
 // Data
 function netError(err) { return err && /Failed to fetch|NetworkError|Load failed|network/i.test(err.message || ''); }
@@ -876,6 +975,19 @@ function setResult(o) {
     b.addEventListener('click', () => a.run(b));
     acts.appendChild(b);
   });
+  // The card number stays on screen with the ways to amend it: a different card, or the member's details.
+  const card = $('#r-card'); card.innerHTML = ''; card.hidden = true;
+  const m = o.member;
+  if (m) {
+    card.hidden = false;
+    card.innerHTML = kindPill(m.kind) + cardLabel(o.code && o.code !== m.barcode ? o.code : m.barcode, { warnNone: true }) +
+      (o.code && m.barcode && o.code !== m.barcode ? '<span class="small">now card ' + esc(m.barcode) + '</span>' : '') +
+      '<span class="small">member #' + m.id + '</span>' +
+      '<button type="button" class="link" id="rc-change">' + (m.barcode ? 'Change card' : 'Assign card') + '</button>' +
+      '<button type="button" class="link" id="rc-edit">Edit member</button>';
+    $('#rc-change', card).addEventListener('click', () => openCardCapture(m, { after: nm => { if (nm && nm.barcode) onScan(nm.barcode); } }));
+    $('#rc-edit', card).addEventListener('click', () => { showPage('members'); $('#m-search').value = ''; selectedId = m.id; loadMembers(); });
+  }
   if (o.beep) beep(o.beep);
 }
 function resetResult() {
@@ -890,7 +1002,7 @@ function memberLine(m, balance) {
   if (m.expires_on && PAYING.includes(m.kind)) bits.push('expires ' + fmtDate(m.expires_on));
   return bits.join(' &middot; ');
 }
-function kindPill(k) { return '<span class="pill ' + (k === 'account' ? 'accent' : '') + '">' + esc(KINDS[k] || k) + '</span>'; }
+function kindPill(k) { return '<span class="pill kind kind-' + esc(k) + '">' + esc(KINDS[k] || k) + '</span>'; }
 
 async function undoEntry(entryId, note) {
   await rpc('pool_reverse', { p_entry_id: entryId, p_note: note || 'undone at the desk' });
@@ -918,6 +1030,8 @@ function again(ctx, extra) { return ctx.code ? onScan(ctx.code, extra) : onMembe
 async function presentScan(res, ctx) {
   const m = res.member, bal = res.balance;
   lastResult = res;
+  // every state with a member shows its card number and the amend links underneath
+  const show = o => setResult(Object.assign({ member: m, code: ctx && ctx.code }, o));
   switch (res.state) {
     case 'ok':
     case 'low': {
@@ -931,7 +1045,7 @@ async function presentScan(res, ctx) {
       if (low && PAYING.includes(m.kind)) actions.push(sellAction(m, bal === 0 ? 'Sell a new pass' : 'Top up now'));
       const secs = res.last_entry ? (Date.now() - new Date(res.last_entry).getTime()) / 1000 : null;
       const repeat = secs != null && secs < 300;
-      setResult({ tone: low ? 'warn' : 'ok', state: low ? (bal === 0 ? 'Entered · card now empty' : 'Entered · running low') : 'Entered', name: m.name, line: line,
+      show({ tone: low ? 'warn' : 'ok', state: low ? (bal === 0 ? 'Entered · card now empty' : 'Entered · running low') : 'Entered', name: m.name, line: line,
         sub: repeat ? '<span class="soft">Also scanned ' + rel(res.last_entry) + '. Counted again; undo it from the Today list if that was a double.</span>'
            : (res.last_entry ? 'Last swim ' + rel(res.last_entry) : (m.kind === 'account' ? 'Invoiced monthly in arrears' : 'First swim on this card')),
         actions: actions, beep: low ? 'warn' : 'ok' });
@@ -939,40 +1053,47 @@ async function presentScan(res, ctx) {
       break;
     }
     case 'double':
-      setResult({ tone: 'warn', state: 'Not counted', name: m.name, line: 'Already scanned <b>' + rel(res.last_entry) + '</b>', sub: memberLine(m, bal) + '. Same card twice within ' + setting('double_scan_seconds', 120) + ' seconds is one swimmer.',
+      show({ tone: 'warn', state: 'Not counted', name: m.name, line: 'Already scanned <b>' + rel(res.last_entry) + '</b>', sub: memberLine(m, bal) + '. Same card twice within ' + setting('double_scan_seconds', 120) + ' seconds is one swimmer.',
         actions: [{ label: 'Count it anyway', cls: '', run: () => again(ctx, { p_force: true }) }], beep: 'bad' });
       break;
     case 'empty':
-      setResult({ tone: 'bad', state: 'Not counted', name: m.name, line: 'No entries left', sub: (m.expires_on ? 'Card valid to ' + fmtDate(m.expires_on) + '. ' : '') + 'Sell a pass and scan again.',
+      show({ tone: 'bad', state: 'Not counted', name: m.name, line: 'No entries left', sub: (m.expires_on ? 'Card valid to ' + fmtDate(m.expires_on) + '. ' : '') + 'Sell a pass and scan again.',
         actions: [sellAction(m, 'Sell a pass')], beep: 'bad' });
       break;
     case 'expired':
-      setResult({ tone: 'bad', state: 'Not counted', name: m.name, line: 'Card expired <b>' + plural(res.days_expired, 'day') + ' ago</b> &middot; <b>' + bal + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + ' unused',
+      show({ tone: 'bad', state: 'Not counted', name: m.name, line: 'Card expired <b>' + plural(res.days_expired, 'day') + ' ago</b> &middot; <b>' + bal + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + ' unused',
         sub: 'A new pass restarts the 12 months and keeps the unused balance.',
         actions: [sellAction(m, 'Sell a new pass'), { label: 'Extend expiry', cls: '', run: () => openExtend(m, ctx) }], beep: 'bad' });
       break;
     case 'insufficient':
-      setResult({ tone: 'bad', state: 'Not counted', name: m.name, line: 'Needs <b>' + res.needed + '</b> punches, only <b>' + bal + '</b> left',
+      show({ tone: 'bad', state: 'Not counted', name: m.name, line: 'Needs <b>' + res.needed + '</b> punches, only <b>' + bal + '</b> left',
         sub: 'Sell a pass, or change the party.',
         actions: [sellAction(m, 'Sell a pass'), { label: 'Change party', cls: '', run: () => openParty(m, bal, null, ctx) }], beep: 'bad' });
       break;
     case 'inactive':
-      setResult({ tone: 'bad', state: 'Not counted', name: m.name, line: 'This card is deactivated', sub: memberLine(m, bal) + '. Reactivate it on the Members page if that is wrong.', beep: 'bad' });
+      show({ tone: 'bad', state: 'Not counted', name: m.name, line: 'This card is deactivated', sub: memberLine(m, bal) + '. Reactivate it on the Members page if that is wrong.', beep: 'bad' });
+      break;
+    case 'retired':
+      show({ tone: 'warn', state: 'Old card', name: m.name, line: 'This card was replaced by card <b>' + esc(res.replaced_by || '?') + '</b>',
+        sub: memberLine(m, bal) + '. Ask for the new card, or record the visit against the member anyway.',
+        actions: [{ label: 'Record the visit anyway', cls: 'primary', run: () => onMemberEntry(m.id) },
+                  { label: 'Make this the current card', cls: '', run: async () => { try { await rpc('pool_change_card', { p_member_id: m.id, p_barcode: res.barcode, p_reason: 'old card back in use' }); toast('Card ' + res.barcode + ' is current again'); onScan(res.barcode); } catch (err) { showError(err); } } }],
+        beep: 'bad' });
       break;
     case 'unknown':
-      setResult({ tone: 'info', state: 'New card', name: 'Card ' + esc(res.barcode), line: 'Not assigned to anyone yet', sub: 'A new pass, or a replacement card for someone already in the system.',
+      show({ tone: 'info', state: 'New card', name: 'Card ' + esc(res.barcode), line: 'Not assigned to anyone yet', sub: 'A new pass, or a replacement card for someone already in the system.',
         actions: [{ label: 'New pass', cls: 'primary', run: () => openNewPass(res.barcode) }, { label: 'Existing member', cls: '', run: () => openAssign(res.barcode) }], beep: 'bad' });
       break;
     case 'needs_party':
-      setResult({ tone: 'info', state: 'Family pass', name: m.name, line: '<b>' + bal + '</b> punches left' + (m.expires_on ? ' &middot; expires ' + fmtDate(m.expires_on) : ''), sub: 'Who is going in?' });
+      show({ tone: 'info', state: 'Family pass', name: m.name, line: '<b>' + bal + '</b> punches left' + (m.expires_on ? ' &middot; expires ' + fmtDate(m.expires_on) : ''), sub: 'Who is going in?' });
       openParty(m, bal, res.last_party, ctx);
       break;
     case 'needs_count':
-      setResult({ tone: 'info', state: 'Practice account', name: m.name, line: '<b>' + (-bal) + '</b> client visits owing', sub: 'How many clients today?' });
+      show({ tone: 'info', state: 'Practice account', name: m.name, line: '<b>' + (-bal) + '</b> client visits owing', sub: 'How many clients today?' });
       openCount(m, ctx);
       break;
     default:
-      setResult({ tone: 'bad', state: 'Unexpected', name: res.state || '?', beep: 'bad' });
+      show({ tone: 'bad', state: 'Unexpected', name: res.state || '?', beep: 'bad' });
   }
   loadToday();
 }
@@ -1036,15 +1157,12 @@ function openSell(m, opts) {
   const modal = openModal(
     '<h2>Sell a pass &middot; ' + esc(m.name) + '</h2>' +
     '<p class="lead">Expiry restarts from today. Any unused balance carries over.</p>' +
-    '<div class="field">' + list.map(p =>
-      '<label style="display:flex;gap:10px;align-items:center;font-weight:400;color:var(--ink);font-size:16px;padding:8px 0;border-bottom:1px solid var(--line);margin:0">' +
-      '<input type="radio" name="sell-product" value="' + p.id + '" style="width:auto"' + (p.id === preferred.id ? ' checked' : '') + '>' +
-      '<span style="flex:1"><b>' + esc(p.name) + '</b> <span class="muted small">' + p.entries + ' ' + (p.holder_kind === 'family' ? 'punches' : 'entries') + ', ' + (p.expiry_months ? p.expiry_months + ' months' : 'no expiry') + '</span></span>' +
-      '<span class="mono">' + money(p.price) + '</span></label>').join('') + '</div>' +
+    '<div class="field">' + productTiles('sell-product', list, preferred) + '</div>' +
     '<div class="grid2"><div class="field"><label for="sell-pay">Paid by</label><select id="sell-pay"><option value="card">Card</option><option value="cash">Cash</option><option value="other">Other / account</option></select></div>' +
     '<div class="field"><label for="sell-note">Note</label><input id="sell-note" placeholder="optional" autocomplete="off"></div></div>' +
     (m.kind !== preferred.holder_kind && m.kind !== 'resident' ? '<p class="small muted">This member is set as ' + esc(KINDS[m.kind]) + '. Selling a different pass type changes them to match.</p>' : '') +
     '<div class="actions"><button type="button" id="sell-cancel">Cancel</button><button type="button" class="primary big" id="sell-go">Record sale</button></div>');
+  bindTiles(modal);
   $('#sell-cancel', modal).addEventListener('click', closeModal);
   $('#sell-go', modal).addEventListener('click', async btn => {
     const pid = Number((modal.querySelector('input[name="sell-product"]:checked') || {}).value);
@@ -1099,19 +1217,17 @@ function openAssign(code) {
   search.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(async () => {
     const s = clean(search.value); if (s.length < 2) { results.hidden = true; return; }
     const rows = await q(sb.from('pool_member_state').select('*').or('name.ilike.%' + s + '%,phone.ilike.%' + s + '%').order('name').limit(8));
-    results.innerHTML = rows.length ? rows.map(r => '<button type="button" data-id="' + r.id + '"><span class="n">' + esc(r.name) + '</span>' + kindPill(r.kind) + '<span class="mono small">' + (r.barcode ? 'card ' + esc(r.barcode) : 'no card') + ' · ' + r.balance + ' left</span></button>').join('') : '<button type="button" disabled>No matches</button>';
+    results.innerHTML = rows.length ? rows.map(r => '<button type="button" data-id="' + r.id + '"><span class="n">' + esc(r.name) + '</span>' + kindPill(r.kind) + cardLabel(r.barcode) + '<span class="mono small">' + r.balance + ' left</span></button>').join('') : '<button type="button" disabled>No matches</button>';
     results.hidden = false;
     $$('button[data-id]', results).forEach(b => b.addEventListener('click', () => assignTo(rows.find(r => r.id === Number(b.dataset.id)))));
   }, 250); });
   async function assignTo(r) {
-    if (r.barcode && r.barcode !== code && !confirm('Replace ' + r.name + '\'s card ' + r.barcode + ' with ' + code + '? The old card will stop working.')) return;
+    if (r.barcode && r.barcode !== code && !isOldCard(r.barcode) && !confirm('Replace ' + r.name + '\'s card ' + r.barcode + ' with ' + code + '? The old card will stop working.')) return;
     try {
-      const patch = { barcode: code };
-      if (r.barcode && r.barcode !== code) patch.note = ((r.note ? r.note + '\n' : '') + sydneyDate() + ' card ' + r.barcode + ' replaced by ' + code);
-      await q(sb.from('pool_members').update(patch).eq('id', r.id));
+      await rpc('pool_change_card', { p_member_id: r.id, p_barcode: code, p_reason: isOldCard(r.barcode) ? 'barcode card issued' : 'replacement' });
       closeModal(); toast('Card ' + code + ' assigned to ' + r.name);
       onScan(code);
-    } catch (err) { showError(/duplicate|unique/i.test(err.message) ? new Error('Card ' + code + ' already belongs to another member') : err); }
+    } catch (err) { showError(err); }
   }
 }
 
@@ -1123,18 +1239,40 @@ function openNewPass(code) {
     '<h2>New pass &middot; card ' + esc(code) + '</h2>' +
     '<p class="lead">Name and phone go in the system against this card. Pick the pass they are buying, or none if they already have entries to carry over.</p>' +
     '<div class="grid2">' + field('Name', '<input id="np-name" autocomplete="off" required>') + field('Phone', '<input id="np-phone" autocomplete="off" inputmode="tel">') + '</div>' +
-    '<div class="field"><label>Pass</label>' +
-      list.map(p => '<label style="display:flex;gap:10px;align-items:center;font-weight:400;color:var(--ink);font-size:16px;padding:7px 0;border-bottom:1px solid var(--line);margin:0">' +
-        '<input type="radio" name="np-product" value="' + p.id + '" style="width:auto"' + (p === list[0] ? ' checked' : '') + '>' +
-        '<span style="flex:1"><b>' + esc(p.name) + '</b> <span class="muted small">' + p.entries + ' ' + (p.holder_kind === 'family' ? 'punches' : 'entries') + ', ' + (p.expiry_months ? p.expiry_months + ' months' : 'no expiry') + '</span></span><span class="mono">' + money(p.price) + '</span></label>').join('') +
-      '<label style="display:flex;gap:10px;align-items:center;font-weight:400;color:var(--ink);font-size:16px;padding:7px 0;margin:0"><input type="radio" name="np-product" value="" style="width:auto"><span style="flex:1"><b>No pass today</b> <span class="muted small">card only, or carrying entries over</span></span></label>' +
+    '<div id="np-dupe" class="found" hidden style="margin:-4px 0 12px"></div>' +
+    '<div class="field"><label>Pass</label>' + productTiles('np-product', list, list[0]) +
+      '<label class="prow"><input type="radio" name="np-product" value=""><span style="flex:1"><b style="color:var(--ink)">No pass today</b> <span class="muted small">card only, or carrying entries over</span></span></label>' +
     '</div>' +
     '<div class="grid2">' + field('Paid by', '<select id="np-pay"><option value="card">Card</option><option value="cash">Cash</option><option value="other">Other</option></select>') +
-      field('Entries carried over', '<input id="np-carry" type="number" min="0" step="1" value="0">') +
-      field('Kind if no pass', '<select id="np-kind">' + ['adult', 'senior', 'family', 'resident'].map(k => '<option value="' + k + '">' + KINDS[k] + '</option>').join('') + '</select>') + '</div>' +
+      field('Entries carried over', '<input id="np-carry" type="number" min="0" step="1" value="0">') + '</div>' +
+    field('Type if no pass is bought today', kindSeg('np-kind', ['adult', 'senior', 'family', 'resident'], 'adult')) +
     '<div class="actions"><button type="button" id="np-cancel">Cancel</button><button type="button" id="np-existing">Existing member instead</button><button type="button" class="primary big" id="np-go">Create pass</button></div>');
+  bindSeg(modal); bindTiles(modal);
   $('#np-cancel', modal).addEventListener('click', () => { closeModal(); resetResult(); });
   $('#np-existing', modal).addEventListener('click', () => { closeModal(); openAssign(code); });
+  // Someone with this name or phone already on record? Say so before a duplicate is made.
+  let dupeTimer;
+  const dupeCheck = () => { clearTimeout(dupeTimer); dupeTimer = setTimeout(async () => {
+    const box = $('#np-dupe', modal); if (!box) return;
+    const name = $('#np-name', modal).value.trim(), phone = $('#np-phone', modal).value.trim();
+    if (name.length < 3 && phone.replace(/\D/g, '').length < 8) { box.hidden = true; return; }
+    try {
+      const found = (await rpc('pool_find_person', { p_name: name.length >= 3 ? name : null, p_phone: phone || null })) || [];
+      if (!found.length) { box.hidden = true; return; }
+      box.hidden = false;
+      box.innerHTML = '<div><b>Already on record</b> (matched by ' + esc(found.map(f => f.by).filter((v, i, a) => a.indexOf(v) === i).join(' and ')) + '):</div>' +
+        found.map(f => '<div class="row" style="gap:8px;margin-top:6px">' + esc(f.name) + ' ' + kindPill(f.kind) + cardLabel(f.barcode) + '<span class="mono small">' + f.balance + ' left</span>' +
+          '<button type="button" class="link" data-roll="' + f.id + '">Roll over onto this record</button><button type="button" class="link" data-assign="' + f.id + '">Give them this card</button></div>').join('');
+      $$('button[data-roll]', box).forEach(b => b.addEventListener('click', () => { const f = found.find(x => x.id === Number(b.dataset.roll)); closeModal(); showPage('rollover'); rolloverPrefill(code, f); }));
+      $$('button[data-assign]', box).forEach(b => b.addEventListener('click', async () => {
+        const f = found.find(x => x.id === Number(b.dataset.assign));
+        try { await rpc('pool_change_card', { p_member_id: f.id, p_barcode: code, p_reason: isOldCard(f.barcode) ? 'barcode card issued' : 'replacement' }); closeModal(); toast('Card ' + code + ' assigned to ' + f.name); onScan(code); }
+        catch (err) { showError(err); }
+      }));
+    } catch (err) { console.warn(err); }
+  }, 350); };
+  $('#np-name', modal).addEventListener('input', dupeCheck);
+  $('#np-phone', modal).addEventListener('input', dupeCheck);
   $('#np-go', modal).addEventListener('click', async () => {
     const name = $('#np-name', modal).value.trim(); if (!name) { toast('A name is needed', true); return; }
     const pid = (modal.querySelector('input[name="np-product"]:checked') || {}).value;
@@ -1166,9 +1304,10 @@ $('#new-pass-btn').addEventListener('click', () => {
   const go = async () => {
     const code = input.value.trim(); if (!code) return;
     try {
-      const rows = await q(sb.from('pool_members').select('id, name').eq('barcode', code).limit(1));
+      const r = await rpc('pool_lookup_card', { p_code: code });
       closeModal();
-      if (rows.length) { toast('Card ' + code + ' already belongs to ' + rows[0].name, true); onScan(code); return; }
+      if (r.state === 'current') { toast('Card ' + code + ' already belongs to ' + r.member.name, true); onScan(code); return; }
+      if (r.state === 'retired') { toast('Card ' + code + ' was ' + r.member.name + '\'s old card (now ' + (r.replaced_by || '?') + ')', true); onScan(code); return; }
       openNewPass(code);
     } catch (err) { showError(err); }
   };
@@ -1187,9 +1326,9 @@ $('#new-pass-btn').addEventListener('click', () => {
   async function run() {
     const s = clean(input.value); if (s.length < 2) { out.hidden = true; return; }
     try {
-      const rows = await q(sb.from('pool_member_state').select('*').eq('active', true).or('name.ilike.%' + s + '%,phone.ilike.%' + s + '%').order('kind').order('name').limit(8));
+      const rows = await q(sb.from('pool_member_state').select('*').eq('active', true).or('name.ilike.%' + s + '%,phone.ilike.%' + s + '%,barcode.ilike.%' + s + '%,legacy_card.ilike.%' + s + '%').order('kind').order('name').limit(8));
       rows.sort((a, b) => (a.kind === 'account' ? -1 : 0) - (b.kind === 'account' ? -1 : 0));
-      out.innerHTML = rows.length ? rows.map(r => '<button type="button" data-id="' + r.id + '"><span class="n">' + esc(r.name) + '</span>' + kindPill(r.kind) + '<span class="mono small">' + (r.kind === 'account' ? (-r.balance) + ' owing' : r.balance + ' left') + '</span></button>').join('') : '<button type="button" disabled>No matches</button>';
+      out.innerHTML = rows.length ? rows.map(r => '<button type="button" data-id="' + r.id + '"><span class="n">' + esc(r.name) + '</span>' + kindPill(r.kind) + cardLabel(r.barcode) + '<span class="mono small">' + (r.kind === 'account' ? (-r.balance) + ' owing' : r.balance + ' left') + '</span></button>').join('') : '<button type="button" disabled>No matches</button>';
       out.hidden = false;
       $$('button[data-id]', out).forEach(b => b.addEventListener('click', () => { out.hidden = true; input.value = ''; onMemberEntry(Number(b.dataset.id)); }));
     } catch (err) { showError(err); }
@@ -1202,8 +1341,8 @@ async function loadToday() {
   try {
     const from = sydneyMidnightISO(sydneyDate());
     const [entries, sales] = await Promise.all([
-      fetchAll(() => sb.from('pool_entries').select('id, at, qty, kind, adults, children, infants, clients, reverses, pool_members(name, kind)').gte('at', from).in('kind', ['entry', 'adjustment']).order('at', { ascending: false })),
-      fetchAll(() => sb.from('pool_entries').select('id').gte('at', from).eq('kind', 'purchase').order('id'))
+      fetchAll(() => sb.from('pool_entries').select('id, at, qty, kind, adults, children, infants, clients, reverses, pool_members(name, kind, barcode)').gte('at', from).in('kind', ['entry', 'adjustment']).order('at', { ascending: false })),
+      fetchAll(() => sb.from('pool_entries').select('id, amount, payment, kind').gte('at', from).not('amount', 'is', null).order('id'))
     ]);
     const live = entries.filter(e => e.kind === 'entry');
     const reversed = new Set(entries.filter(e => e.reverses).map(e => e.reverses));
@@ -1216,7 +1355,13 @@ async function loadToday() {
     }, 0);
     $('#t-entries').textContent = counted.length;
     $('#t-people').textContent = people;
-    $('#t-sales').textContent = sales.length;
+    // sales: count of passes, and the money split by how it was paid (refunds come off)
+    const sold = sales.filter(s => s.kind === 'purchase').length - sales.filter(s => s.kind !== 'purchase').length;
+    const byPay = {};
+    sales.forEach(s => { const k = s.payment || 'other'; byPay[k] = (byPay[k] || 0) + Number(s.amount || 0); });
+    const total = Object.values(byPay).reduce((a, b) => a + b, 0);
+    $('#t-sales').textContent = sold;
+    $('#t-money').textContent = total ? '· ' + money(total) + ' (' + Object.keys(byPay).sort().map(k => k + ' ' + money(byPay[k])).join(', ') + ')' : '';
     const body = $('#recent-body');
     body.innerHTML = live.length ? live.slice(0, 30).map(e => {
       const m = e.pool_members || {};
@@ -1225,12 +1370,17 @@ async function loadToday() {
       if (m.kind === 'account') used = (e.clients || 0) + ' <span class="small muted">clients</span>';
       if (m.kind === 'resident') used = '<span class="small muted">free</span>';
       const undone = reversed.has(e.id);
-      return '<tr class="' + (undone ? 'dim' : '') + '"><td>' + fmtTime(e.at) + '</td><td>' + esc(m.name || '?') + (undone ? ' <span class="pill">undone</span>' : '') + '</td><td class="num">' + used + '</td><td>' + kindPill(m.kind) + '</td>' +
-        '<td>' + (undone ? '' : '<button type="button" class="link small" data-undo="' + e.id + '">undo</button>') + '</td></tr>';
+      return '<tr class="' + (undone ? 'dim' : '') + '"><td>' + fmtTime(e.at) + '</td><td>' + esc(m.name || '?') + (undone ? ' <span class="pill">undone</span>' : '') + (m.barcode ? '<div class="mono small muted">' + esc(m.barcode) + '</div>' : '') + '</td><td class="num">' + used + '</td><td>' + kindPill(m.kind) + '</td>' +
+        '<td style="white-space:nowrap">' + (undone ? '<button type="button" class="x" data-del="' + e.id + '" title="Delete this undone entry completely" aria-label="Delete">&times;</button>' : '<button type="button" class="link small" data-undo="' + e.id + '">undo</button>') + '</td></tr>';
     }).join('') : '<tr><td colspan="5" class="empty">No scans yet today.</td></tr>';
     $$('button[data-undo]', body).forEach(b => b.addEventListener('click', async () => {
       b.disabled = true;
       try { await undoEntry(Number(b.dataset.undo), 'undone from the Today list'); } catch (err) { showError(err); b.disabled = false; }
+    }));
+    $$('button[data-del]', body).forEach(b => b.addEventListener('click', async () => {
+      b.disabled = true;
+      try { await rpc('pool_delete_reversed', { p_entry_id: Number(b.dataset.del) }); toast('Deleted'); loadToday(); }
+      catch (err) { showError(err); b.disabled = false; }
     }));
   } catch (err) { showError(err); }
 }
@@ -1238,23 +1388,110 @@ setInterval(() => { if (session && currentPage === 'scan' && !modalOpen()) loadT
 
 // =============================================================================
 // Roll over: punch card holders onto barcode cards
+//   The old register is already in the system (numbers under 10000 as the card).
+//   Typing the old card number finds that record, so the transfer lands on it
+//   instead of making a second person; a card the system has never seen makes a
+//   new record. Every transfer is logged and can be undone from the list.
 // =============================================================================
+const ROLL_KINDS = ['adult', 'senior', 'family', 'resident'];
+$('#ro-kind-seg').innerHTML = kindSeg('ro-kind', ROLL_KINDS, 'adult');
+bindSeg($('#ro-kind-seg'));
+let roLinked = null;          // the existing record the transfer goes onto, if any
+
 function rolloverReady() {
   if (!$('#ro-expiry').value) $('#ro-expiry').value = addDays(sydneyDate(), 365);
-  setTimeout(() => { const c = $('#ro-card'); if (!c.value) c.focus(); else $('#ro-name').focus(); }, 0);
+  setTimeout(() => { const c = $('#ro-card'); if (!c.value) c.focus(); else if (!$('#ro-old').value) $('#ro-old').focus(); else $('#ro-name').focus(); }, 0);
+}
+function rolloverClear() {
+  $('#ro-form').reset(); $('#ro-card-note').textContent = ''; roLink(null); $('#ro-name-note').hidden = true;
+  setSeg($('#ro-kind-seg .seg'), 'adult');
+  rolloverReady();
 }
 async function rolloverCard(code) {
   const field = $('#ro-card'), note = $('#ro-card-note');
   field.value = code; note.textContent = 'Checking…';
   try {
-    const rows = await q(sb.from('pool_member_state').select('id, name, balance').eq('barcode', code).limit(1));
-    if (rows.length) { note.innerHTML = '<span style="color:var(--red)">Card ' + esc(code) + ' already belongs to ' + esc(rows[0].name) + ' (' + rows[0].balance + ' left). Scan a fresh card.</span>'; field.value = ''; field.focus(); return; }
-    note.textContent = 'Card ' + code + ' is free. Now the old card.';
-    $('#ro-name').focus();
+    const r = await rpc('pool_lookup_card', { p_code: code });
+    if (r.state === 'current') { note.innerHTML = '<span style="color:var(--red)">Card ' + esc(code) + ' already belongs to ' + esc(r.member.name) + ' (' + r.balance + ' left). Scan a fresh card.</span>'; field.value = ''; field.focus(); return; }
+    if (r.state === 'retired') note.innerHTML = '<span class="soft">Card ' + esc(code) + ' used to be ' + esc(r.member.name) + '\'s (replaced by ' + esc(r.replaced_by || '?') + '). It can be reissued.</span>';
+    else note.textContent = 'Card ' + code + ' is free. Now the old punch card.';
+    if (!$('#ro-old').value) $('#ro-old').focus(); else $('#ro-name').focus();
   } catch (err) { showError(err); }
 }
+// The old card number: is it on record already?
+let roOldTimer;
+async function rolloverOld() {
+  const n = $('#ro-old').value.trim();
+  if (!n) { if (roLinked && roLinked.via === 'card') roLink(null); return; }
+  try {
+    const r = await rpc('pool_lookup_card', { p_code: n });
+    if (r.state === 'none') {
+      if (roLinked && roLinked.via === 'card') roLink(null);
+      const box = $('#ro-found'); box.hidden = false;
+      box.innerHTML = 'Punch card <b>' + esc(n) + '</b> is not in the system. A new record will be created with the name and phone below (check the name box for a match first).';
+      return;
+    }
+    roLink(Object.assign({ via: 'card', known: true, state: r.state }, r.member, { balance: r.balance }));
+  } catch (err) { showError(err); }
+}
+$('#ro-old').addEventListener('input', () => { clearTimeout(roOldTimer); roOldTimer = setTimeout(rolloverOld, 350); });
+// The name: someone with this name or phone already on record, without that card number?
+let roNameTimer;
+async function rolloverName() {
+  const box = $('#ro-name-note');
+  if (roLinked) { box.hidden = true; return; }
+  const name = $('#ro-name').value.trim(), phone = $('#ro-phone').value.trim();
+  if (name.length < 3 && phone.replace(/\D/g, '').length < 8) { box.hidden = true; return; }
+  try {
+    const found = (await rpc('pool_find_person', { p_name: name.length >= 3 ? name : null, p_phone: phone || null })) || [];
+    if (!found.length) { box.hidden = true; return; }
+    box.hidden = false;
+    box.innerHTML = '<div><b>Already on record:</b></div>' + found.map(f => '<div class="row" style="gap:8px;margin-top:6px">' + esc(f.name) + ' ' + kindPill(f.kind) + cardLabel(f.barcode) + '<span class="mono small">' + f.balance + ' left</span>' +
+      '<button type="button" class="link" data-use="' + f.id + '">Transfer onto this record</button></div>').join('') +
+      '<div class="small muted" style="margin-top:6px">Leave it if this is a different person with the same name.</div>';
+    $$('button[data-use]', box).forEach(b => b.addEventListener('click', () => {
+      const f = found.find(x => x.id === Number(b.dataset.use));
+      roLink(Object.assign({ via: 'name', known: false, state: 'person' }, f));
+    }));
+  } catch (err) { console.warn(err); }
+}
+$('#ro-name').addEventListener('input', () => { clearTimeout(roNameTimer); roNameTimer = setTimeout(rolloverName, 400); });
+$('#ro-phone').addEventListener('input', () => { clearTimeout(roNameTimer); roNameTimer = setTimeout(rolloverName, 400); });
+
+// Link the form to an existing record (or unlink with null)
+function roLink(m) {
+  roLinked = m;
+  const box = $('#ro-found');
+  $('#ro-member-id').value = m ? m.id : '';
+  if (!m) { box.hidden = true; return; }
+  $('#ro-name-note').hidden = true;
+  const old = $('#ro-old').value.trim();
+  // A punch card the record already knows: the count typed replaces the balance.
+  // A card it has never seen: the punches are added to what is there.
+  const known = !!old && (m.barcode === old || (m.legacy_card || '').split(',').map(x => x.trim()).includes(old) || m.state === 'retired');
+  m.known = known;
+  $('#ro-name').value = m.name || ''; $('#ro-phone').value = m.phone || '';
+  if (ROLL_KINDS.includes(m.kind)) setSeg($('#ro-kind-seg .seg'), m.kind);
+  if (known && !(Number($('#ro-punches').value) > 0)) $('#ro-punches').value = m.balance;
+  box.hidden = false;
+  box.innerHTML = '<div><b>On record:</b> ' + esc(m.name) + ' ' + kindPill(m.kind) + cardLabel(m.barcode) + ' <span class="mono">' + m.balance + '</span> ' + (m.kind === 'family' ? 'punches' : 'entries') +
+    (m.expires_on ? ' · expires ' + fmtDate(m.expires_on) : '') + ' <button type="button" class="link" id="ro-unlink">Not this person</button></div>' +
+    '<div class="small" style="margin-top:4px">' + (known
+      ? 'This punch card is the one on the record. The count you type becomes the balance' + (m.balance ? ' (the record shows ' + m.balance + ')' : '') + ', the record gets the new card, and the punch card number stays on it for the audit.'
+      : 'Punch card <b>' + esc(old || '?') + '</b> is not on this record, so its punches are <b>added</b> to the ' + m.balance + ' already there.') + '</div>';
+  $('#ro-unlink', box).addEventListener('click', () => { roLink(null); $('#ro-name').value = ''; $('#ro-phone').value = ''; $('#ro-name').focus(); });
+  $('#ro-punches').focus(); $('#ro-punches').select();
+}
+// Jump here from New pass: the card is scanned, the person is known
+function rolloverPrefill(code, member) {
+  rolloverClear();
+  $('#ro-card').value = code; $('#ro-card-note').textContent = 'Card ' + code + ' is free.';
+  if (member.barcode && isOldCard(member.barcode)) $('#ro-old').value = member.barcode;
+  roLink(Object.assign({ via: 'name', state: 'person' }, member));
+}
+
 $('#ro-card').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const c = $('#ro-card').value.trim(); if (c) rolloverCard(c); } });
-$('#ro-clear').addEventListener('click', () => { $('#ro-form').reset(); $('#ro-card-note').textContent = ''; rolloverReady(); });
+$('#ro-clear').addEventListener('click', rolloverClear);
 $('#ro-form').addEventListener('submit', async e => {
   e.preventDefault();
   const code = $('#ro-card').value.trim(), name = $('#ro-name').value.trim();
@@ -1263,40 +1500,62 @@ $('#ro-form').addEventListener('submit', async e => {
   const btn = $('#ro-go'); btn.disabled = true;
   try {
     const punches = Number($('#ro-punches').value) || 0;
+    const memberId = Number($('#ro-member-id').value) || null;
     const r = await rpc('pool_rollover', { p_barcode: code, p_name: name, p_phone: $('#ro-phone').value.trim() || null, p_kind: $('#ro-kind').value,
-      p_old_card: $('#ro-old').value.trim() || null, p_punches: punches, p_expires_on: $('#ro-expiry').value || null });
-    const m = r.member;
-    $('#ro-result').dataset.tone = 'ok';
-    $('#ro-state').textContent = 'Transferred';
-    $('#ro-name-out').textContent = m.name;
-    $('#ro-body').innerHTML = '<div class="line">' + (m.legacy_card ? 'Punch card <b>' + esc(m.legacy_card) + '</b>' : 'Punch card') + ' &rarr; card <b>' + esc(code) + '</b> &middot; <b>' + r.balance + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + '</div>' +
-      '<div class="sub">' + esc(KINDS[m.kind]) + (m.expires_on ? ' &middot; expires ' + fmtDate(m.expires_on) : '') + '. Keep the old card in the drawer for the audit.</div>';
-    const acts = $('#ro-actions'); acts.innerHTML = '';
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'primary'; b.textContent = 'Enter now';
-    b.addEventListener('click', () => { showPage('scan'); onScan(code); });
-    acts.appendChild(b);
+      p_old_card: $('#ro-old').value.trim() || null, p_punches: punches, p_expires_on: $('#ro-expiry').value || null, p_member_id: memberId });
+    showRollover(r, code, punches, !!memberId);
     beep('ok');
-    $('#ro-form').reset(); $('#ro-card-note').textContent = '';
-    rolloverReady();
+    rolloverClear();
     loadRollovers();
   } catch (err) { showError(err); }
   finally { btn.disabled = false; }
 });
+let roShown = null;           // the roll-over the result panel is showing
+function showRollover(r, code, punches, existing) {
+  const m = r.member;
+  roShown = r.rollover_id;
+  $('#ro-result').dataset.tone = 'ok';
+  $('#ro-state').textContent = 'Transferred';
+  $('#ro-name-out').textContent = m.name;
+  $('#ro-body').innerHTML = '<div class="line">' + (m.legacy_card ? 'Punch card <b>' + esc(m.legacy_card) + '</b>' : 'Punch card') + ' &rarr; card <b>' + esc(code) + '</b> &middot; <b>' + r.balance + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + '</div>' +
+    '<div class="sub">' + kindPill(m.kind) + (m.expires_on ? ' expires ' + fmtDate(m.expires_on) : '') + (existing && r.known === false && punches ? ' · ' + punches + ' punches added to the record' : '') + '. Keep the old card in the drawer for the audit.</div>';
+  const acts = $('#ro-actions'); acts.innerHTML = '';
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'primary'; b.textContent = 'Enter now';
+  b.addEventListener('click', () => { showPage('scan'); onScan(code); });
+  acts.appendChild(b);
+  const u = document.createElement('button'); u.type = 'button'; u.className = 'danger'; u.textContent = 'Undo this transfer';
+  u.addEventListener('click', () => undoRollover(r.rollover_id, m.name, u));
+  acts.appendChild(u);
+}
+async function undoRollover(id, name, btn) {
+  if (!confirm('Undo the roll-over for ' + name + '? The new card is released and the record goes back to how it was.')) return;
+  if (btn) btn.disabled = true;
+  try {
+    const r = await rpc('pool_rollover_undo', { p_rollover_id: id });
+    toast(r.deleted_member ? 'Undone: the record was removed and the card is free again' : 'Undone: the record is back as it was');
+    if (id === roShown) { $('#ro-result').dataset.tone = ''; $('#ro-state').textContent = 'Undone'; $('#ro-name-out').textContent = name; $('#ro-body').innerHTML = ''; $('#ro-actions').innerHTML = ''; }
+    loadRollovers();
+  } catch (err) { showError(err); if (btn) btn.disabled = false; }
+}
 async function loadRollovers() {
   try {
-    const rows = await fetchAll(() => sb.from('pool_members').select('id, name, barcode, legacy_card, note, created_at').not('legacy_card', 'is', null).order('created_at', { ascending: false }));
-    const ids = rows.map(r => r.id);
-    let opening = {};
-    if (ids.length) {
-      const es = await fetchAll(() => sb.from('pool_entries').select('member_id, qty').eq('kind', 'opening').in('member_id', ids.slice(0, 500)).order('id'));
-      es.forEach(e => { opening[e.member_id] = (opening[e.member_id] || 0) + e.qty; });
-    }
+    const [rows, cards] = await Promise.all([
+      q(sb.from('pool_rollovers').select('*').order('at', { ascending: false }).limit(300)),
+      fetchAll(() => sb.from('pool_members').select('id, barcode, kind').eq('active', true).in('kind', PAYING).order('id'))
+    ]);
     const today = sydneyDate();
-    $('#ro-today').textContent = rows.filter(r => sydneyDate(new Date(r.created_at)) === today).length;
-    $('#ro-total').textContent = rows.length;
-    $('#ro-punches-total').textContent = Object.values(opening).reduce((a, b) => a + b, 0);
-    $('#ro-body-list').innerHTML = rows.length ? rows.slice(0, 40).map(r => '<tr><td class="mono small" style="white-space:nowrap">' + fmtDate(r.created_at) + ' ' + fmtTime(r.created_at) + '</td><td>' + esc(r.name) + '</td><td class="mono">' + esc(r.legacy_card) + '</td><td class="num">' + (opening[r.id] || 0) + '</td><td class="mono">' + esc(r.barcode || '') + '</td></tr>').join('')
-      : '<tr><td colspan="5" class="empty">Nothing rolled over yet.</td></tr>';
+    const live = rows.filter(r => !r.undone_at);
+    $('#ro-today').textContent = live.filter(r => sydneyDate(new Date(r.at)) === today).length;
+    $('#ro-total').textContent = live.length;
+    $('#ro-punches-total').textContent = live.reduce((a, r) => a + (r.punches || 0), 0);
+    $('#ro-left').textContent = cards.filter(c => !c.barcode || isOldCard(c.barcode)).length;
+    const limit = setting('undo_minutes', 1440) * 60000;
+    $('#ro-body-list').innerHTML = rows.length ? rows.slice(0, 60).map(r => {
+      const canUndo = !r.undone_at && (Date.now() - new Date(r.at).getTime()) < limit;
+      return '<tr class="' + (r.undone_at ? 'dim' : '') + '"><td class="mono small" style="white-space:nowrap">' + fmtDate(r.at) + ' ' + fmtTime(r.at) + '</td><td>' + esc(r.name) + (r.undone_at ? ' <span class="pill">undone</span>' : '') + (r.created_new ? '' : ' <span class="pill accent" title="transferred onto a record that was already in the system">existing</span>') + '</td><td class="mono">' + esc(r.old_card || '') + '</td><td class="num">' + r.punches + '</td><td class="mono">' + esc(r.new_barcode) + '</td>' +
+        '<td>' + (canUndo ? '<button type="button" class="link small" data-undo-ro="' + r.id + '" data-name="' + esc(r.name) + '">undo</button>' : '') + '</td></tr>';
+    }).join('') : '<tr><td colspan="6" class="empty">Nothing rolled over yet.</td></tr>';
+    $$('button[data-undo-ro]', $('#ro-body-list')).forEach(b => b.addEventListener('click', () => undoRollover(Number(b.dataset.undoRo), b.dataset.name, b)));
   } catch (err) { showError(err); }
 }
 $('#ro-refresh').addEventListener('click', loadRollovers);
@@ -1323,7 +1582,7 @@ async function loadMembers() {
     membersCache = await q(b);
     const body = $('#m-body');
     body.innerHTML = membersCache.length ? membersCache.map(r =>
-      '<tr class="clickable' + (r.id === selectedId ? ' selected' : '') + (r.active ? '' : ' dim') + '" data-id="' + r.id + '"><td>' + esc(r.name) + (r.active ? '' : ' <span class="pill">inactive</span>') + '</td><td>' + kindPill(r.kind) + '</td><td class="mono">' + esc(r.barcode || '') + '</td>' +
+      '<tr class="clickable' + (r.id === selectedId ? ' selected' : '') + (r.active ? '' : ' dim') + '" data-id="' + r.id + '"><td class="kc kind-' + esc(r.kind) + '">' + esc(r.name) + (r.active ? '' : ' <span class="pill">inactive</span>') + '</td><td>' + kindPill(r.kind) + '</td><td class="mono">' + (r.barcode ? (isOldCard(r.barcode) ? '<span class="muted" title="old register number">' + esc(r.barcode) + ' <span class="small">old</span></span>' : esc(r.barcode)) : '') + '</td>' +
       '<td class="num">' + (r.kind === 'account' ? '<span class="muted">' + (-r.balance) + ' owing</span>' : r.kind === 'resident' ? '<span class="muted">free</span>' : r.balance) + '</td><td>' + expiryCell(r) + '</td></tr>').join('')
       : '<tr><td colspan="5" class="empty">' + (s || kind ? 'No matches.' : 'No members yet. Press New pass on the Scan tab, or import a list under Settings.') + '</td></tr>';
     $$('tr[data-id]', body).forEach(tr => tr.addEventListener('click', () => selectMember(Number(tr.dataset.id))));
@@ -1358,21 +1617,23 @@ function renderMember(m, hist) {
   panel.innerHTML =
     '<div class="panel-head"><div><h2>' + esc(m.name) + '</h2><div class="small muted">' + KINDS[m.kind] + ' &middot; member #' + m.id + ' &middot; since ' + fmtDate(m.created_at) + '</div></div>' +
     '<div class="stat"><div class="v">' + (isAcct ? (-m.balance) : m.balance) + '</div><div class="k">' + (isAcct ? 'client visits owing' : m.kind === 'resident' ? 'visits logged: ' + m.entry_count : (m.kind === 'family' ? 'punches' : 'entries') + ' left') + '</div></div></div>' +
-    '<div class="row" style="margin-bottom:12px"><span class="pill ' + (m.barcode ? 'accent' : 'warn') + '">' + (m.barcode ? 'card ' + esc(m.barcode) : 'no card assigned') + '</span>' + (m.last_entry ? '<span class="small muted">last swim ' + rel(m.last_entry) + '</span>' : '') + '</div>' +
+    '<div class="row" style="margin-bottom:12px">' + cardLabel(m.barcode, { warnNone: true }) + (m.legacy_card ? '<span class="small muted">punch card' + (m.legacy_card.includes(',') ? 's' : '') + ' ' + esc(m.legacy_card) + '</span>' : '') + (m.last_entry ? '<span class="small muted">last swim ' + rel(m.last_entry) + '</span>' : '') + '</div>' +
+    (m.barcode && isOldCard(m.barcode) ? '<p class="small soft" style="margin-bottom:12px">Still on the old register number. When they present their punch card, use the Roll over tab (type ' + esc(m.barcode) + ' as the old card) and the new barcode card lands on this record.</p>' : '') +
     '<div class="actions" style="margin:0 0 16px">' +
       (isAcct ? '<button type="button" class="primary" id="d-visit">Record a visit</button>' : m.kind === 'resident' ? '' : '<button type="button" class="primary" id="d-sell">Sell a pass</button>') +
-      '<button type="button" id="d-card">' + (m.barcode ? 'Replace card' : 'Assign card') + '</button>' +
+      '<button type="button" id="d-card">' + (m.barcode && !isOldCard(m.barcode) ? 'Replace card' : 'Assign card') + '</button>' +
       '<button type="button" id="d-adjust">Adjust balance</button>' +
+      '<button type="button" id="d-merge">Merge another record into this one</button>' +
     '</div>' +
     '<form id="d-form"><div class="grid2">' +
       field('Name', '<input name="name" value="' + esc(m.name) + '" required>') +
       field('Phone', '<input name="phone" value="' + esc(m.phone) + '">') +
       field('Email', '<input name="email" type="email" value="' + esc(m.email) + '">') +
-      field('Kind', '<select name="kind">' + Object.keys(KINDS).map(k => '<option value="' + k + '"' + (k === m.kind ? ' selected' : '') + '>' + KINDS[k] + '</option>').join('') + '</select>') +
       field('Rate per client $ (accounts)', '<input name="rate" type="number" step="0.01" min="0" value="' + (m.rate == null ? '' : m.rate) + '">') +
       field('Expires on', '<input name="expires_on" type="date" value="' + (m.expires_on || '') + '">') +
       field('Active', '<label style="display:flex;gap:8px;align-items:center;font-weight:400;color:var(--ink);margin-top:8px"><input type="checkbox" name="active" style="width:auto"' + (m.active ? ' checked' : '') + '> card works at the desk</label>') +
     '</div>' +
+    field('Kind', kindSeg('d-kind', Object.keys(KINDS), m.kind, 'kind')) +
     field('Notes', '<textarea name="note">' + esc(m.note) + '</textarea>') +
     '<div class="actions" style="margin-top:4px"><button type="submit" class="primary">Save changes</button></div></form>' +
     '<h3 style="margin:22px 0 8px">History</h3>' +
@@ -1380,21 +1641,29 @@ function renderMember(m, hist) {
     (hist.length ? hist.map(h => {
       const what = h.kind === 'purchase' ? 'Bought ' + esc(h.pool_products ? h.pool_products.name : 'pass') + (h.payment ? ' (' + esc(h.payment) + ')' : '')
         : h.kind === 'entry' ? (m.kind === 'family' ? 'Entry: ' + (h.adults || 0) + ' adults, ' + (h.children || 0) + ' children' + (h.infants ? ', ' + h.infants + ' under 5' : '') : isAcct ? 'Visit: ' + (h.clients || 0) + ' clients' : 'Entry')
-        : h.kind === 'opening' ? 'Opening balance' : (h.reverses ? 'Reversal of #' + h.reverses : 'Adjustment');
-      const canReverse = !h.reverses && !reversedIds.has(h.id);
-      return '<tr class="' + (reversedIds.has(h.id) ? 'dim' : '') + '"><td class="mono small">' + fmtDate(h.at) + ' ' + fmtTime(h.at) + '</td><td>' + what + (h.note ? '<div class="small muted">' + esc(h.note) + '</div>' : '') + (reversedIds.has(h.id) ? ' <span class="pill">reversed</span>' : '') + '</td>' +
+        : h.kind === 'opening' ? 'Opening balance' : (h.reverses ? 'Reversal of #' + h.reverses : /^Merged/.test(h.note || '') ? 'Merged' : 'Adjustment');
+      const canReverse = !h.reverses && !reversedIds.has(h.id) && h.qty !== 0;
+      const canDelete = h.kind === 'entry' && reversedIds.has(h.id);
+      return '<tr class="' + (reversedIds.has(h.id) ? 'dim' : '') + '"><td class="mono small">' + fmtDate(h.at) + ' ' + fmtTime(h.at) + (h.created_by ? '<div class="muted">' + esc(h.created_by) + '</div>' : '') + '</td><td>' + what + (h.note ? '<div class="small muted">' + esc(h.note) + '</div>' : '') + (reversedIds.has(h.id) ? ' <span class="pill">reversed</span>' : '') + '</td>' +
         '<td class="num">' + (h.qty > 0 ? '+' : '') + h.qty + '</td><td class="num">' + (h.amount == null ? '' : money(h.amount)) + '</td>' +
-        '<td>' + (canReverse ? '<button type="button" class="link small" data-reverse="' + h.id + '">reverse</button>' : '') + '</td></tr>';
+        '<td style="white-space:nowrap">' + (canReverse ? '<button type="button" class="link small" data-reverse="' + h.id + '">reverse</button>' : '') + (canDelete ? '<button type="button" class="x" data-del="' + h.id + '" title="Delete this undone entry and its reversal completely" aria-label="Delete">&times;</button>' : '') + '</td></tr>';
     }).join('') : '<tr><td colspan="5" class="empty">Nothing yet.</td></tr>') +
     '</tbody></table></div>';
 
+  bindSeg(panel);
   const sellBtn = $('#d-sell', panel); if (sellBtn) sellBtn.addEventListener('click', () => openSell(m, { after: () => { selectMember(m.id); loadMembers(); } }));
   const visitBtn = $('#d-visit', panel); if (visitBtn) visitBtn.addEventListener('click', () => { showPage('scan'); onMemberEntry(m.id); });
   $('#d-card', panel).addEventListener('click', () => openCardCapture(m));
   $('#d-adjust', panel).addEventListener('click', () => openAdjust(m));
+  $('#d-merge', panel).addEventListener('click', () => openMergeInto(m));
   $$('button[data-reverse]', panel).forEach(b => b.addEventListener('click', async () => {
     const reason = prompt('Reason for reversing this row (it stays in the history):'); if (reason === null) return;
     try { await rpc('pool_reverse', { p_entry_id: Number(b.dataset.reverse), p_note: reason || 'reversed from member screen', p_admin: true }); toast('Reversed'); selectMember(m.id); loadMembers(); }
+    catch (err) { showError(err); }
+  }));
+  $$('button[data-del]', panel).forEach(b => b.addEventListener('click', async () => {
+    if (!confirm('Delete this undone entry and its reversal from the history completely?')) return;
+    try { await rpc('pool_delete_reversed', { p_entry_id: Number(b.dataset.del) }); toast('Deleted'); selectMember(m.id); loadMembers(); }
     catch (err) { showError(err); }
   }));
   $('#d-form', panel).addEventListener('submit', async e => {
@@ -1415,11 +1684,12 @@ function openNewMember() {
   const modal = openModal(
     '<h2>Add a member</h2><p class="lead">Cards are assigned by scanning them at the desk, or here after saving.</p>' +
     '<div class="grid2">' + field('Name', '<input id="nm-name" required autocomplete="off">') + field('Phone', '<input id="nm-phone" autocomplete="off">') +
-    field('Kind', '<select id="nm-kind">' + Object.keys(KINDS).map(k => '<option value="' + k + '">' + KINDS[k] + '</option>').join('') + '</select>') +
     field('Rate per client $ (accounts)', '<input id="nm-rate" type="number" step="0.01" min="0">') +
     field('Email', '<input id="nm-email" type="email" autocomplete="off">') + '</div>' +
+    field('Kind', kindSeg('nm-kind', Object.keys(KINDS), 'adult')) +
     field('Notes', '<textarea id="nm-note"></textarea>') +
     '<div class="actions"><button type="button" id="nm-cancel">Cancel</button><button type="button" class="primary" id="nm-go">Add member</button></div>');
+  bindSeg(modal);
   $('#nm-cancel', modal).addEventListener('click', closeModal);
   $('#nm-go', modal).addEventListener('click', async () => {
     const name = $('#nm-name', modal).value.trim(); if (!name) { toast('A name is needed', true); return; }
@@ -1432,12 +1702,14 @@ function openNewMember() {
   });
 }
 
-function openCardCapture(m) {
+function openCardCapture(m, opts) {
+  opts = opts || {};
+  const hasCard = m.barcode && !isOldCard(m.barcode);
   const modal = openModal(
-    '<h2>' + (m.barcode ? 'Replace card' : 'Assign a card') + ' &middot; ' + esc(m.name) + '</h2>' +
+    '<h2>' + (hasCard ? 'Change card' : 'Assign a card') + ' &middot; ' + esc(m.name) + '</h2>' +
     '<p class="lead">Scan the new card now, or type its number.</p>' +
-    (m.barcode ? '<p class="small muted">Current card ' + esc(m.barcode) + ' stops working the moment the new one is saved.</p>' : '') +
-    field('Card number', '<input id="cc-code" class="mono" autocomplete="off" placeholder="scan or type">') +
+    (hasCard ? '<p class="small muted">Current card ' + esc(m.barcode) + ' stops working the moment the new one is saved; scanning it later still shows whose it was.</p>' : '') +
+    '<div class="grid2">' + field('Card number', '<input id="cc-code" class="mono" autocomplete="off" placeholder="scan or type">') + field('Reason', '<input id="cc-why" autocomplete="off" placeholder="lost, wrong card scanned, worn out">') + '</div>' +
     '<div class="actions"><button type="button" id="cc-cancel">Cancel</button><button type="button" class="primary" id="cc-go">Save card</button></div>');
   const input = $('#cc-code', modal);
   scanConsumer = code => { input.value = code; save(); };
@@ -1446,11 +1718,83 @@ function openCardCapture(m) {
   input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
   async function save() {
     const code = input.value.trim(); if (!code) return;
-    const patch = { barcode: code };
-    if (m.barcode && m.barcode !== code) patch.note = ((m.note ? m.note + '\n' : '') + sydneyDate() + ' card ' + m.barcode + ' replaced by ' + code);
-    try { await q(sb.from('pool_members').update(patch).eq('id', m.id)); closeModal(); toast('Card ' + code + ' saved'); selectMember(m.id); loadMembers(); }
-    catch (err) { showError(/duplicate|unique/i.test(err.message) ? new Error('Card ' + code + ' already belongs to another member') : err); }
+    try {
+      const r = await rpc('pool_change_card', { p_member_id: m.id, p_barcode: code, p_reason: $('#cc-why', modal).value.trim() || null });
+      closeModal(); toast('Card ' + code + ' saved');
+      if (opts.after) opts.after(r.member); else { selectMember(m.id); loadMembers(); }
+    } catch (err) { showError(err); }
   }
+}
+
+// Merge one record into another by hand (the Duplicates button finds the obvious ones)
+function openMergeInto(keep) {
+  const modal = openModal(
+    '<h2>Merge into ' + esc(keep.name) + '</h2>' +
+    '<p class="lead">The other record\'s history and balance move onto this one; its card is retired and it is switched off. Use it when the same person is in twice under a slightly different name.</p>' +
+    '<div class="field"><label for="mg-search">Record to merge in</label><input id="mg-search" placeholder="Type a name, phone or card number" autocomplete="off"><div id="mg-results" class="search-results" hidden></div></div>' +
+    '<div class="actions"><button type="button" id="mg-cancel">Cancel</button></div>');
+  $('#mg-cancel', modal).addEventListener('click', closeModal);
+  const search = $('#mg-search', modal), results = $('#mg-results', modal);
+  let timer;
+  search.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(async () => {
+    const s = clean(search.value); if (s.length < 2) { results.hidden = true; return; }
+    const rows = await q(sb.from('pool_member_state').select('*').neq('id', keep.id).or('name.ilike.%' + s + '%,phone.ilike.%' + s + '%,barcode.ilike.%' + s + '%').order('name').limit(8));
+    results.innerHTML = rows.length ? rows.map(r => '<button type="button" data-id="' + r.id + '"><span class="n">' + esc(r.name) + (r.active ? '' : ' (inactive)') + '</span>' + kindPill(r.kind) + cardLabel(r.barcode) + '<span class="mono small">' + r.balance + ' left</span></button>').join('') : '<button type="button" disabled>No matches</button>';
+    results.hidden = false;
+    $$('button[data-id]', results).forEach(b => b.addEventListener('click', () => mergeOne(keep, rows.find(r => r.id === Number(b.dataset.id)))));
+  }, 250); });
+}
+async function mergeOne(keep, other) {
+  const family = (keep.kind === 'family') !== (other.kind === 'family');
+  const msg = 'Merge ' + other.name + ' (' + KINDS[other.kind] + ', ' + (other.barcode ? 'card ' + other.barcode : 'no card') + ', ' + other.balance + ' left) into ' + keep.name + ' (' + KINDS[keep.kind] + ', ' + (keep.barcode ? 'card ' + keep.barcode : 'no card') + ')?' +
+    (family ? '\n\nCAREFUL: one is a family pass and the other is not. Family punches and adult entries are not worth the same (an adult uses 2 punches). The merged balance is a plain sum; adjust it afterwards if needed.' : '');
+  if (!confirm(msg)) return;
+  try {
+    const r = await rpc('pool_merge_members', { p_keep_id: keep.id, p_ids: [other.id] });
+    closeModal(); toast('Merged: ' + r.balance + ' now on ' + keep.name);
+    selectedId = keep.id; selectMember(keep.id); loadMembers();
+  } catch (err) { showError(err); }
+}
+
+// Duplicates: same name and phone number, more than one record. Merge them onto
+// the highest card number, singly or all at once.
+$('#m-dupes').addEventListener('click', openDuplicates);
+async function openDuplicates() {
+  let groups;
+  try { groups = (await rpc('pool_merge_candidates')) || []; } catch (err) { showError(err); return; }
+  const modal = openModal('<h2>Duplicate records</h2><div id="dupe-body"></div>');
+  modal.classList.add('wide');
+  renderDupes(modal, groups);
+}
+function renderDupes(modal, groups) {
+  const body = $('#dupe-body', modal);
+  const mergeable = groups.filter(g => g.same_type);
+  body.innerHTML = '<p class="lead">' + (groups.length ? '<b>' + groups.length + '</b> ' + (groups.length === 1 ? 'person appears' : 'people appear') + ' more than once with the same name and phone number. Merging moves every entry onto the record with the highest card number (numbers under 10000 are punch cards from the old register) and switches the others off. Nothing is lost: the old numbers stay on the record and scanning an old card still finds them.' : 'No two active records share a name and phone number.') + '</p>' +
+    (mergeable.length > 1 ? '<div class="actions" style="margin:0 0 14px"><button type="button" class="primary" id="dupe-all">Merge all ' + mergeable.length + ' same-type groups</button></div>' : '') +
+    groups.map((g, i) => '<div class="dupe" data-i="' + i + '"><div class="head"><div><b>' + esc(g.members[0].name) + '</b> <span class="mono small muted">' + esc(g.members[0].phone || g.phone) + '</span></div>' +
+      (g.same_type ? '<button type="button" class="primary" data-merge="' + i + '">Merge ' + g.members.length + ' into one</button>'
+                   : '<span class="small soft">Family and non-family passes: punches and entries are not worth the same, so these are left as separate cards. <button type="button" class="link" data-merge="' + i + '">Merge anyway</button></span>') + '</div>' +
+      '<table><thead><tr><th>Card</th><th>Type</th><th class="num">Left</th><th>Expires</th><th>Last swim</th><th></th></tr></thead><tbody>' +
+      g.members.map(m => '<tr class="' + (m.id === g.keep_id ? 'keep' : '') + '"><td>' + cardLabel(m.barcode) + '</td><td>' + kindPill(m.kind) + '</td><td class="num">' + m.balance + '</td><td>' + (m.expires_on ? fmtDate(m.expires_on) : '<span class="muted">–</span>') + '</td><td>' + (m.last_entry ? fmtDate(m.last_entry) : '<span class="muted">never</span>') + '</td><td>' + (m.id === g.keep_id ? '<span class="pill good">keeps</span>' : '<span class="small muted">merges in</span>') + '</td></tr>').join('') +
+      '</tbody></table></div>').join('');
+  const doMerge = async g => { const r = await rpc('pool_merge_members', { p_keep_id: g.keep_id, p_ids: g.ids }); return r; };
+  $$('button[data-merge]', body).forEach(b => b.addEventListener('click', async () => {
+    const g = groups[Number(b.dataset.merge)];
+    if (!g.same_type && !confirm('Merge a family pass with a non-family pass? The balance becomes a plain sum; adjust it afterwards if needed.')) return;
+    b.disabled = true;
+    try { const r = await doMerge(g); toast('Merged: ' + r.balance + ' on ' + r.member.name); renderDupes(modal, groups.filter(x => x !== g)); loadMembers(); }
+    catch (err) { showError(err); b.disabled = false; }
+  }));
+  const all = $('#dupe-all', body);
+  if (all) all.addEventListener('click', async () => {
+    if (!confirm('Merge all ' + mergeable.length + ' groups now? Each one keeps the highest card number.')) return;
+    all.disabled = true;
+    let done = 0;
+    for (const g of mergeable) { try { await doMerge(g); done++; } catch (err) { showError(err); break; } }
+    toast(done + ' merged');
+    renderDupes(modal, groups.filter(g => !g.same_type || !mergeable.slice(0, done).includes(g)));
+    loadMembers();
+  });
 }
 
 function openAdjust(m) {
@@ -1527,6 +1871,7 @@ async function buildStatement() {
     const groups = {};
     rows.forEach(x => {
       const m = x.pool_members;
+      if (x.qty === 0) return;                      // merge markers carry no visits
       groups[m.id] = groups[m.id] || { id: m.id, name: m.name, rate: m.rate, phone: m.phone, email: m.email, lines: [], clients: 0 };
       groups[m.id].lines.push({ at: x.at, clients: -x.qty, note: x.note, reversal: !!x.reverses });
       groups[m.id].clients += -x.qty;
@@ -1570,12 +1915,26 @@ async function loadSettingsPage() {
   $('#s-undo').value = setting('undo_minutes', 10);
   $('#s-lapsed').value = setting('lapsed_days', 90);
   $('#s-liab').value = setting('liability_unit_value', 7.25);
+  $('#s-guest').checked = String(settings.guest_lookup) === 'true';
+  $('#s-guest-url').textContent = guestUrl();
 }
+function guestUrl() {
+  const here = location.href.split(/[?#]/)[0];
+  return /\.html?$/i.test(here) ? here.replace(/[^/]*$/, 'balance.html') : here.replace(/\/?$/, '/balance.html');
+}
+$('#s-guest-save').addEventListener('click', async () => {
+  try { await q(sb.from('pool_settings').upsert([{ key: 'guest_lookup', value: $('#s-guest').checked }], { onConflict: 'key' })); await loadSettings(); toast($('#s-guest').checked ? 'Guest balance check is on' : 'Guest balance check is off'); }
+  catch (err) { showError(err); }
+});
 function renderProducts() {
   $('#s-products').innerHTML = products.map(p => productRow(p)).join('');
+  bindProductRows();
+}
+function bindProductRows() {
+  $$('#s-products select[name="holder_kind"]').forEach(sel => { if (sel.dataset.bound) return; sel.dataset.bound = '1'; sel.addEventListener('change', () => { sel.closest('tr').firstElementChild.className = 'kc kind-' + sel.value; }); });
 }
 function productRow(p) {
-  return '<tr data-id="' + (p.id || '') + '" data-code="' + esc(p.code || '') + '"><td><input name="name" value="' + esc(p.name) + '"></td>' +
+  return '<tr data-id="' + (p.id || '') + '" data-code="' + esc(p.code || '') + '"><td class="kc kind-' + esc(p.holder_kind) + '"><input name="name" value="' + esc(p.name) + '"></td>' +
     '<td><select name="holder_kind">' + ['adult', 'senior', 'family'].map(k => '<option value="' + k + '"' + (k === p.holder_kind ? ' selected' : '') + '>' + KINDS[k] + '</option>').join('') + '</select></td>' +
     '<td><input name="entries" type="number" min="1" step="1" value="' + p.entries + '"></td>' +
     '<td><input name="price" type="number" min="0" step="0.01" value="' + p.price + '"></td>' +
@@ -1584,6 +1943,7 @@ function productRow(p) {
 }
 $('#s-products-add').addEventListener('click', () => {
   $('#s-products').insertAdjacentHTML('beforeend', productRow({ name: 'New pass', holder_kind: 'adult', entries: 10, price: 0, expiry_months: 12, active: true }));
+  bindProductRows();
 });
 $('#s-products-save').addEventListener('click', async () => {
   const rows = $$('#s-products tr').map((tr, i) => {
