@@ -56,7 +56,6 @@
   .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
   .small { font-size: 14px; }
   .eyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-
   /* App bar */
   .appbar { display: flex; align-items: center; gap: 18px; padding: 10px 20px; background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; }
   .brand { display: flex; align-items: center; gap: 10px; }
@@ -71,12 +70,10 @@
   .appbar .who { font-size: 13.5px; color: var(--muted); }
   .online { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--good); margin-right: 6px; vertical-align: 1px; }
   .online.off { background: var(--red); }
-
   main { max-width: 1120px; margin: 0 auto; padding: 22px 20px 80px; }
   .offline { background: var(--red); color: #fff; text-align: center; padding: 10px 16px; font-weight: 700; position: sticky; top: 52px; z-index: 19; }
   .soft { color: var(--warn); }
   .page[hidden] { display: none; }
-
   /* Buttons and fields */
   button, .btn { font: inherit; font-family: var(--body); font-weight: 700; font-size: 15px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); padding: 9px 14px; border-radius: 8px; cursor: pointer; line-height: 1.2; }
   button:hover { border-color: var(--accent); color: var(--accent); }
@@ -96,7 +93,6 @@
   .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
   .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
   .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-
   /* Panels */
   .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
   .panel + .panel { margin-top: 16px; }
@@ -105,7 +101,6 @@
   .stat .v { font-family: var(--mono); font-size: 26px; font-weight: 600; line-height: 1.1; }
   .stat .k { font-size: 13px; color: var(--muted); }
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
-
   table { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
   th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
   th { font-family: var(--mono); font-weight: 400; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
@@ -116,14 +111,12 @@
   tr.dim td { color: var(--muted); }
   .scroll { overflow-x: auto; }
   .empty { color: var(--muted); text-align: center; padding: 24px; }
-
   .pill { display: inline-block; font-family: var(--mono); font-size: 12px; padding: 2px 9px; border-radius: 999px; background: var(--code-bg); color: var(--ink); white-space: nowrap; }
   .pill.good { background: var(--good-soft); color: var(--good); }
   .pill.warn { background: var(--warn-soft); color: var(--warn); }
   .pill.red  { background: var(--red-soft); color: var(--red); }
   .pill.accent { background: var(--accent-soft); color: var(--accent); }
   .pill.old { background: var(--code-bg); color: var(--muted); }
-
   /* Pass-type colours. Anything carrying kind-<type> gets --kc and --kc-soft. */
   .kind-adult    { --kc: var(--k-adult);    --kc-soft: var(--k-adult-soft); }
   .kind-senior   { --kc: var(--k-senior);   --kc-soft: var(--k-senior-soft); }
@@ -153,7 +146,6 @@
   .dupe td, .dupe th { padding: 6px 8px; }
   .dupe .keep td:first-child { font-weight: 700; }
   .dupe .head { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
-
   /* Scan page */
   .scan-layout { display: grid; grid-template-columns: 1fr; gap: 16px; }
   @media (min-width: 900px) { .scan-layout { grid-template-columns: 1.4fr 1fr; align-items: start; } }
@@ -162,7 +154,6 @@
   .focus-note { font-size: 13.5px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
   .focus-note .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 3px var(--red-soft); }
   .focus-note.ready .dot { background: var(--good); box-shadow: 0 0 0 3px var(--good-soft); }
-
   .result { border-radius: 14px; padding: 26px 28px; min-height: 250px; border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow); position: relative; overflow: hidden; }
   .result::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px; background: var(--tone, var(--line-strong)); }
   .result[data-tone="ok"]   { --tone: var(--good); }
@@ -176,15 +167,22 @@
   .result .sub { color: var(--muted); margin-top: 6px; font-size: 16px; }
   .result .idle { color: var(--muted); font-size: 20px; margin-top: 14px; max-width: 34ch; }
   .result .actions { margin-top: 20px; }
-
+  /* repeat-scan counter: how many times this card has been through today */
+  .result .count { position: absolute; top: 20px; right: 22px; text-align: center; background: var(--accent-soft); color: var(--accent); border-radius: 12px; padding: 10px 14px; min-width: 104px; }
+  .result .count .n { font-family: var(--mono); font-size: 36px; font-weight: 600; line-height: 1; }
+  .result .count .l { font-size: 11.5px; line-height: 1.25; margin-top: 4px; font-weight: 700; letter-spacing: .02em; }
+  .result .count .d { font-size: 11.5px; line-height: 1.3; margin-top: 6px; padding-top: 5px; border-top: 1px solid var(--accent); }
+  .result.has-count .state, .result.has-count .name, .result.has-count .line { padding-right: 130px; }
+  @media (max-width: 620px) {
+    .result .count { position: static; margin: 0 0 12px; display: inline-block; }
+    .result.has-count .state, .result.has-count .name, .result.has-count .line { padding-right: 0; }
+  }
   .recent td:first-child { white-space: nowrap; font-family: var(--mono); color: var(--muted); }
-
   .search-results { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-top: 8px; }
   .search-results button { display: flex; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: var(--surface); padding: 10px 12px; gap: 10px; align-items: center; font-weight: 400; }
   .search-results button:last-child { border-bottom: 0; }
   .search-results button:hover { background: var(--code-bg); color: var(--ink); }
   .search-results .n { font-weight: 700; flex: 1; }
-
   /* Members page */
   .members-layout { display: grid; grid-template-columns: 1fr; gap: 16px; }
   @media (min-width: 900px) { .members-layout { grid-template-columns: 1fr 1.1fr; align-items: start; } }
@@ -192,7 +190,12 @@
   .toolbar input { max-width: 320px; }
   .toolbar select { width: auto; }
   .history td { font-size: 14px; }
-
+  /* sortable table headings */
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: var(--ink); }
+  th.sortable::after { content: " \2195"; opacity: .3; }
+  th.sortable[aria-sort="ascending"]::after { content: " \2191"; opacity: 1; color: var(--accent); }
+  th.sortable[aria-sort="descending"]::after { content: " \2193"; opacity: 1; color: var(--accent); }
   /* Stepper */
   .stepper { display: grid; grid-template-columns: 1fr auto auto auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
   .stepper:last-of-type { border-bottom: 0; }
@@ -200,27 +203,46 @@
   .stepper .lab span { font-size: 13px; color: var(--muted); }
   .stepper button { width: 46px; height: 46px; font-size: 22px; padding: 0; border-radius: 10px; }
   .stepper .val { font-family: var(--mono); font-size: 26px; font-weight: 600; min-width: 40px; text-align: center; }
-
   /* Modal */
   .modal-back { position: fixed; inset: 0; background: rgba(10,16,15,.45); display: grid; place-items: center; z-index: 50; padding: 16px; }
   .modal { background: var(--surface); color: var(--ink); border-radius: 14px; padding: 22px 24px; width: min(560px, 100%); max-height: 92vh; overflow: auto; box-shadow: var(--shadow); border: 1px solid var(--line); }
   .modal h2 { margin-bottom: 6px; }
   .modal .lead { color: var(--muted); margin-bottom: 14px; }
-
   /* Toast */
   .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 15px; z-index: 60; box-shadow: var(--shadow); max-width: 90vw; }
   .toast.err { background: var(--red); color: #fff; }
-
   /* Login */
   .login { max-width: 380px; margin: 60px auto; }
   .login .panel { padding: 26px; }
   .login h2 { margin-bottom: 4px; }
   .login .lead { color: var(--muted); margin-bottom: 18px; }
-
-  /* Reports */
-  .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; align-items: start; }
+  /* Reports dashboard */
+  .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; align-items: start; }
+  .report-grid .wide { grid-column: 1 / -1; }
   .bar { height: 10px; background: var(--accent); border-radius: 4px; }
-
+  .bar.alt { background: var(--k-family); }
+  .barlist td { padding: 5px 10px; border-bottom: 0; }
+  .barlist tr:hover td { background: var(--code-bg); }
+  .insight { background: var(--accent-soft); border-radius: 10px; padding: 12px 14px; font-size: 15px; line-height: 1.55; margin-top: 14px; }
+  .insight b { color: var(--accent); }
+  .insight .none { color: var(--muted); }
+  .heat { border-collapse: separate; border-spacing: 2px; width: 100%; }
+  .heat th, .heat td { border-bottom: 0; padding: 0; text-align: center; }
+  .heat th { font-size: 10.5px; padding-bottom: 2px; }
+  .heat td.lbl { text-align: right; padding-right: 7px; white-space: nowrap; font-size: 12.5px; color: var(--muted); font-family: var(--mono); }
+  .heat td.hc { position: relative; height: 26px; min-width: 26px; border-radius: 4px; background: var(--code-bg); }
+  .heat td.hc .fill { position: absolute; inset: 0; background: var(--accent); border-radius: 4px; }
+  .heat td.hc .v { position: relative; font-family: var(--mono); font-size: 11.5px; }
+  .heat td.hc.on .v { color: #fff; }
+  .heat td.hc.zero .v { color: var(--muted); opacity: .5; }
+  .heat td.tot { font-family: var(--mono); font-size: 12px; color: var(--muted); padding-left: 6px; }
+  .legend { display: flex; gap: 8px; align-items: center; font-size: 12.5px; color: var(--muted); margin-top: 10px; flex-wrap: wrap; }
+  .legend i { width: 26px; height: 11px; border-radius: 3px; background: var(--accent); display: inline-block; }
+  .mixbar { display: flex; height: 16px; border-radius: 8px; overflow: hidden; margin: 4px 0 10px; background: var(--code-bg); }
+  .mixbar span { display: block; }
+  .keyrow { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13.5px; color: var(--muted); }
+  .keyrow i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; margin-right: 5px; vertical-align: -1px; }
+  .ro-hint { font-size: 14px; color: var(--muted); }
   /* Card sheets (printed from Settings). Cell = trim size 80 x 48 mm; the front bleeds 2 mm into a 6 mm gutter; crop marks sit in the gutter. */
   .sheet { width: 166mm; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 80mm); grid-auto-rows: 48mm; gap: 6mm 6mm; justify-content: center; page-break-after: always; }
   .sheet:last-child { page-break-after: auto; }
@@ -256,18 +278,6 @@
   .pcard.back .bc svg { display: block; margin: 0 auto; }
   .pcard.back .num { font-family: Consolas, "Liberation Mono", monospace; font-size: 8pt; letter-spacing: .2em; color: #333; margin-top: .4mm; }
   .pcard.back .addr { position: absolute; left: 0; right: 0; bottom: 3.6mm; text-align: center; font-size: 4.2pt; color: #6B7280; }
-  /* family back: adult and child barcodes one above the other (never side by side, so a laser
-     sweep can only cross one), label and number to the left of each, a clear band between */
-  .pcard.back.family .terms { top: 8mm; font-size: 4.5pt; line-height: 1.28; }
-  .pcard .bc2 { display: flex; flex-direction: column; justify-content: space-between; text-align: left; }
-  .pcard.back .bc2 { left: 4mm; right: 4mm; top: 15.5mm; bottom: 7.5mm; text-align: left; }
-  .pcard .bc2 .bcx { display: flex; align-items: center; justify-content: space-between; gap: 2mm; }
-  .pcard .bc2 .lab { flex: 1; min-width: 0; line-height: 1.15; }
-  .pcard .bc2 .lbl { font-size: 7pt; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: #12205A; white-space: nowrap; }
-  .pcard .bc2 .hint { font-size: 4.8pt; color: #6B7280; margin-top: .2mm; white-space: nowrap; }
-  .pcard .bc2 .num { font-size: 7pt; letter-spacing: .14em; margin-top: .6mm; }
-  .pcard .bc2 .bcx svg { display: block; flex: none; }
-  .pcard .bc2 .gap { height: 0; border-top: 0.2mm dashed #C9CED6; margin: 0 8mm 0 0; }
   /* single-sided: brand band plus barcode on one face */
   .pcard.single { border: 0.2mm solid #9A9A9A; overflow: hidden; }
   .pcard.single .band { height: 14mm; padding: 2.4mm 3.5mm 0; display: flex; justify-content: space-between; align-items: flex-start; }
@@ -281,10 +291,24 @@
   .pcard.single.standard .band { background: #12205A; color: #fff; } .pcard.single.standard .wm1 { color: #88C9F7; }
   .pcard.single.corporate .band { background: #F5A623; color: #12205A; } .pcard.single.corporate .wm1 { color: #12205A; }
   .pcard.single.family .band { background: #0367AC; color: #fff; } .pcard.single.family .wm1 { color: #D0EDFF; }
-  .pcard.single .bc2 { top: 15.5mm; bottom: 5.5mm; left: 3.5mm; right: 3.5mm; text-align: left; }
-  .pcard.single .bc2 .bcx svg, .pcard.back .bc2 .bcx svg { margin: 0; }
-  .ro-hint { font-size: 14px; color: var(--muted); }
-
+  /* Family card: two barcodes set DIAGONALLY. The adult barcode sits in the top-left
+     corner and the child barcode in the bottom-right, so they share neither a row nor a
+     column and a straight laser sweep can only ever cross one of them. */
+  .pcard .bc2 { display: flex; flex-direction: column; justify-content: space-between; text-align: left; }
+  .pcard.back.family .terms { top: 7.5mm; font-size: 4.5pt; line-height: 1.26; }
+  .pcard.back .bc2 { left: 4mm; right: 4mm; top: 14.5mm; bottom: 5.5mm; }
+  .pcard.single .bc2 { left: 4mm; right: 4mm; top: 15.5mm; bottom: 5mm; text-align: left; }
+  .pcard .bc2 .bcx { display: flex; align-items: center; gap: 3mm; }
+  .pcard .bc2 .bcx.adult { justify-content: flex-start; }
+  .pcard .bc2 .bcx.child { justify-content: flex-end; }
+  .pcard .bc2 .lab { line-height: 1.15; }
+  .pcard .bc2 .bcx.child .lab { text-align: right; }
+  .pcard .bc2 .lbl { font-size: 8pt; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: #12205A; white-space: nowrap; }
+  .pcard .bc2 .hint { font-size: 4.8pt; color: #6B7280; margin-top: .4mm; white-space: nowrap; }
+  .pcard .bc2 .bcw { flex: none; text-align: center; }
+  .pcard .bc2 .bcw svg { display: block; margin: 0 auto; }
+  .pcard .bc2 .bcw .num { font-family: Consolas, "Liberation Mono", monospace; font-size: 6.5pt; letter-spacing: .14em; color: #333; margin-top: 0; }
+  .pcard.back.family .addr { left: 5mm; right: auto; bottom: 2.2mm; text-align: left; }
   /* Print (statements and card sheets) */
   #print-area { display: none; }
   @media print {
@@ -298,7 +322,6 @@
 </style>
 </head>
 <body>
-
 <!-- Sign in -->
 <div id="login" class="login" hidden>
   <div class="panel">
@@ -314,7 +337,6 @@
     </form>
   </div>
 </div>
-
 <!-- App -->
 <div id="app" hidden>
   <header class="appbar">
@@ -332,9 +354,7 @@
     <div class="spacer"></div>
     <div class="who"><span class="online" id="online-dot"></span><span id="who-email"></span></div>
   </header>
-
   <div id="offline" class="offline" hidden>No connection to the database. Write entries on the paper log and add them from the member screen when it is back.</div>
-
   <main>
     <!-- ================= SCAN ================= -->
     <section id="page-scan" class="page">
@@ -348,6 +368,7 @@
             <button class="primary" id="new-pass-btn" type="button">New pass</button>
           </div>
           <div class="result" id="result" data-tone="">
+            <div class="count" id="r-count" hidden></div>
             <div class="state" id="r-state">Ready</div>
             <div class="name" id="r-name">Scan a card</div>
             <div class="idle" id="r-idle">Hold the card under the scanner. The entry is recorded and the balance shown here. Nothing to click.</div>
@@ -355,14 +376,12 @@
             <div class="actions" id="r-actions"></div>
             <div class="card-row" id="r-card" hidden></div>
           </div>
-
           <div class="panel" style="margin-top:16px">
             <div class="panel-head"><h3>No card? Practice visit?</h3><span class="small muted">Type a few letters of the name</span></div>
             <input id="quick-search" placeholder="Search by name, phone or practice" autocomplete="off">
             <div id="quick-results" class="search-results" hidden></div>
           </div>
         </div>
-
         <div>
           <div class="panel">
             <div class="panel-head"><h3>Today</h3><button class="link" id="refresh-today" type="button">Refresh</button></div>
@@ -381,8 +400,6 @@
         </div>
       </div>
     </section>
-
-
     <!-- ================= ROLL OVER ================= -->
     <section id="page-rollover" class="page" hidden>
       <div class="scan-layout">
@@ -428,11 +445,11 @@
                 <tbody id="ro-body-list"><tr><td colspan="6" class="empty">Nothing rolled over yet.</td></tr></tbody>
               </table>
             </div>
+            <p class="small muted" style="margin-top:10px">An undone transfer can be cleared off this list with the &times;. It stays on the Reports screen under Undone and deleted.</p>
           </div>
         </div>
       </div>
     </section>
-
     <!-- ================= MEMBERS ================= -->
     <section id="page-members" class="page" hidden>
       <div class="toolbar">
@@ -444,8 +461,15 @@
           <option value="family">Family</option>
           <option value="account">Practice account</option>
         </select>
+        <select id="m-card">
+          <option value="">Old and new cards</option>
+          <option value="new">New barcode card</option>
+          <option value="old">Old punch card</option>
+          <option value="none">No card yet</option>
+        </select>
         <label style="margin:0;display:flex;align-items:center;gap:6px;font-weight:400;color:var(--ink)"><input type="checkbox" id="m-inactive" style="width:auto"> show inactive</label>
         <div class="spacer" style="flex:1"></div>
+        <span class="small muted" id="m-count"></span>
         <button id="m-dupes" type="button">Duplicates</button>
         <button class="primary" id="m-add" type="button">Add member</button>
       </div>
@@ -453,18 +477,77 @@
         <div class="panel">
           <div class="scroll">
             <table>
-              <thead><tr><th>Name</th><th>Kind</th><th>Card</th><th class="num">Left</th><th>Expires</th></tr></thead>
-              <tbody id="m-body"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+              <thead><tr id="m-head">
+                <th class="sortable" data-sort="name" aria-sort="ascending">Name</th>
+                <th class="sortable" data-sort="kind">Kind</th>
+                <th class="sortable" data-sort="card">Card</th>
+                <th class="sortable" data-sort="cardstate">Old / new</th>
+                <th class="sortable num" data-sort="balance">Left</th>
+                <th class="sortable" data-sort="expires">Expires</th>
+              </tr></thead>
+              <tbody id="m-body"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
             </table>
           </div>
         </div>
         <div class="panel" id="m-detail"><p class="empty">Select a member to see their card, balance and history.</p></div>
       </div>
     </section>
-
     <!-- ================= REPORTS ================= -->
     <section id="page-reports" class="page" hidden>
-      <div class="report-grid">
+      <div class="panel">
+        <div class="panel-head">
+          <div><h2>Dashboard</h2><div class="small muted" id="rp-range">–</div></div>
+          <div class="row">
+            <div class="seg" id="rp-period">
+              <button type="button" data-days="30" aria-pressed="true">30 days</button>
+              <button type="button" data-days="90" aria-pressed="false">90 days</button>
+              <button type="button" data-days="365" aria-pressed="false">12 months</button>
+              <button type="button" data-days="4000" aria-pressed="false">All time</button>
+            </div>
+            <button class="link" id="rp-refresh" type="button">Refresh</button>
+          </div>
+        </div>
+        <div class="stats" id="rp-kpis"><div class="empty">Loading…</div></div>
+        <div class="insight" id="rp-insight"></div>
+      </div>
+      <div class="report-grid" style="margin-top:16px">
+        <div class="panel wide">
+          <div class="panel-head"><h3>Busy and quiet times</h3><span class="small muted">entries by day of the week and hour of the day</span></div>
+          <div class="scroll" id="rp-heat"><p class="empty">Loading…</p></div>
+          <div class="legend" id="rp-heat-legend"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>By day of the week</h3><span class="small muted">average per day</span></div>
+          <div id="rp-dow"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>By hour</h3><span class="small muted">when they arrive</span></div>
+          <div id="rp-hour"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Entries per day</h3><span class="small muted" id="rp-days-note">last 21 days</span></div>
+          <div id="rp-days"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>By week</h3><span class="small muted">Monday to Sunday</span></div>
+          <div id="rp-weeks"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>By month</h3><span class="small muted">with the same month last year</span></div>
+          <div id="rp-months"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Who is coming in</h3><span class="small muted">people, not scans</span></div>
+          <div id="rp-mix"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Most active holders</h3><span class="small muted">in the period</span></div>
+          <div class="scroll" id="rp-top"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Money</h3><span class="small muted">passes sold in the period</span></div>
+          <div id="rp-money"></div>
+        </div>
         <div class="panel">
           <div class="panel-head"><h3>Unredeemed entries</h3><span class="small muted">the contract liability</span></div>
           <div class="stats">
@@ -472,10 +555,23 @@
             <div class="stat"><div class="v" id="rp-liab-entries">–</div><div class="k">entries on active cards</div></div>
             <div class="stat"><div class="v" id="rp-liab-holders">–</div><div class="k">holders with a balance</div></div>
           </div>
+          <div id="rp-liab-split" style="margin-top:12px"></div>
           <p class="small muted" style="margin-top:10px">Holders without a purchase on file (carried-over balances) are valued at the fallback rate in Settings.</p>
         </div>
-
         <div class="panel">
+          <div class="panel-head"><h3>Cards</h3><span class="small muted">roll-over progress</span></div>
+          <div id="rp-cards"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Expiring within 30 days</h3><span class="small muted">with entries unused</span></div>
+          <div class="scroll"><table><thead><tr><th>Name</th><th>Phone</th><th class="num">Left</th><th>Expires</th></tr></thead><tbody id="rp-expiring-body"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table></div>
+        </div>
+        <div class="panel wide">
+          <div class="panel-head"><h3>Undone and deleted</h3><div class="row"><span class="small muted" id="rp-audit-note"></span><button id="rp-audit-csv" type="button">CSV</button></div></div>
+          <div class="scroll"><table><thead><tr><th>When</th><th>What</th><th>Who it was for</th><th class="num">Entries</th><th>Reason</th><th>Staff</th></tr></thead><tbody id="rp-audit-body"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody></table></div>
+          <p class="small muted" style="margin-top:10px">Every undo and every deletion is kept here, including rows deleted off the Today list, the member history and the roll-over list.</p>
+        </div>
+        <div class="panel wide">
           <div class="panel-head"><h3>Practice accounts, monthly statement</h3></div>
           <div class="row">
             <input type="month" id="rp-month" style="max-width:190px">
@@ -485,29 +581,8 @@
           </div>
           <div id="rp-statement-out" style="margin-top:12px"></div>
         </div>
-
-        <div class="panel">
-          <div class="panel-head"><h3>Lapsed</h3><span class="small muted" id="rp-lapsed-note">entries left, no swim for 90 days</span></div>
-          <div class="scroll"><table><thead><tr><th>Name</th><th>Phone</th><th class="num">Left</th><th>Last swim</th></tr></thead><tbody id="rp-lapsed-body"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table></div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-head"><h3>Expiring within 30 days</h3><span class="small muted">with entries unused</span></div>
-          <div class="scroll"><table><thead><tr><th>Name</th><th>Phone</th><th class="num">Left</th><th>Expires</th></tr></thead><tbody id="rp-expiring-body"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table></div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-head"><h3>Entries per day</h3><span class="small muted">last 14 days</span></div>
-          <div id="rp-days"></div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-head"><h3>Pass sales</h3><span class="small muted">last 30 days</span></div>
-          <div class="scroll"><table><thead><tr><th>Product</th><th class="num">Sold</th><th class="num">Value</th></tr></thead><tbody id="rp-sales-body"><tr><td colspan="3" class="empty">Loading…</td></tr></tbody></table></div>
-        </div>
       </div>
     </section>
-
     <!-- ================= SETTINGS ================= -->
     <section id="page-settings" class="page" hidden>
       <div class="panel">
@@ -520,19 +595,16 @@
         </div>
         <div class="actions"><button class="primary" id="s-products-save" type="button">Save passes</button><button id="s-products-add" type="button">Add a pass</button></div>
       </div>
-
       <div class="panel">
         <div class="panel-head"><h3>Desk rules</h3></div>
         <div class="grid2">
           <div class="field"><label for="s-double">Same card again within (seconds) is not counted. 0 = every scan counts</label><input type="number" id="s-double" min="0" step="10"></div>
           <div class="field"><label for="s-low">Amber warning at or below (entries)</label><input type="number" id="s-low" min="0" step="1"></div>
           <div class="field"><label for="s-undo">Desk can undo an entry up to (minutes) old. 1440 = a full day</label><input type="number" id="s-undo" min="1" step="1"></div>
-          <div class="field"><label for="s-lapsed">Lapsed after (days) without a swim</label><input type="number" id="s-lapsed" min="1" step="1"></div>
           <div class="field"><label for="s-liab">Fallback value per entry for the liability report ($)</label><input type="number" id="s-liab" min="0" step="0.05"></div>
         </div>
         <div class="actions"><button class="primary" id="s-settings-save" type="button">Save rules</button></div>
       </div>
-
       <div class="panel">
         <div class="panel-head"><h3>Print cards</h3><span class="small muted">A4 sheets of 10, each 80 &times; 48 mm for a 54 &times; 86 mm pouch. Print at 100% on card stock, cut at the corner marks, laminate.</span></div>
         <div class="grid2">
@@ -541,7 +613,7 @@
           <div class="field"><label for="pc-start">First number</label><input id="pc-start" type="number" min="100001" step="1"></div>
           <div class="field"><label for="pc-count">How many</label><select id="pc-count"><option>10</option><option>20</option><option>30</option><option>50</option><option>100</option></select></div>
         </div>
-        <p class="small muted" id="pc-note">The first number is the next one after the last sheet printed or the highest card in use, whichever is higher. Double-sided prints the brand on the front and the barcode on the back of the same sheet; set the printer to print on both sides and match the flip setting here. The small number on the front should match the barcode behind it. Standard cards are numbered from 100001, family cards from 400001 (the child barcode on each is the card number plus 50000) and corporate cards from 150001.</p>
+        <p class="small muted" id="pc-note">The first number is the next one after the last sheet printed or the highest card in use, whichever is higher. Double-sided prints the brand on the front and the barcode on the back of the same sheet; set the printer to print on both sides and match the flip setting here. The small number on the front should match the barcode behind it. Standard cards are numbered from 100001, family cards from 400001 (the child barcode on each is the card number plus 50000) and corporate cards from 150001. On a family card the adult barcode sits in the top-left corner and the child barcode in the bottom-right, diagonally opposite each other, so the scanner can only ever catch one of them at a time.</p>
         <div class="actions"><button class="primary" id="pc-print" type="button">Print sheet</button></div>
         <div class="row" style="margin-top:18px;align-items:flex-end">
           <div class="field" style="margin:0;max-width:280px"><label for="pc-one">Reprint one card (lost or worn out)</label><input id="pc-one" class="mono" autocomplete="off" placeholder="scan or type the card number"></div>
@@ -549,14 +621,12 @@
           <span class="small muted">Same number, same balance. Also available from the member's screen.</span>
         </div>
       </div>
-
       <div class="panel">
         <div class="panel-head"><h3>Guest balance check</h3><span class="small muted">A separate page where a pass holder types their card number and phone number and sees entries left and the expiry date. Nothing else is shown.</span></div>
         <label style="display:flex;gap:8px;align-items:center;font-weight:400;color:var(--ink);font-size:16px"><input type="checkbox" id="s-guest" style="width:auto"> Guests can check their balance online</label>
         <p class="small muted" style="margin-top:8px">Page address: <span class="mono" id="s-guest-url"></span>. Off means the page answers every request with "not switched on"; nothing about any card is reachable until the box is ticked.</p>
         <div class="actions"><button class="primary" id="s-guest-save" type="button">Save</button></div>
       </div>
-
       <div class="panel">
         <div class="panel-head"><h3>Import a member list</h3></div>
         <p class="small muted">A CSV with a header row. Recognised columns (any order, any case): <span class="mono">name, phone, kind, remaining, barcode, expires_on, note, rate, email</span>. Kind is adult, senior, family or account (default adult). Remaining becomes an opening balance. Cards are assigned later at the desk, or now if the barcode column is filled.</p>
@@ -566,15 +636,14 @@
         </div>
         <div id="s-import-out" class="small" style="margin-top:10px"></div>
       </div>
-
       <div class="panel">
         <div class="panel-head"><h3>Export</h3></div>
         <div class="actions" style="margin-top:0">
           <button id="s-export-members" type="button">Members with balances (CSV)</button>
           <button id="s-export-ledger" type="button">Full ledger (CSV)</button>
+          <button id="s-export-deletions" type="button">Undone and deleted (CSV)</button>
         </div>
       </div>
-
       <div class="panel">
         <div class="panel-head"><h3>Desk logins</h3><span class="small muted">Change the password monthly. Changing it signs every computer out, so they sign in again with the new one.</span></div>
         <div class="scroll">
@@ -585,7 +654,6 @@
         </div>
         <div class="actions"><button class="primary" id="s-change-pass" type="button">Change my password</button><button id="s-add-user" type="button">Add a login</button></div>
       </div>
-
       <div class="panel">
         <div class="panel-head"><h3>This computer</h3></div>
         <p class="small muted">Signed in as <span id="s-email" class="mono"></span>. Data lives in Supabase (WSLR Kitchen project, tables prefixed pool_). Visit history is personal information: keep these logins to reception staff.</p>
@@ -594,14 +662,12 @@
     </section>
   </main>
 </div>
-
 <div id="modal-root"></div>
 <div id="print-area"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.114.0/dist/umd/supabase.js"></script>
 <script>
 (function () {
 'use strict';
-
 // =============================================================================
 // Config
 // =============================================================================
@@ -610,11 +676,9 @@ const SUPABASE_KEY = 'sb_publishable_G5ZTmaaLwa8qbkFMBmUCeQ_sJs753qH';
 const TZ = 'Australia/Sydney';
 const SCANNER_GAP_MS = 100;        // keystrokes closer than this are a scanner, not a person
 const TOKEN_KEY = 'poolpass.session';
-
 const KINDS = { adult: 'Adult', senior: 'Senior', family: 'Family', account: 'Practice account' };
 const PAYING = ['adult', 'senior', 'family'];
 const OLD_SYSTEM_BELOW = 10000;    // card numbers under this are punch cards from the old register, not barcodes
-
 // Card number ranges. Sheets printed at reception use the first block of each; the PVC
 // print run uses 200001+ (standard), 300001+ (corporate) and 500001+ (family).
 // A family card carries two barcodes: its number is the ADULT barcode (2 punches a scan)
@@ -623,7 +687,6 @@ const CARD_RANGES = { standard: [100001, 149999], corporate: [150001, 199999], f
 const FAMILY_RANGES = [[400001, 449999], [500001, 549999]];
 const FAMILY_CHILD_OFFSET = 50000;
 const VARIANT_NAMES = { standard: 'Standard pool pass', corporate: 'Corporate pass', family: 'Family pass (two barcodes)' };
-
 // Desk logins live in the database (pool_users). Signing in returns a session
 // token; it rides on every request as the x-pool-token header and every table
 // policy and function checks it. No Supabase Auth involved.
@@ -632,7 +695,6 @@ function readToken() { try { return localStorage.getItem(TOKEN_KEY) || ''; } cat
 function writeToken(t) { try { if (t) localStorage.setItem(TOKEN_KEY, t); else localStorage.removeItem(TOKEN_KEY); } catch (e) { /* private window */ } }
 function makeClient() { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { global: { headers: { 'x-pool-token': readToken() } } }); }
 makeClient();
-
 // =============================================================================
 // Small helpers
 // =============================================================================
@@ -640,8 +702,8 @@ const $ = (sel, root) => (root || document).querySelector(sel);
 const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const money = n => '$' + Number(n || 0).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const money0 = n => '$' + Math.round(Number(n || 0)).toLocaleString('en-AU');
 const plural = (n, one, many) => n + ' ' + (n === 1 ? one : (many || one + 's'));
-
 function sydneyDate(d) {
   return new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d || new Date());
 }
@@ -666,6 +728,15 @@ function monthRange(ym) {
 const fmtDate = iso => iso ? new Intl.DateTimeFormat('en-AU', { timeZone: TZ, day: 'numeric', month: 'short', year: '2-digit' }).format(new Date(iso)) : '';
 const fmtDateLong = iso => iso ? new Intl.DateTimeFormat('en-AU', { timeZone: TZ, weekday: 'short', day: 'numeric', month: 'short' }).format(new Date(iso)) : '';
 const fmtTime = iso => new Intl.DateTimeFormat('en-AU', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(iso));
+// Day of the week and hour of the day in Sydney time, whatever the computer is set to.
+const SYD_PARTS = new Intl.DateTimeFormat('en-AU', { timeZone: TZ, weekday: 'short', hour: 'numeric', hourCycle: 'h23' });
+const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const DOW_LONG = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' };
+function sydneyParts(iso) {
+  const parts = SYD_PARTS.formatToParts(new Date(iso));
+  const get = t => (parts.find(p => p.type === t) || {}).value;
+  return { dow: DOW.indexOf(get('weekday')), hour: Number(get('hour')) };
+}
 function rel(iso) {
   const s = (Date.now() - new Date(iso).getTime()) / 1000;
   if (s < 90) return Math.max(0, Math.round(s)) + ' seconds ago';
@@ -688,7 +759,6 @@ function parseDate(s) {                       // accepts 2027-03-14, 14/03/2027,
   if (m) { const y = m[3].length === 2 ? '20' + m[3] : m[3]; return y + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0'); }
   return null;
 }
-
 let toastTimer;
 function toast(msg, isErr) {
   let t = $('.toast');
@@ -699,7 +769,6 @@ function toast(msg, isErr) {
   toastTimer = setTimeout(() => t.remove(), isErr ? 6000 : 2600);
 }
 function showError(err) { console.error(err); toast((err && err.message) || String(err), true); }
-
 // Sounds: a chime for a good entry, a buzz for anything reception must look at.
 let audioCtx;
 function beep(kind) {
@@ -716,7 +785,6 @@ function beep(kind) {
     else { tone(150, 0, 0.4, 'square', 0.12); }
   } catch (e) { /* no audio, no problem */ }
 }
-
 // Modal
 function openModal(html) {
   const root = $('#modal-root');
@@ -729,7 +797,6 @@ function openModal(html) {
 function closeModal() { $('#modal-root').innerHTML = ''; scanConsumer = null; setTimeout(guardFocus, 0); }
 function modalOpen() { return !!$('#modal-root').firstChild; }
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOpen()) closeModal(); });
-
 function stepper(id, label, hint, value, min) {
   return '<div class="stepper" data-stepper="' + id + '" data-min="' + (min || 0) + '">' +
     '<div class="lab"><b>' + esc(label) + '</b><span>' + esc(hint) + '</span></div>' +
@@ -748,7 +815,6 @@ function bindSteppers(root, onChange) {
   });
 }
 const stepperValue = (root, id) => Number($('.stepper[data-stepper="' + id + '"] .val', root).textContent);
-
 // Pass types as a row of coloured buttons, with a hidden input carrying the value
 // (so forms and FormData see it like a select).
 function kindSeg(id, kinds, selected, name) {
@@ -766,7 +832,6 @@ function setSeg(seg, value) {
   $$('button[data-value]', seg).forEach(x => x.setAttribute('aria-pressed', String(x.dataset.value === value)));
   $('input[type="hidden"]', seg).value = value;
 }
-
 // Passes for sale as coloured tiles (radio buttons underneath), coloured by who they are for.
 function productTiles(name, list, selected) {
   return list.map(p => '<label class="prow kind-' + esc(p.holder_kind) + (selected && p.id === selected.id ? ' on' : '') + '">' +
@@ -779,7 +844,6 @@ function bindTiles(root) {
     $$('.prow', root).forEach(l => l.classList.toggle('on', !!(l.querySelector('input') && l.querySelector('input').checked)));
   }));
 }
-
 // Card numbers: the old register used plain numbers under 10000; barcode cards are 100001 up.
 const cardNum = code => (/^\d{1,12}$/.test(String(code || '')) ? Number(code) : null);
 const isOldCard = code => code != null && code !== '' && (cardNum(code) == null || cardNum(code) < OLD_SYSTEM_BELOW);
@@ -788,6 +852,14 @@ function cardLabel(code, opts) {
   if (code == null || code === '') return '<span class="pill ' + (opts.warnNone ? 'warn' : 'old') + '">no card</span>';
   if (isOldCard(code)) return '<span class="pill old" title="Old register number, not a barcode card">punch card ' + esc(code) + '</span>';
   return '<span class="pill ' + (opts.plain ? 'mono' : 'accent') + '">card ' + esc(code) + '</span>';
+}
+// Old punch card, new barcode card, or nothing yet: used by the member list column and the reports.
+function cardState(r) { return !r.barcode ? 'none' : (isOldCard(r.barcode) ? 'old' : 'new'); }
+const CARD_STATE_NAME = { new: 'new card', old: 'punch card', none: 'no card' };
+function cardStatePill(r) {
+  const s = cardState(r);
+  return '<span class="pill ' + (s === 'new' ? 'good' : s === 'old' ? 'warn' : '') + '" title="' +
+    (s === 'new' ? 'On a barcode card' : s === 'old' ? 'Still on an old punch card number' : 'No card assigned yet') + '">' + CARD_STATE_NAME[s] + '</span>';
 }
 // Family cards: the child barcode is derived from the card number, never stored.
 const familyChild = code => { const n = cardNum(code); return n != null && FAMILY_RANGES.some(r => n >= r[0] && n <= r[1]) ? String(n + FAMILY_CHILD_OFFSET) : null; };
@@ -801,7 +873,6 @@ function cardVariant(code) {
   return 'standard';
 }
 const childLabel = code => familyChild(code) ? '<span class="pill mono" title="The second barcode on this family card: one scan is one child">child barcode ' + familyChild(code) + '</span>' : '';
-
 // Data
 function netError(err) { return err && /Failed to fetch|NetworkError|Load failed|network/i.test(err.message || ''); }
 function setOffline(off) { const b = $('#offline'); if (b) b.hidden = !off; $('#online-dot').classList.toggle('off', off); }
@@ -835,10 +906,8 @@ async function fetchAll(make, pageSize) {
   }
 }
 const clean = s => String(s || '').replace(/[,()"'%*]/g, ' ').trim().slice(0, 60);
-
 let session = null, settings = {}, products = [], currentPage = 'scan';
 let scanConsumer = null;            // a modal that wants the next scanned code
-
 async function loadSettings() {
   const rows = await q(sb.from('pool_settings').select('*'));
   settings = {};
@@ -846,12 +915,10 @@ async function loadSettings() {
 }
 async function loadProducts() { products = await q(sb.from('pool_products').select('*').order('sort').order('id')); }
 const setting = (k, d) => (settings[k] == null ? d : Number(settings[k]));
-
 // =============================================================================
 // Sign in and boot
 // =============================================================================
 let setupMode = false;
-
 async function init() {
   session = null;
   if (readToken()) {
@@ -864,7 +931,6 @@ async function init() {
   }
   renderAuth();
 }
-
 function renderAuth() {
   $('#login').hidden = !!session;
   $('#app').hidden = !session;
@@ -880,9 +946,7 @@ function renderAuth() {
   $('#s-email').textContent = session.username;
   Promise.all([loadSettings(), loadProducts()]).then(() => showPage('scan')).catch(showError);
 }
-
 function loginError(msg) { $('#login-error').textContent = msg; $('#login-error').hidden = false; }
-
 $('#login-form').addEventListener('submit', async e => {
   e.preventDefault();
   const btn = $('#login-btn'); $('#login-error').hidden = true;
@@ -900,14 +964,12 @@ $('#login-form').addEventListener('submit', async e => {
   } catch (err) { loginError(err.message); }
   finally { btn.disabled = false; }
 });
-
 async function signOut() {
   try { await rpc('pool_logout'); } catch (e) { /* token may already be dead */ }
   writeToken(''); makeClient(); session = null;
   init();
 }
 $('#s-signout').addEventListener('click', signOut);
-
 // A dead session (password changed on another computer, or expired) makes reads
 // come back empty rather than failing, so check in every few minutes.
 setInterval(async () => {
@@ -915,10 +977,8 @@ setInterval(async () => {
   try { const who = await rpc('pool_whoami'); if (!who || !who.username) { toast('Signed out: the password was changed or the session expired.', true); signOut(); } }
   catch (e) { /* offline, try again later */ }
 }, 5 * 60 * 1000);
-
 window.addEventListener('online', () => setOffline(false));
 window.addEventListener('offline', () => setOffline(true));
-
 // Pages
 $$('.tab').forEach(t => t.addEventListener('click', () => showPage(t.dataset.page)));
 function showPage(name) {
@@ -931,7 +991,6 @@ function showPage(name) {
   if (name === 'reports') loadReports();
   if (name === 'settings') loadSettingsPage();
 }
-
 // =============================================================================
 // The scanner
 //   The scanner is a keyboard. The hidden #scan field is kept focused on the scan
@@ -944,7 +1003,6 @@ scanInput.addEventListener('keydown', e => {
   const code = scanInput.value.trim(); scanInput.value = '';
   if (code) routeScan(code);
 });
-
 function guardFocus() {
   if (!session || modalOpen()) return;
   if (currentPage !== 'scan') return;
@@ -960,7 +1018,6 @@ document.addEventListener('click', e => {
   if (e.target.closest('input, textarea, select, button, a, .modal, label')) return;
   setTimeout(guardFocus, 0);
 });
-
 // Burst detector: scanner-speed keystrokes ending in Enter, wherever they landed.
 let burst = [], burstLast = 0;
 document.addEventListener('keydown', e => {
@@ -984,7 +1041,6 @@ document.addEventListener('keydown', e => {
     burst.push({ ch: e.key, t: now }); burstLast = now;
   } else if (e.key !== 'Shift') { burst = []; }
 }, true);
-
 function routeScan(code) {
   if (scanConsumer) { scanConsumer(code); return; }
   if (modalOpen()) { toast('Finish or cancel the open window first, then scan again', true); return; }
@@ -993,12 +1049,10 @@ function routeScan(code) {
   if (currentPage !== 'scan') showPage('scan');
   onScan(code);
 }
-
 // =============================================================================
 // Scan screen
 // =============================================================================
 let lastResult = null;
-
 function setResult(o) {
   const r = $('#result');
   r.dataset.tone = o.tone || '';
@@ -1007,6 +1061,8 @@ function setResult(o) {
   $('#r-idle').hidden = !o.idle;
   if (o.idle) $('#r-idle').textContent = o.idle;
   $('#r-body').innerHTML = (o.line ? '<div class="line">' + o.line + '</div>' : '') + (o.sub ? '<div class="sub">' + o.sub + '</div>' : '');
+  // the repeat-scan counter is filled in by showScanCount once the day's rows are back
+  const cnt = $('#r-count'); cnt.hidden = true; cnt.innerHTML = ''; r.classList.remove('has-count');
   const acts = $('#r-actions'); acts.innerHTML = '';
   (o.actions || []).forEach(a => {
     const b = document.createElement('button'); b.type = 'button'; b.className = a.cls || ''; b.innerHTML = a.label;
@@ -1034,7 +1090,36 @@ function setResult(o) {
 function resetResult() {
   setResult({ tone: '', state: 'Ready', name: 'Scan a card', idle: 'Hold the card under the scanner. The entry is recorded and the balance shown here. Nothing to click.' });
 }
-
+// How many times this card has been through today. Anything more than once puts a
+// big count on the result panel so the desk can keep track of a group coming in one
+// by one, or spot a card being handed back over the counter.
+async function showScanCount(m) {
+  if (!m || !m.id) return;
+  try {
+    const from = sydneyMidnightISO(sydneyDate());
+    const rows = await q(sb.from('pool_entries').select('id, qty, kind, adults, children, infants, clients, reverses').eq('member_id', m.id).in('kind', ['entry', 'adjustment']).gte('at', from));
+    const reversed = new Set(rows.filter(r => r.reverses).map(r => r.reverses));
+    const live = rows.filter(r => r.kind === 'entry' && !reversed.has(r.id));
+    const box = $('#r-count');
+    if (live.length < 2) { box.hidden = true; $('#result').classList.remove('has-count'); return; }
+    const sum = f => live.reduce((n, e) => n + (e[f] || 0), 0);
+    let detail = '';
+    if (m.kind === 'family') {
+      const bits = [];
+      if (sum('adults')) bits.push(plural(sum('adults'), 'adult'));
+      if (sum('children')) bits.push(plural(sum('children'), 'child', 'children'));
+      if (sum('infants')) bits.push(sum('infants') + ' under 5');
+      detail = bits.join('<br>') + '<br>' + plural(live.reduce((n, e) => n - e.qty, 0), 'punch') + ' used';
+    } else if (m.kind === 'account') {
+      detail = plural(sum('clients'), 'client') + ' today';
+    } else {
+      detail = plural(live.reduce((n, e) => n - e.qty, 0), 'entry', 'entries') + ' used';
+    }
+    box.hidden = false;
+    $('#result').classList.add('has-count');
+    box.innerHTML = '<div class="n">' + live.length + '</div><div class="l">scans today<br>on this card</div>' + (detail ? '<div class="d">' + detail + '</div>' : '');
+  } catch (e) { /* cosmetic */ }
+}
 function memberLine(m, balance) {
   const bits = [];
   if (m.kind === 'account') bits.push('<b>' + balance * -1 + '</b> client visits owing');
@@ -1043,7 +1128,6 @@ function memberLine(m, balance) {
   return bits.join(' &middot; ');
 }
 function kindPill(k) { return '<span class="pill kind kind-' + esc(k) + '">' + esc(KINDS[k] || k) + '</span>'; }
-
 async function undoEntry(entryId, note) {
   await rpc('pool_reverse', { p_entry_id: entryId, p_note: note || 'undone at the desk' });
   toast('Entry undone');
@@ -1052,7 +1136,6 @@ async function undoEntry(entryId, note) {
 function sellAction(m, label) {
   return { label: label || 'Sell a pass', cls: 'primary', run: () => openSell(m, { fromScan: true }) };
 }
-
 async function onScan(code, extra) {
   let res;
   try { res = await rpc('pool_scan', Object.assign({ p_barcode: code }, extra || {})); }
@@ -1066,7 +1149,6 @@ async function onMemberEntry(memberId, extra) {           // no card present
   presentScan(res, { memberId });
 }
 function again(ctx, extra) { return ctx.code ? onScan(ctx.code, extra) : onMemberEntry(ctx.memberId, extra); }
-
 async function presentScan(res, ctx) {
   const m = res.member, bal = res.balance;
   lastResult = res;
@@ -1140,9 +1222,9 @@ async function presentScan(res, ctx) {
     default:
       show({ tone: 'bad', state: 'Unexpected', name: res.state || '?', beep: 'bad' });
   }
+  if (m) showScanCount(m);
   loadToday();
 }
-
 async function showMonthCount(m) {
   try {
     const r = monthRange(sydneyDate().slice(0, 7));
@@ -1151,7 +1233,6 @@ async function showMonthCount(m) {
     const sub = $('#r-body .sub'); if (sub) sub.innerHTML = '<b>' + n + '</b> client visits so far in ' + r.label + (m.rate ? ' &middot; ' + money(n * m.rate) + ' at ' + money(m.rate) + ' each' : '');
   } catch (e) { /* cosmetic */ }
 }
-
 // Family party picker
 function openParty(m, balance, last, ctx) {
   const p = last || { adults: 1, children: 0, infants: 0 };
@@ -1176,7 +1257,6 @@ function openParty(m, balance, last, ctx) {
     closeModal(); again(ctx, extra);
   });
 }
-
 // Practice head count
 function openCount(m, ctx) {
   const modal = openModal(
@@ -1192,7 +1272,6 @@ function openCount(m, ctx) {
     closeModal(); again(ctx, extra);
   });
 }
-
 // Sell a pass
 function openSell(m, opts) {
   opts = opts || {};
@@ -1227,7 +1306,6 @@ function openSell(m, opts) {
     } catch (err) { showError(err); $('#sell-go', modal).disabled = false; }
   });
 }
-
 // Extend expiry without a sale (goodwill, illness, the pool was closed)
 function openExtend(m, ctx) {
   const modal = openModal(
@@ -1247,7 +1325,6 @@ function openExtend(m, ctx) {
     } catch (err) { showError(err); }
   });
 }
-
 // A new card for someone already in the system (a replacement, or a member who was imported)
 function openAssign(code) {
   code = cardCode(code);
@@ -1276,7 +1353,6 @@ function openAssign(code) {
     } catch (err) { showError(err); }
   }
 }
-
 // New pass: a fresh card, a name and a number, the pass they are buying, and any
 // entries being carried over. One call, nothing half done.
 function openNewPass(code) {
@@ -1345,7 +1421,6 @@ function openNewPass(code) {
     } catch (err) { showError(err); $('#np-go', modal).disabled = false; }
   });
 }
-
 // The New pass button: scan the blank card first
 $('#new-pass-btn').addEventListener('click', () => {
   const modal = openModal(
@@ -1368,7 +1443,6 @@ $('#new-pass-btn').addEventListener('click', () => {
   $('#npc-go', modal).addEventListener('click', go);
   input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
 });
-
 // Quick search on the scan page: practices without a card, or a member who forgot theirs
 (function () {
   const input = $('#quick-search'), out = $('#quick-results');
@@ -1387,13 +1461,12 @@ $('#new-pass-btn').addEventListener('click', () => {
   }
   document.addEventListener('click', e => { if (!e.target.closest('#quick-search, #quick-results')) out.hidden = true; });
 })();
-
 // Today panel
 async function loadToday() {
   try {
     const from = sydneyMidnightISO(sydneyDate());
     const [entries, sales] = await Promise.all([
-      fetchAll(() => sb.from('pool_entries').select('id, at, qty, kind, adults, children, infants, clients, reverses, pool_members(name, kind, barcode)').gte('at', from).in('kind', ['entry', 'adjustment']).order('at', { ascending: false })),
+      fetchAll(() => sb.from('pool_entries').select('id, at, qty, kind, adults, children, infants, clients, reverses, member_id, pool_members(name, kind, barcode)').gte('at', from).in('kind', ['entry', 'adjustment']).order('at', { ascending: false })),
       fetchAll(() => sb.from('pool_entries').select('id, amount, payment, kind').gte('at', from).not('amount', 'is', null).order('id'))
     ]);
     const live = entries.filter(e => e.kind === 'entry');
@@ -1405,8 +1478,10 @@ async function loadToday() {
       if (m.kind === 'account') return n + (e.clients || 0);
       return n + 1;
     }, 0);
+    // how many times each card has been through today, so a repeat shows a tally
+    const times = {};
+    counted.forEach(e => { times[e.member_id] = (times[e.member_id] || 0) + 1; });
     // a family scanning person by person makes one row per person; the entries count still counts rows
-
     $('#t-entries').textContent = counted.length;
     $('#t-people').textContent = people;
     // sales: count of passes, and the money split by how it was paid (refunds come off)
@@ -1423,7 +1498,9 @@ async function loadToday() {
       if (m.kind === 'family') used = -e.qty + ' <span class="small muted">(' + (e.adults || 0) + 'A ' + (e.children || 0) + 'C' + (e.infants ? ' ' + e.infants + 'U5' : '') + ')</span>';
       if (m.kind === 'account') used = (e.clients || 0) + ' <span class="small muted">clients</span>';
       const undone = reversed.has(e.id);
-      return '<tr class="' + (undone ? 'dim' : '') + '"><td>' + fmtTime(e.at) + '</td><td>' + esc(m.name || '?') + (undone ? ' <span class="pill">undone</span>' : '') + (m.barcode ? '<div class="mono small muted">' + esc(m.barcode) + '</div>' : '') + '</td><td class="num">' + used + '</td><td>' + kindPill(m.kind) + '</td>' +
+      const n = times[e.member_id] || 0;
+      const tally = (!undone && n > 1) ? ' <span class="pill accent" title="' + n + ' scans on this card today">&times;' + n + '</span>' : '';
+      return '<tr class="' + (undone ? 'dim' : '') + '"><td>' + fmtTime(e.at) + '</td><td>' + esc(m.name || '?') + tally + (undone ? ' <span class="pill">undone</span>' : '') + (m.barcode ? '<div class="mono small muted">' + esc(m.barcode) + '</div>' : '') + '</td><td class="num">' + used + '</td><td>' + kindPill(m.kind) + '</td>' +
         '<td style="white-space:nowrap">' + (undone ? '<button type="button" class="x" data-del="' + e.id + '" title="Delete this undone entry completely" aria-label="Delete">&times;</button>' : '<button type="button" class="link small" data-undo="' + e.id + '">undo</button>') + '</td></tr>';
     }).join('') : '<tr><td colspan="5" class="empty">No scans yet today.</td></tr>';
     $$('button[data-undo]', body).forEach(b => b.addEventListener('click', async () => {
@@ -1432,13 +1509,12 @@ async function loadToday() {
     }));
     $$('button[data-del]', body).forEach(b => b.addEventListener('click', async () => {
       b.disabled = true;
-      try { await rpc('pool_delete_reversed', { p_entry_id: Number(b.dataset.del) }); toast('Deleted'); loadToday(); }
+      try { await rpc('pool_delete_reversed', { p_entry_id: Number(b.dataset.del) }); toast('Deleted, and kept on the Undone and deleted report'); loadToday(); }
       catch (err) { showError(err); b.disabled = false; }
     }));
   } catch (err) { showError(err); }
 }
 setInterval(() => { if (session && currentPage === 'scan' && !modalOpen()) loadToday(); }, 2 * 60 * 1000);
-
 // =============================================================================
 // Roll over: punch card holders onto barcode cards
 //   The old register is already in the system (numbers under 10000 as the card).
@@ -1450,7 +1526,6 @@ const ROLL_KINDS = ['adult', 'senior', 'family'];
 $('#ro-kind-seg').innerHTML = kindSeg('ro-kind', ROLL_KINDS, 'adult');
 bindSeg($('#ro-kind-seg'));
 let roLinked = null;          // the existing record the transfer goes onto, if any
-
 function rolloverReady() {
   if (!$('#ro-expiry').value) $('#ro-expiry').value = addDays(sydneyDate(), 365);
   setTimeout(() => { const c = $('#ro-card'); if (!c.value) c.focus(); else if (!$('#ro-old').value) $('#ro-old').focus(); else $('#ro-name').focus(); }, 0);
@@ -1514,7 +1589,6 @@ async function rolloverName() {
 }
 $('#ro-name').addEventListener('input', () => { clearTimeout(roNameTimer); roNameTimer = setTimeout(rolloverName, 400); });
 $('#ro-phone').addEventListener('input', () => { clearTimeout(roNameTimer); roNameTimer = setTimeout(rolloverName, 400); });
-
 // Link the form to an existing record (or unlink with null)
 function roLink(m) {
   roLinked = m;
@@ -1546,7 +1620,6 @@ function rolloverPrefill(code, member) {
   if (member.barcode && isOldCard(member.barcode)) $('#ro-old').value = member.barcode;
   roLink(Object.assign({ via: 'name', state: 'person' }, member));
 }
-
 $('#ro-card').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const c = $('#ro-card').value.trim(); if (c) rolloverCard(c); } });
 $('#ro-card').addEventListener('change', () => { const c = $('#ro-card').value.trim(); if (c && familyParent(c)) rolloverCard(c); });
 $('#ro-clear').addEventListener('click', rolloverClear);
@@ -1611,25 +1684,46 @@ async function loadRollovers() {
     $('#ro-body-list').innerHTML = rows.length ? rows.slice(0, 60).map(r => {
       const canUndo = !r.undone_at && (Date.now() - new Date(r.at).getTime()) < limit;
       return '<tr class="' + (r.undone_at ? 'dim' : '') + '"><td class="mono small" style="white-space:nowrap">' + fmtDate(r.at) + ' ' + fmtTime(r.at) + '</td><td>' + esc(r.name) + (r.undone_at ? ' <span class="pill">undone</span>' : '') + (r.created_new ? '' : ' <span class="pill accent" title="transferred onto a record that was already in the system">existing</span>') + '</td><td class="mono">' + esc(r.old_card || '') + '</td><td class="num">' + r.punches + '</td><td class="mono">' + esc(r.new_barcode) + '</td>' +
-        '<td>' + (canUndo ? '<button type="button" class="link small" data-undo-ro="' + r.id + '" data-name="' + esc(r.name) + '">undo</button>' : '') + '</td></tr>';
+        '<td style="white-space:nowrap">' + (canUndo ? '<button type="button" class="link small" data-undo-ro="' + r.id + '" data-name="' + esc(r.name) + '">undo</button>' : '') +
+        (r.undone_at ? '<button type="button" class="x" data-del-ro="' + r.id + '" data-name="' + esc(r.name) + '" title="Clear this undone transfer off the list" aria-label="Delete">&times;</button>' : '') + '</td></tr>';
     }).join('') : '<tr><td colspan="6" class="empty">Nothing rolled over yet.</td></tr>';
     $$('button[data-undo-ro]', $('#ro-body-list')).forEach(b => b.addEventListener('click', () => undoRollover(Number(b.dataset.undoRo), b.dataset.name, b)));
+    $$('button[data-del-ro]', $('#ro-body-list')).forEach(b => b.addEventListener('click', async () => {
+      if (!confirm('Clear the undone transfer for ' + b.dataset.name + ' off this list? It stays on the Undone and deleted report.')) return;
+      b.disabled = true;
+      try { await rpc('pool_rollover_delete', { p_rollover_id: Number(b.dataset.delRo) }); toast('Cleared, and kept on the Undone and deleted report'); loadRollovers(); }
+      catch (err) { showError(err); b.disabled = false; }
+    }));
   } catch (err) { showError(err); }
 }
 $('#ro-refresh').addEventListener('click', loadRollovers);
 $('#refresh-today').addEventListener('click', loadToday);
-
 // =============================================================================
 // Members
 // =============================================================================
 let membersCache = [], selectedId = null, mTimer;
+let mSort = { key: 'name', dir: 1 };          // click a heading to sort by it
+const M_SORT = {
+  name: r => (r.name || '').toLowerCase(),
+  kind: r => ['adult', 'senior', 'family', 'account'].indexOf(r.kind),
+  card: r => { const n = cardNum(r.barcode); return n == null ? (r.barcode ? 1e14 : 1e15) : n; },
+  cardstate: r => ['new', 'old', 'none'].indexOf(cardState(r)),
+  balance: r => (r.kind === 'account' ? -(r.balance || 0) : (r.balance || 0)),
+  expires: r => (PAYING.includes(r.kind) && r.expires_on ? r.expires_on : '9999-99-99')
+};
 ['input', 'change'].forEach(evt => {
   $('#m-search').addEventListener(evt, () => { clearTimeout(mTimer); mTimer = setTimeout(loadMembers, 250); });
 });
 $('#m-kind').addEventListener('change', loadMembers);
 $('#m-inactive').addEventListener('change', loadMembers);
+$('#m-card').addEventListener('change', renderMembers);
 $('#m-add').addEventListener('click', () => openNewMember());
-
+$('#m-head').addEventListener('click', e => {
+  const th = e.target.closest('th[data-sort]'); if (!th) return;
+  const key = th.dataset.sort;
+  if (mSort.key === key) mSort.dir = -mSort.dir; else { mSort.key = key; mSort.dir = key === 'balance' ? -1 : 1; }
+  renderMembers();
+});
 async function loadMembers() {
   const s = cardCode(clean($('#m-search').value)), kind = $('#m-kind').value, inactive = $('#m-inactive').checked;
   try {
@@ -1638,14 +1732,35 @@ async function loadMembers() {
     if (kind) b = b.eq('kind', kind);
     if (!inactive) b = b.eq('active', true);
     membersCache = await q(b);
-    const body = $('#m-body');
-    body.innerHTML = membersCache.length ? membersCache.map(r =>
-      '<tr class="clickable' + (r.id === selectedId ? ' selected' : '') + (r.active ? '' : ' dim') + '" data-id="' + r.id + '"><td class="kc kind-' + esc(r.kind) + '">' + esc(r.name) + (r.active ? '' : ' <span class="pill">inactive</span>') + '</td><td>' + kindPill(r.kind) + '</td><td class="mono">' + (r.barcode ? (isOldCard(r.barcode) ? '<span class="muted" title="old register number">' + esc(r.barcode) + ' <span class="small">old</span></span>' : esc(r.barcode)) : '') + '</td>' +
-      '<td class="num">' + (r.kind === 'account' ? '<span class="muted">' + (-r.balance) + ' owing</span>' : r.balance) + '</td><td>' + expiryCell(r) + '</td></tr>').join('')
-      : '<tr><td colspan="5" class="empty">' + (s || kind ? 'No matches.' : 'No members yet. Press New pass on the Scan tab, or import a list under Settings.') + '</td></tr>';
-    $$('tr[data-id]', body).forEach(tr => tr.addEventListener('click', () => selectMember(Number(tr.dataset.id))));
-    if (selectedId && membersCache.some(r => r.id === selectedId)) selectMember(selectedId);
+    renderMembers();
   } catch (err) { showError(err); }
+}
+function renderMembers() {
+  const cardFilter = $('#m-card').value;
+  const rows = sortMembers(membersCache.filter(r => !cardFilter || cardState(r) === cardFilter));
+  $$('#m-head th[data-sort]').forEach(th => {
+    if (th.dataset.sort === mSort.key) th.setAttribute('aria-sort', mSort.dir === 1 ? 'ascending' : 'descending');
+    else th.removeAttribute('aria-sort');
+  });
+  $('#m-count').textContent = rows.length === membersCache.length ? plural(rows.length, 'member') : rows.length + ' of ' + membersCache.length;
+  const body = $('#m-body');
+  const s = $('#m-search').value.trim(), kind = $('#m-kind').value;
+  body.innerHTML = rows.length ? rows.map(r =>
+    '<tr class="clickable' + (r.id === selectedId ? ' selected' : '') + (r.active ? '' : ' dim') + '" data-id="' + r.id + '"><td class="kc kind-' + esc(r.kind) + '">' + esc(r.name) + (r.active ? '' : ' <span class="pill">inactive</span>') + '</td><td>' + kindPill(r.kind) + '</td><td class="mono">' + (r.barcode ? esc(r.barcode) : '') + '</td>' +
+    '<td>' + cardStatePill(r) + '</td>' +
+    '<td class="num">' + (r.kind === 'account' ? '<span class="muted">' + (-r.balance) + ' owing</span>' : r.balance) + '</td><td>' + expiryCell(r) + '</td></tr>').join('')
+    : '<tr><td colspan="6" class="empty">' + (s || kind || cardFilter ? 'No matches.' : 'No members yet. Press New pass on the Scan tab, or import a list under Settings.') + '</td></tr>';
+  $$('tr[data-id]', body).forEach(tr => tr.addEventListener('click', () => selectMember(Number(tr.dataset.id))));
+  if (selectedId && rows.some(r => r.id === selectedId)) selectMember(selectedId);
+}
+function sortMembers(rows) {
+  const f = M_SORT[mSort.key] || M_SORT.name;
+  return rows.slice().sort((a, b) => {
+    const x = f(a), y = f(b);
+    if (x < y) return -mSort.dir;
+    if (x > y) return mSort.dir;
+    return (a.name || '').localeCompare(b.name || '');
+  });
 }
 function expiryCell(r) {
   if (!PAYING.includes(r.kind) || !r.expires_on) return '<span class="muted">–</span>';
@@ -1653,7 +1768,6 @@ function expiryCell(r) {
   const cls = d < 0 ? 'red' : d <= 30 ? 'warn' : '';
   return '<span class="pill ' + cls + '">' + fmtDate(r.expires_on) + '</span>';
 }
-
 async function selectMember(id) {
   selectedId = id;
   $$('#m-body tr').forEach(tr => tr.classList.toggle('selected', Number(tr.dataset.id) === id));
@@ -1667,7 +1781,6 @@ async function selectMember(id) {
     renderMember(m, hist);
   } catch (err) { showError(err); }
 }
-
 function renderMember(m, hist) {
   const panel = $('#m-detail');
   const reversedIds = new Set(hist.filter(h => h.reverses).map(h => h.reverses));
@@ -1675,7 +1788,7 @@ function renderMember(m, hist) {
   panel.innerHTML =
     '<div class="panel-head"><div><h2>' + esc(m.name) + '</h2><div class="small muted">' + KINDS[m.kind] + ' &middot; member #' + m.id + ' &middot; since ' + fmtDate(m.created_at) + '</div></div>' +
     '<div class="stat"><div class="v">' + (isAcct ? (-m.balance) : m.balance) + '</div><div class="k">' + (isAcct ? 'client visits owing' : (m.kind === 'family' ? 'punches' : 'entries') + ' left') + '</div></div></div>' +
-    '<div class="row" style="margin-bottom:12px">' + cardLabel(m.barcode, { warnNone: true }) + childLabel(m.barcode) + (m.legacy_card ? '<span class="small muted">punch card' + (m.legacy_card.includes(',') ? 's' : '') + ' ' + esc(m.legacy_card) + '</span>' : '') + (m.last_entry ? '<span class="small muted">last swim ' + rel(m.last_entry) + '</span>' : '') + '</div>' +
+    '<div class="row" style="margin-bottom:12px">' + cardLabel(m.barcode, { warnNone: true }) + cardStatePill(m) + childLabel(m.barcode) + (m.legacy_card ? '<span class="small muted">punch card' + (m.legacy_card.includes(',') ? 's' : '') + ' ' + esc(m.legacy_card) + '</span>' : '') + (m.last_entry ? '<span class="small muted">last swim ' + rel(m.last_entry) + '</span>' : '') + '</div>' +
     (m.barcode && isOldCard(m.barcode) ? '<p class="small soft" style="margin-bottom:12px">Still on the old register number. When they present their punch card, use the Roll over tab (type ' + esc(m.barcode) + ' as the old card) and the new barcode card lands on this record.</p>' : '') +
     (m.kind === 'family' && m.barcode && !isOldCard(m.barcode) && !familyChild(m.barcode) ? '<p class="small muted" style="margin-bottom:12px">Single-barcode card: each scan asks who is going in. A family card from the 400001 range has separate adult and child barcodes; swap it with Replace card when they are next in.</p>' : '') +
     '<div class="actions" style="margin:0 0 16px">' +
@@ -1697,19 +1810,19 @@ function renderMember(m, hist) {
     field('Notes', '<textarea name="note">' + esc(m.note) + '</textarea>') +
     '<div class="actions" style="margin-top:4px"><button type="submit" class="primary">Save changes</button></div></form>' +
     '<h3 style="margin:22px 0 8px">History</h3>' +
+    '<p class="small muted" style="margin-bottom:8px">Reverse puts a matching row back the other way. The &times; on an undone row deletes both rows outright; they stay on the Undone and deleted report.</p>' +
     '<div class="scroll"><table class="history"><thead><tr><th>When</th><th>What</th><th class="num">Qty</th><th class="num">$</th><th></th></tr></thead><tbody>' +
     (hist.length ? hist.map(h => {
       const what = h.kind === 'purchase' ? 'Bought ' + esc(h.pool_products ? h.pool_products.name : 'pass') + (h.payment ? ' (' + esc(h.payment) + ')' : '')
         : h.kind === 'entry' ? (m.kind === 'family' ? 'Entry: ' + (h.adults || 0) + ' adults, ' + (h.children || 0) + ' children' + (h.infants ? ', ' + h.infants + ' under 5' : '') : isAcct ? 'Visit: ' + (h.clients || 0) + ' clients' : 'Entry')
         : h.kind === 'opening' ? 'Opening balance' : (h.reverses ? 'Reversal of #' + h.reverses : /^Merged/.test(h.note || '') ? 'Merged' : 'Adjustment');
       const canReverse = !h.reverses && !reversedIds.has(h.id) && h.qty !== 0;
-      const canDelete = h.kind === 'entry' && reversedIds.has(h.id);
+      const canDelete = !h.reverses && reversedIds.has(h.id);
       return '<tr class="' + (reversedIds.has(h.id) ? 'dim' : '') + '"><td class="mono small">' + fmtDate(h.at) + ' ' + fmtTime(h.at) + (h.created_by ? '<div class="muted">' + esc(h.created_by) + '</div>' : '') + '</td><td>' + what + (h.note ? '<div class="small muted">' + esc(h.note) + '</div>' : '') + (reversedIds.has(h.id) ? ' <span class="pill">reversed</span>' : '') + '</td>' +
         '<td class="num">' + (h.qty > 0 ? '+' : '') + h.qty + '</td><td class="num">' + (h.amount == null ? '' : money(h.amount)) + '</td>' +
-        '<td style="white-space:nowrap">' + (canReverse ? '<button type="button" class="link small" data-reverse="' + h.id + '">reverse</button>' : '') + (canDelete ? '<button type="button" class="x" data-del="' + h.id + '" title="Delete this undone entry and its reversal completely" aria-label="Delete">&times;</button>' : '') + '</td></tr>';
+        '<td style="white-space:nowrap">' + (canReverse ? '<button type="button" class="link small" data-reverse="' + h.id + '">reverse</button>' : '') + (canDelete ? '<button type="button" class="x" data-del="' + h.id + '" title="Delete this undone row and its reversal completely" aria-label="Delete">&times;</button>' : '') + '</td></tr>';
     }).join('') : '<tr><td colspan="5" class="empty">Nothing yet.</td></tr>') +
     '</tbody></table></div>';
-
   bindSeg(panel);
   const sellBtn = $('#d-sell', panel); if (sellBtn) sellBtn.addEventListener('click', () => openSell(m, { after: () => { selectMember(m.id); loadMembers(); } }));
   const visitBtn = $('#d-visit', panel); if (visitBtn) visitBtn.addEventListener('click', () => { showPage('scan'); onMemberEntry(m.id); });
@@ -1723,8 +1836,8 @@ function renderMember(m, hist) {
     catch (err) { showError(err); }
   }));
   $$('button[data-del]', panel).forEach(b => b.addEventListener('click', async () => {
-    if (!confirm('Delete this undone entry and its reversal from the history completely?')) return;
-    try { await rpc('pool_delete_reversed', { p_entry_id: Number(b.dataset.del) }); toast('Deleted'); selectMember(m.id); loadMembers(); }
+    if (!confirm('Delete this undone row and its reversal from the history? Both stay on the Undone and deleted report.')) return;
+    try { await rpc('pool_delete_reversed', { p_entry_id: Number(b.dataset.del), p_admin: true }); toast('Deleted, and kept on the Undone and deleted report'); selectMember(m.id); loadMembers(); }
     catch (err) { showError(err); }
   }));
   $('#d-form', panel).addEventListener('submit', async e => {
@@ -1740,7 +1853,6 @@ function renderMember(m, hist) {
   });
 }
 function field(label, control) { return '<div class="field"><label>' + label + '</label>' + control + '</div>'; }
-
 function openNewMember() {
   const modal = openModal(
     '<h2>Add a member</h2><p class="lead">Cards are assigned by scanning them at the desk, or here after saving.</p>' +
@@ -1762,7 +1874,6 @@ function openNewMember() {
     } catch (err) { showError(err); }
   });
 }
-
 function openCardCapture(m, opts) {
   opts = opts || {};
   const hasCard = m.barcode && !isOldCard(m.barcode);
@@ -1786,7 +1897,6 @@ function openCardCapture(m, opts) {
     } catch (err) { showError(err); }
   }
 }
-
 // Merge one record into another by hand (the Duplicates button finds the obvious ones)
 function openMergeInto(keep) {
   const modal = openModal(
@@ -1816,7 +1926,6 @@ async function mergeOne(keep, other) {
     selectedId = keep.id; selectMember(keep.id); loadMembers();
   } catch (err) { showError(err); }
 }
-
 // Duplicates: same name and phone number, more than one record. Merge them onto
 // the highest card number, singly or all at once.
 $('#m-dupes').addEventListener('click', openDuplicates);
@@ -1857,7 +1966,6 @@ function renderDupes(modal, groups) {
     loadMembers();
   });
 }
-
 function openAdjust(m) {
   const modal = openModal(
     '<h2>Adjust balance &middot; ' + esc(m.name) + '</h2>' +
@@ -1872,12 +1980,62 @@ function openAdjust(m) {
     catch (err) { showError(err); }
   });
 }
-
 // =============================================================================
-// Reports
+// Reports: a dashboard over the ledger
+//   Everything here counts PEOPLE, not scans, unless it says otherwise: a family
+//   party of four is four people whether it came through as one scan or four.
 // =============================================================================
 let statement = null;
+let rpDays = 30;              // the period the dashboard is showing
+let rpAudit = [];             // the combined undo and delete list, kept for the CSV button
+const hh = h => String(h).padStart(2, '0') + ':00';
+const monthLabel = ym => new Intl.DateTimeFormat('en-AU', { month: 'short', year: '2-digit' }).format(new Date(ym + '-01T12:00:00Z'));
+function weekStart(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  return addDays(dateStr, -((d.getUTCDay() + 6) % 7));      // back to the Monday
+}
+function peopleIn(e, kind) {
+  if (kind === 'family') return (e.adults || 0) + (e.children || 0) + (e.infants || 0);
+  if (kind === 'account') return (e.clients || 0);
+  return 1;
+}
+function barTable(rows, opts) {
+  opts = opts || {};
+  if (!rows.length) return '<p class="empty">Nothing in this period.</p>';
+  const max = Math.max(1, ...rows.map(r => r.value));
+  return '<table class="barlist">' + rows.map(r => '<tr><td class="mono small" style="white-space:nowrap">' + esc(r.label) + '</td>' +
+    '<td style="width:100%"><div class="bar' + (r.alt ? ' alt' : '') + '" style="width:' + Math.round(100 * r.value / max) + '%;min-width:' + (r.value ? 6 : 0) + 'px"></div></td>' +
+    '<td class="num" style="white-space:nowrap">' + (opts.fmt ? opts.fmt(r.value) : r.value) + (r.note ? ' <span class="small muted">' + esc(r.note) + '</span>' : '') + '</td></tr>').join('') + '</table>';
+}
+function renderHeat(grid, byHour, byDow) {
+  const hrs = Object.keys(byHour).map(Number);
+  if (!hrs.length) return '<p class="empty">Nothing scanned in this period yet.</p>';
+  const h0 = Math.min.apply(null, hrs), h1 = Math.max.apply(null, hrs);
+  let max = 0;
+  Object.keys(grid).forEach(k => { if (grid[k] > max) max = grid[k]; });
+  let html = '<table class="heat"><thead><tr><th></th>';
+  for (let h = h0; h <= h1; h++) html += '<th>' + h + '</th>';
+  html += '<th></th></tr></thead><tbody>';
+  DOW.forEach((d, i) => {
+    html += '<tr><td class="lbl">' + d + '</td>';
+    for (let h = h0; h <= h1; h++) {
+      const v = grid[i + ':' + h] || 0, share = max ? v / max : 0;
+      html += '<td class="hc' + (share > 0.55 ? ' on' : '') + (v ? '' : ' zero') + '" title="' + DOW_LONG[d] + ' ' + hh(h) + ' to ' + hh(h + 1) + ': ' + plural(v, 'person', 'people') + '">' +
+        (v ? '<span class="fill" style="opacity:' + (0.15 + 0.85 * share).toFixed(2) + '"></span>' : '') +
+        '<span class="v">' + (v || '·') + '</span></td>';
+    }
+    html += '<td class="tot">' + (byDow[i] || 0) + '</td></tr>';
+  });
+  return html + '</tbody></table>';
+}
 $('#rp-month').value = sydneyDate().slice(0, 7);
+$('#rp-period').addEventListener('click', e => {
+  const b = e.target.closest('button[data-days]'); if (!b) return;
+  rpDays = Number(b.dataset.days);
+  $$('#rp-period button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  loadReports();
+});
+$('#rp-refresh').addEventListener('click', loadReports);
 $('#rp-statement').addEventListener('click', buildStatement);
 $('#rp-statement-print').addEventListener('click', printStatement);
 $('#rp-statement-csv').addEventListener('click', () => {
@@ -1886,44 +2044,209 @@ $('#rp-statement-csv').addEventListener('click', () => {
   statement.groups.forEach(g => g.lines.forEach(l => rows.push([g.name, fmtDate(l.at), fmtTime(l.at), l.clients, l.note || '', g.rate == null ? '' : g.rate, g.rate == null ? '' : (l.clients * g.rate).toFixed(2)])));
   downloadCSV('pool-practice-statement-' + $('#rp-month').value + '.csv', rows);
 });
-
+$('#rp-audit-csv').addEventListener('click', () => {
+  downloadCSV('pool-undone-and-deleted-' + sydneyDate() + '.csv',
+    [['when', 'what', 'member', 'kind of row', 'entries', 'amount', 'original date', 'reason', 'staff']].concat(
+      rpAudit.map(a => [a.at, a.what, a.who, a.of, a.qty, a.amount == null ? '' : a.amount, a.origAt || '', a.reason || '', a.staff || ''])));
+});
 async function loadReports() {
   const today = sydneyDate();
+  const fromDate = addDays(today, -(rpDays - 1));
+  const from = sydneyMidnightISO(fromDate);
+  const fromMs = new Date(from).getTime();
   try {
-    const paying = await q(sb.from('pool_member_state').select('*').eq('active', true).in('kind', PAYING).gt('balance', 0).order('name'));
+    const [members, ledger, deletions, rollovers] = await Promise.all([
+      fetchAll(() => sb.from('pool_member_state').select('*').order('id')),
+      fetchAll(() => sb.from('pool_entries').select('id, at, qty, kind, amount, payment, member_id, adults, children, infants, clients, reverses, note, created_by, pool_products(name)').gte('at', from).order('id')),
+      fetchAll(() => sb.from('pool_deletions').select('*').gte('at', from).order('id')),
+      fetchAll(() => sb.from('pool_rollovers').select('id, at, name, new_barcode, old_card, punches, undone_at, undone_by, created_by').order('id'))
+    ]);
+    const mById = {}; members.forEach(m => { mById[m.id] = m; });
+    const kindOf = id => (mById[id] || {}).kind || 'adult';
+    const nameOf = id => (mById[id] || {}).name || ('member #' + id);
+    const inPeriod = new Set(ledger.map(e => e.id));
+    const reversed = new Set(ledger.filter(e => e.reverses).map(e => e.reverses));
+    const live = ledger.filter(e => e.kind === 'entry' && !reversed.has(e.id));
+    const sales = ledger.filter(e => e.kind === 'purchase' && e.amount != null && !reversed.has(e.id));
+    // a refund whose sale is inside the period is already left out above; one from an
+    // older sale still belongs in this period's takings
+    const refunds = ledger.filter(e => e.amount != null && e.reverses && !inPeriod.has(e.reverses));
+    // ---- aggregate the entries -------------------------------------------------
+    const byDate = {}, byDow = [0, 0, 0, 0, 0, 0, 0], byHour = {}, grid = {}, byWeek = {}, byMonth = {}, byKind = {}, byMember = {};
+    let people = 0;
+    live.forEach(e => {
+      const k = kindOf(e.member_id), p = peopleIn(e, k);
+      people += p;
+      const d = sydneyDate(new Date(e.at)), t = sydneyParts(e.at);
+      byDate[d] = (byDate[d] || 0) + p;
+      if (t.dow >= 0) { byDow[t.dow] += p; grid[t.dow + ':' + t.hour] = (grid[t.dow + ':' + t.hour] || 0) + p; }
+      byHour[t.hour] = (byHour[t.hour] || 0) + p;
+      byWeek[weekStart(d)] = (byWeek[weekStart(d)] || 0) + p;
+      byMonth[d.slice(0, 7)] = (byMonth[d.slice(0, 7)] || 0) + p;
+      byKind[k] = (byKind[k] || 0) + p;
+      byMember[e.member_id] = (byMember[e.member_id] || 0) + p;
+    });
+    const firstData = Object.keys(byDate).sort()[0] || today;
+    const startDate = firstData > fromDate ? firstData : fromDate;
+    const days = [];
+    for (let d = startDate; d <= today; d = addDays(d, 1)) days.push(d);
+    const dowCount = [0, 0, 0, 0, 0, 0, 0];
+    days.forEach(d => { dowCount[(new Date(d + 'T12:00:00Z').getUTCDay() + 6) % 7]++; });
+    // ---- headline --------------------------------------------------------------
+    $('#rp-range').textContent = live.length
+      ? fmtDateLong(startDate + 'T12:00:00Z') + ' to ' + fmtDateLong(today + 'T12:00:00Z') + ' · ' + plural(days.length, 'day') + ' · ' + plural(live.length, 'scan')
+      : 'Nothing scanned in the last ' + plural(rpDays, 'day') + '.';
+    const busiestDate = Object.keys(byDate).sort((a, b) => byDate[b] - byDate[a])[0];
+    const quietDays = days.filter(d => !byDate[d]).length;
+    const soldCount = sales.length - refunds.length;
+    const revenue = sales.reduce((s, x) => s + Number(x.amount), 0) + refunds.reduce((s, x) => s + Number(x.amount), 0);
+    const stat = (v, k) => '<div class="stat"><div class="v">' + v + '</div><div class="k">' + k + '</div></div>';
+    $('#rp-kpis').innerHTML =
+      stat(people, 'people through the gate') +
+      stat(live.length, 'scans at the desk') +
+      stat(days.length ? (people / days.length).toFixed(1) : '0', 'people a day on average') +
+      stat(busiestDate ? byDate[busiestDate] : 0, 'busiest day' + (busiestDate ? ' · ' + fmtDateLong(busiestDate + 'T12:00:00Z') : '')) +
+      stat(soldCount, 'passes sold') +
+      stat(money0(revenue), 'taken for passes');
+    const topDow = byDow.indexOf(Math.max.apply(null, byDow));
+    let quietDow = -1, quietVal = Infinity;
+    byDow.forEach((v, i) => { if (dowCount[i] && v / dowCount[i] < quietVal) { quietVal = v / dowCount[i]; quietDow = i; } });
+    const hoursSeen = Object.keys(byHour).map(Number).sort((a, b) => a - b);
+    let win = null;
+    hoursSeen.forEach(h => { const v = (byHour[h] || 0) + (byHour[h + 1] || 0); if (!win || v > win.v) win = { h: h, v: v }; });
+    $('#rp-insight').innerHTML = live.length
+      ? 'Busiest day of the week is <b>' + DOW_LONG[DOW[topDow]] + '</b> (' + (byDow[topDow] / Math.max(1, dowCount[topDow])).toFixed(1) + ' people on an average one)' +
+        (quietDow >= 0 && quietDow !== topDow ? ', quietest is <b>' + DOW_LONG[DOW[quietDow]] + '</b> (' + quietVal.toFixed(1) + ')' : '') + '. ' +
+        (win ? 'The busiest two hours are <b>' + hh(win.h) + ' to ' + hh(win.h + 2) + '</b>, ' + Math.round(100 * win.v / Math.max(1, people)) + '% of everyone in the period. ' : '') +
+        (quietDays ? '<b>' + quietDays + '</b> of the ' + days.length + ' days had nobody in at all.' : 'Somebody came in on every day of the period.')
+      : '<span class="none">Nothing scanned in this period yet. The dashboard fills itself in as the desk uses the scanner, so give it a few weeks before reading much into it.</span>';
+    // ---- when they come --------------------------------------------------------
+    $('#rp-heat').innerHTML = renderHeat(grid, byHour, byDow);
+    $('#rp-heat-legend').innerHTML = hoursSeen.length
+      ? '<span>quiet</span><i style="opacity:.15"></i><i style="opacity:.4"></i><i style="opacity:.65"></i><i style="opacity:1"></i><span>busy</span><span class="muted">&nbsp;· people through the gate, Sydney time · the last column is the day total</span>'
+      : '';
+    $('#rp-dow').innerHTML = barTable(DOW.map((d, i) => ({
+      label: DOW_LONG[d], value: dowCount[i] ? Number((byDow[i] / dowCount[i]).toFixed(1)) : 0, note: '· ' + (byDow[i] || 0) + ' in total'
+    })));
+    if (hoursSeen.length) {
+      const h0 = hoursSeen[0], h1 = hoursSeen[hoursSeen.length - 1], hourRows = [];
+      for (let h = h0; h <= h1; h++) hourRows.push({ label: hh(h), value: byHour[h] || 0 });
+      $('#rp-hour').innerHTML = barTable(hourRows);
+    } else { $('#rp-hour').innerHTML = '<p class="empty">Nothing in this period.</p>'; }
+    const lastDays = days.slice(-21);
+    $('#rp-days-note').textContent = 'last ' + plural(lastDays.length, 'day');
+    $('#rp-days').innerHTML = barTable(lastDays.map(d => ({ label: fmtDateLong(d + 'T12:00:00Z'), value: byDate[d] || 0 })));
+    const weeks = Object.keys(byWeek).sort().slice(-12);
+    $('#rp-weeks').innerHTML = barTable(weeks.map(w => ({ label: 'w/c ' + fmtDate(w + 'T12:00:00Z'), value: byWeek[w] })));
+    const months = Object.keys(byMonth).sort().slice(-13);
+    $('#rp-months').innerHTML = barTable(months.map(ym => {
+      const ly = byMonth[(Number(ym.slice(0, 4)) - 1) + ym.slice(4)];
+      const diff = ly ? Math.round(100 * (byMonth[ym] - ly) / ly) : null;
+      return { label: monthLabel(ym), value: byMonth[ym], note: diff == null ? '' : '· ' + (diff >= 0 ? '+' : '') + diff + '% on last year' };
+    }));
+    // ---- who they are ----------------------------------------------------------
+    const mixKinds = ['adult', 'senior', 'family', 'account'].filter(k => byKind[k]);
+    $('#rp-mix').innerHTML = mixKinds.length
+      ? '<div class="mixbar">' + mixKinds.map(k => '<span class="kind-' + k + '" style="background:var(--kc);width:' + (100 * byKind[k] / people).toFixed(1) + '%" title="' + KINDS[k] + ': ' + byKind[k] + '"></span>').join('') + '</div>' +
+        '<div class="keyrow">' + mixKinds.map(k => '<span class="kind-' + k + '"><i style="background:var(--kc)"></i>' + KINDS[k] + ' ' + Math.round(100 * byKind[k] / people) + '%</span>').join('') + '</div>' +
+        '<table style="margin-top:12px"><thead><tr><th>Pass</th><th class="num">People</th><th class="num">Cards used</th><th class="num">Per card</th></tr></thead><tbody>' +
+        mixKinds.map(k => {
+          const cards = Object.keys(byMember).filter(id => kindOf(id) === k).length;
+          return '<tr><td>' + kindPill(k) + '</td><td class="num">' + byKind[k] + '</td><td class="num">' + cards + '</td><td class="num">' + (cards ? (byKind[k] / cards).toFixed(1) : '–') + '</td></tr>';
+        }).join('') +
+        '<tr><td><b>All</b></td><td class="num"><b>' + people + '</b></td><td class="num"><b>' + Object.keys(byMember).length + '</b></td><td class="num"><b>' + (Object.keys(byMember).length ? (people / Object.keys(byMember).length).toFixed(1) : '–') + '</b></td></tr></tbody></table>'
+      : '<p class="empty">Nothing in this period.</p>';
+    const top = Object.keys(byMember).map(id => ({ id: id, n: byMember[id], m: mById[id] })).sort((a, b) => b.n - a.n).slice(0, 12);
+    $('#rp-top').innerHTML = top.length
+      ? '<table><thead><tr><th>Name</th><th>Pass</th><th class="num">People</th><th class="num">Left</th></tr></thead><tbody>' +
+        top.map(t => '<tr><td>' + esc(nameOf(t.id)) + '</td><td>' + kindPill(kindOf(t.id)) + '</td><td class="num">' + t.n + '</td><td class="num">' + (t.m ? (t.m.kind === 'account' ? (-t.m.balance) + ' owing' : t.m.balance) : '') + '</td></tr>').join('') + '</tbody></table>'
+      : '<p class="empty">Nothing in this period.</p>';
+    // ---- money ------------------------------------------------------------------
+    const byProduct = {}, byPay = {};
+    sales.forEach(s => {
+      const n = (s.pool_products && s.pool_products.name) || 'Pass';
+      byProduct[n] = byProduct[n] || { n: 0, v: 0 }; byProduct[n].n++; byProduct[n].v += Number(s.amount);
+      const p = s.payment || 'other'; byPay[p] = (byPay[p] || 0) + Number(s.amount);
+    });
+    refunds.forEach(s => {
+      const n = (s.pool_products && s.pool_products.name) || 'Refund';
+      byProduct[n] = byProduct[n] || { n: 0, v: 0 }; byProduct[n].n--; byProduct[n].v += Number(s.amount);
+      const p = s.payment || 'other'; byPay[p] = (byPay[p] || 0) + Number(s.amount);
+    });
+    const prodNames = Object.keys(byProduct).sort((a, b) => byProduct[b].v - byProduct[a].v);
+    $('#rp-money').innerHTML =
+      '<div class="stats">' + stat(money0(revenue), 'taken in the period') + stat(soldCount, 'passes sold') +
+        stat(soldCount ? money0(revenue / soldCount) : '$0', 'average sale') +
+        stat(people ? money(revenue / people) : '$0.00', 'revenue per person through the gate') + '</div>' +
+      (prodNames.length
+        ? '<table style="margin-top:12px"><thead><tr><th>Pass</th><th class="num">Sold</th><th class="num">Value</th></tr></thead><tbody>' +
+          prodNames.map(n => '<tr><td>' + esc(n) + '</td><td class="num">' + byProduct[n].n + '</td><td class="num">' + money(byProduct[n].v) + '</td></tr>').join('') +
+          '<tr><td><b>Total</b></td><td class="num"><b>' + soldCount + '</b></td><td class="num"><b>' + money(revenue) + '</b></td></tr></tbody></table>' +
+          '<h3 style="margin:16px 0 6px;font-size:14px">How it was paid</h3>' +
+          barTable(Object.keys(byPay).sort((a, b) => byPay[b] - byPay[a]).map(p => ({ label: p, value: Math.round(byPay[p]) })), { fmt: v => money0(v) })
+        : '<p class="empty" style="margin-top:12px">No passes sold in this period.</p>');
+    // ---- the liability ----------------------------------------------------------
+    const paying = members.filter(r => r.active && PAYING.includes(r.kind) && r.balance > 0);
     const fallback = setting('liability_unit_value', 7.25);
-    const value = paying.reduce((s, r) => s + r.balance * (r.unit_value == null ? fallback : Number(r.unit_value)), 0);
-    $('#rp-liab-value').textContent = money(value);
+    const unit = r => (r.unit_value == null ? fallback : Number(r.unit_value));
+    $('#rp-liab-value').textContent = money(paying.reduce((s, r) => s + r.balance * unit(r), 0));
     $('#rp-liab-entries').textContent = paying.reduce((s, r) => s + r.balance, 0);
     $('#rp-liab-holders').textContent = paying.length;
-
-    const lapsedDays = setting('lapsed_days', 90);
-    $('#rp-lapsed-note').textContent = 'entries left, no swim for ' + lapsedDays + ' days';
-    const cutoff = Date.now() - lapsedDays * 86400000;
-    const lapsed = paying.filter(r => !r.last_entry || new Date(r.last_entry).getTime() < cutoff);
-    $('#rp-lapsed-body').innerHTML = lapsed.length ? lapsed.map(r => '<tr><td>' + esc(r.name) + '</td><td class="mono">' + esc(r.phone) + '</td><td class="num">' + r.balance + '</td><td>' + (r.last_entry ? fmtDate(r.last_entry) : '<span class="muted">never</span>') + '</td></tr>').join('') : '<tr><td colspan="4" class="empty">Nobody has lapsed.</td></tr>';
-
-    const soon = paying.filter(r => r.expires_on && daysUntil(r.expires_on) <= 30).sort((a, b) => a.expires_on < b.expires_on ? -1 : 1);
-    $('#rp-expiring-body').innerHTML = soon.length ? soon.map(r => '<tr><td>' + esc(r.name) + '</td><td class="mono">' + esc(r.phone) + '</td><td class="num">' + r.balance + '</td><td>' + expiryCell(r) + '</td></tr>').join('') : '<tr><td colspan="4" class="empty">Nothing expiring in the next 30 days.</td></tr>';
-
-    const from14 = sydneyMidnightISO(addDays(today, -13));
-    const entries = await fetchAll(() => sb.from('pool_entries').select('id, at, qty, kind, reverses').gte('at', from14).in('kind', ['entry', 'adjustment']).order('id'));
-    const reversed = new Set(entries.filter(e => e.reverses).map(e => e.reverses));
-    const byDay = {};
-    for (let i = 13; i >= 0; i--) byDay[addDays(today, -i)] = 0;
-    entries.forEach(e => { if (e.kind === 'entry' && !reversed.has(e.id)) { const d = sydneyDate(new Date(e.at)); if (d in byDay) byDay[d]++; } });
-    const max = Math.max(1, ...Object.values(byDay));
-    $('#rp-days').innerHTML = '<table>' + Object.keys(byDay).map(d => '<tr><td class="mono small" style="white-space:nowrap">' + fmtDateLong(d + 'T12:00:00Z') + '</td><td style="width:100%"><div class="bar" style="width:' + Math.round(100 * byDay[d] / max) + '%;min-width:' + (byDay[d] ? 6 : 0) + 'px"></div></td><td class="num">' + byDay[d] + '</td></tr>').join('') + '</table>';
-
-    const from30 = sydneyMidnightISO(addDays(today, -29));
-    const sales = await fetchAll(() => sb.from('pool_entries').select('id, amount, kind, product_id, pool_products(name)').gte('at', from30).not('amount', 'is', null).order('id'));
-    const byProd = {};
-    sales.forEach(s => { const n = (s.pool_products && s.pool_products.name) || 'Pass'; byProd[n] = byProd[n] || { n: 0, v: 0 }; byProd[n].n += s.kind === 'purchase' ? 1 : -1; byProd[n].v += Number(s.amount); });
-    const names = Object.keys(byProd);
-    $('#rp-sales-body').innerHTML = names.length ? names.map(n => '<tr><td>' + esc(n) + '</td><td class="num">' + byProd[n].n + '</td><td class="num">' + money(byProd[n].v) + '</td></tr>').join('') + '<tr><td><b>Total</b></td><td class="num"><b>' + names.reduce((s, n) => s + byProd[n].n, 0) + '</b></td><td class="num"><b>' + money(names.reduce((s, n) => s + byProd[n].v, 0)) + '</b></td></tr>' : '<tr><td colspan="3" class="empty">No sales in the last 30 days.</td></tr>';
+    const liabKinds = PAYING.filter(k => paying.some(r => r.kind === k));
+    $('#rp-liab-split').innerHTML = liabKinds.length
+      ? '<table><thead><tr><th>Pass</th><th class="num">Holders</th><th class="num">Entries</th><th class="num">Value</th></tr></thead><tbody>' +
+        liabKinds.map(k => {
+          const rows = paying.filter(r => r.kind === k);
+          return '<tr><td>' + kindPill(k) + '</td><td class="num">' + rows.length + '</td><td class="num">' + rows.reduce((s, r) => s + r.balance, 0) + '</td><td class="num">' + money(rows.reduce((s, r) => s + r.balance * unit(r), 0)) + '</td></tr>';
+        }).join('') + '</tbody></table>'
+      : '';
+    // ---- cards ------------------------------------------------------------------
+    const activePaying = members.filter(r => r.active && PAYING.includes(r.kind));
+    const cardCounts = { new: 0, old: 0, none: 0 };
+    activePaying.forEach(r => { cardCounts[cardState(r)]++; });
+    const rolledPeriod = rollovers.filter(r => !r.undone_at && new Date(r.at).getTime() >= fromMs).length;
+    const totalPaying = Math.max(1, activePaying.length);
+    const cardBits = [['new', 'var(--good)'], ['old', 'var(--warn)'], ['none', 'var(--line-strong)']];
+    $('#rp-cards').innerHTML =
+      '<div class="mixbar">' + cardBits.map(b => '<span style="background:' + b[1] + ';width:' + (100 * cardCounts[b[0]] / totalPaying).toFixed(1) + '%" title="' + CARD_STATE_NAME[b[0]] + ': ' + cardCounts[b[0]] + '"></span>').join('') + '</div>' +
+      '<div class="keyrow">' + cardBits.map(b => '<span><i style="background:' + b[1] + '"></i>' + CARD_STATE_NAME[b[0]] + ' ' + cardCounts[b[0]] + '</span>').join('') + '</div>' +
+      '<div class="stats" style="margin-top:14px">' +
+        stat(Math.round(100 * cardCounts.new / totalPaying) + '%', 'of active pass holders are on a barcode card') +
+        stat(cardCounts.old + cardCounts.none, 'still to roll over') +
+        stat(rolledPeriod, 'rolled over in this period') + '</div>';
+    const soon = members.filter(r => r.active && PAYING.includes(r.kind) && r.balance > 0 && r.expires_on && daysUntil(r.expires_on) <= 30).sort((a, b) => a.expires_on < b.expires_on ? -1 : 1);
+    $('#rp-expiring-body').innerHTML = soon.length
+      ? soon.map(r => '<tr><td>' + esc(r.name) + '</td><td class="mono">' + esc(r.phone) + '</td><td class="num">' + r.balance + '</td><td>' + expiryCell(r) + '</td></tr>').join('')
+      : '<tr><td colspan="4" class="empty">Nothing expiring in the next 30 days.</td></tr>';
+    // ---- undone and deleted ------------------------------------------------------
+    const KIND_WORD = { entry: 'entry', purchase: 'pass sale', adjustment: 'adjustment', opening: 'opening balance', rollover: 'roll-over' };
+    rpAudit = [];
+    ledger.filter(e => e.reverses).forEach(e => {
+      const orig = ledger.find(x => x.id === e.reverses);
+      rpAudit.push({ at: e.at, what: 'Undone', who: nameOf(e.member_id), of: KIND_WORD[orig ? orig.kind : 'entry'] || 'row',
+        qty: Math.abs(orig ? orig.qty : e.qty), amount: e.amount == null ? null : Number(e.amount),
+        origAt: orig ? orig.at : null, reason: e.note, staff: e.created_by });
+    });
+    deletions.forEach(d => {
+      rpAudit.push({ at: d.at, what: d.what === 'rollover' ? 'Roll-over deleted' : 'Deleted', who: d.member_name || nameOf(d.member_id),
+        of: KIND_WORD[d.entry_kind] || d.entry_kind || 'row', qty: Math.abs(d.qty || 0), amount: d.amount == null ? null : Number(d.amount),
+        origAt: d.entry_at, reason: d.reversal_note || d.entry_note, staff: d.deleted_by });
+    });
+    rollovers.filter(r => r.undone_at && new Date(r.undone_at).getTime() >= fromMs).forEach(r => {
+      rpAudit.push({ at: r.undone_at, what: 'Roll-over undone', who: r.name, of: 'roll-over', qty: r.punches, amount: null,
+        origAt: r.at, reason: 'punch card ' + (r.old_card || '?') + ' to card ' + r.new_barcode, staff: r.undone_by });
+    });
+    rpAudit.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
+    $('#rp-audit-note').textContent = rpAudit.length ? plural(rpAudit.length, 'row') + ' in this period' : '';
+    $('#rp-audit-body').innerHTML = rpAudit.length
+      ? rpAudit.slice(0, 200).map(a => '<tr><td class="mono small" style="white-space:nowrap">' + fmtDate(a.at) + ' ' + fmtTime(a.at) + '</td>' +
+        '<td><span class="pill ' + (a.what === 'Undone' ? 'warn' : 'red') + '">' + esc(a.what) + '</span> <span class="small muted">' + esc(a.of) + '</span></td>' +
+        '<td>' + esc(a.who) + (a.origAt ? '<div class="small muted">from ' + fmtDate(a.origAt) + ' ' + fmtTime(a.origAt) + '</div>' : '') + '</td>' +
+        '<td class="num">' + (a.qty || '') + (a.amount ? '<div class="small muted">' + money(a.amount) + '</div>' : '') + '</td>' +
+        '<td class="small">' + esc(a.reason || '') + '</td><td class="small mono">' + esc(a.staff || '') + '</td></tr>').join('')
+      : '<tr><td colspan="6" class="empty">Nothing undone or deleted in this period.</td></tr>';
   } catch (err) { showError(err); }
 }
-
 async function buildStatement() {
   const ym = $('#rp-month').value; if (!ym) return;
   const r = monthRange(ym);
@@ -1962,7 +2285,6 @@ function printStatement() {
   window.print();
   setTimeout(done, 60000);
 }
-
 // =============================================================================
 // Settings, import, export
 // =============================================================================
@@ -1974,7 +2296,6 @@ async function loadSettingsPage() {
   $('#s-double').value = setting('double_scan_seconds', 120);
   $('#s-low').value = setting('low_balance', 4);
   $('#s-undo').value = setting('undo_minutes', 10);
-  $('#s-lapsed').value = setting('lapsed_days', 90);
   $('#s-liab').value = setting('liability_unit_value', 7.25);
   $('#s-guest').checked = String(settings.guest_lookup) === 'true';
   $('#s-guest-url').textContent = guestUrl();
@@ -2028,13 +2349,11 @@ $('#s-settings-save').addEventListener('click', async () => {
     { key: 'double_scan_seconds', value: Number($('#s-double').value) },
     { key: 'low_balance', value: Number($('#s-low').value) },
     { key: 'undo_minutes', value: Number($('#s-undo').value) },
-    { key: 'lapsed_days', value: Number($('#s-lapsed').value) },
     { key: 'liability_unit_value', value: Number($('#s-liab').value) }
   ];
   try { await q(sb.from('pool_settings').upsert(rows, { onConflict: 'key' })); await loadSettings(); toast('Rules saved'); }
   catch (err) { showError(err); }
 });
-
 // Card sheets: numbered Code 128 cards for the laminator (CARD_RANGES is defined at the top)
 function loadScript(src) {
   return new Promise((res, rej) => { if (document.querySelector('script[src="' + src + '"]')) return res(); const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('Could not load ' + src)); document.head.appendChild(s); });
@@ -2066,14 +2385,17 @@ const TERMS = {
   corporate: 'Client visits are recorded against your practice account and invoiced monthly. Present this card at reception with each group. Not transferable.',
   family:    'Scan the ADULT barcode once per adult (2 punches) and the CHILD barcode once per child aged 5 to 17 (1 punch). Under-5s are free with a paying adult. Punches expire 12 months from purchase. Not transferable.'
 };
-// The barcode block: one barcode, or the adult and child pair on a family card. The pair is
-// stacked one above the other with a clear gap, never side by side, so a laser sweep across
-// the card can only ever cross one of them.
+// The barcode block: one barcode, or the adult and child pair on a family card. The pair
+// sits diagonally, adult in the top-left corner and child in the bottom-right, so the two
+// share neither a row nor a column and a straight laser sweep can only cross one of them.
 function barcodeBlock(n, variant, cls) {
   const child = variant === 'family' ? familyChild(n) : null;
   if (!child) return '<div class="' + cls + '"><svg data-code="' + n + '"></svg><div class="num">' + n + '</div></div>';
-  const row = (label, hint, code) => '<div class="bcx"><div class="lab"><div class="lbl">' + label + '</div><div class="hint">' + hint + '</div><div class="num">' + code + '</div></div><svg data-code="' + code + '" data-small="1"></svg></div>';
-  return '<div class="' + cls + ' bc2">' + row('Adult', '2 punches', n) + '<div class="gap"></div>' + row('Child', '1 punch', child) + '</div>';
+  const bc = code => '<div class="bcw"><svg data-code="' + code + '" data-small="1"></svg><div class="num">' + code + '</div></div>';
+  const lab = (title, hint) => '<div class="lab"><div class="lbl">' + title + '</div><div class="hint">' + hint + '</div></div>';
+  return '<div class="' + cls + ' bc2">' +
+    '<div class="bcx adult">' + bc(n) + lab('Adult', '2 punches each') + '</div>' +
+    '<div class="bcx child">' + lab('Child', '1 punch each') + bc(child) + '</div></div>';
 }
 function cardFront(n, variant) {
   const f = FACE[variant];
@@ -2123,11 +2445,11 @@ async function printCards(numbers, sides, variant) {
   const area = $('#print-area');
   area.innerHTML = buildSheets(numbers, sides, variant);
   // 1.5 px per module prints as 0.40 mm; 16 px margin is a 4.2 mm quiet zone; 46 px bars are 12 mm tall.
-  // The two barcodes on a family card are stacked, so they keep the same module width and quiet
-  // zones and are only shorter (32 px, 8.5 mm of bars), with a clear band between them.
+  // The two barcodes on a family card sit in opposite corners, so they keep the same module
+  // width and quiet zones and are only shorter (30 px, 8 mm of bars).
   $$('svg[data-code]', area).forEach(svg => {
     const small = !!svg.dataset.small;
-    JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: 1.5, height: small ? 32 : 46, margin: 16, marginTop: small ? 3 : 16, marginBottom: small ? 3 : 16, displayValue: false, lineColor: '#000', background: '#fff' });
+    JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: 1.5, height: small ? 30 : 46, margin: 16, marginTop: small ? 2 : 16, marginBottom: small ? 2 : 16, displayValue: false, lineColor: '#000', background: '#fff' });
   });
   document.body.setAttribute('data-printing', '');
   const done = () => { document.body.removeAttribute('data-printing'); window.removeEventListener('afterprint', done); };
@@ -2149,7 +2471,6 @@ $('#pc-print').addEventListener('click', async () => {
   } catch (err) { showError(err); }
   finally { btn.disabled = false; }
 });
-
 // Reprint a card that was lost or worn out. The number stays the same, so the balance,
 // history and any old card in a drawer are untouched; the reprint is noted on the record.
 function openReprint(m, opts) {
@@ -2190,7 +2511,6 @@ $('#pc-one-print').addEventListener('click', async () => {
   } catch (err) { showError(err); }
 });
 $('#pc-one').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('#pc-one-print').click(); } });
-
 // Desk logins
 async function loadUsers() {
   try {
@@ -2257,7 +2577,6 @@ function openSetPassword(username) {
     catch (err) { showError(err); }
   });
 }
-
 // CSV
 function parseCSV(text) {
   const rows = []; let row = [], cell = '', inQ = false;
@@ -2278,7 +2597,6 @@ function downloadCSV(name, rows) {
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
 }
-
 let importRows = null;
 $('#s-import-file').addEventListener('change', async e => {
   const f = e.target.files[0]; importRows = null; $('#s-import-run').disabled = true;
@@ -2314,11 +2632,10 @@ $('#s-import-run').addEventListener('click', async () => {
   out.innerHTML = '<b>Done.</b> ' + ok + ' imported' + (bad ? ', ' + bad + ' failed' : '') + '.' + (log.length ? '<ul style="margin:8px 0 0 18px;padding:0">' + log.map(l => '<li>' + esc(l) + '</li>').join('') + '</ul>' : '');
   importRows = null; $('#s-import-file').value = '';
 });
-
 $('#s-export-members').addEventListener('click', async () => {
   try {
     const rows = await fetchAll(() => sb.from('pool_member_state').select('*').order('name'));
-    downloadCSV('pool-members-' + sydneyDate() + '.csv', [['id', 'name', 'kind', 'phone', 'email', 'card', 'balance', 'expires_on', 'last_swim', 'active', 'rate', 'note']].concat(rows.map(r => [r.id, r.name, r.kind, r.phone, r.email, r.barcode, r.balance, r.expires_on, r.last_entry ? fmtDate(r.last_entry) : '', r.active ? 'yes' : 'no', r.rate, r.note])));
+    downloadCSV('pool-members-' + sydneyDate() + '.csv', [['id', 'name', 'kind', 'phone', 'email', 'card', 'card_type', 'balance', 'expires_on', 'last_swim', 'active', 'rate', 'note']].concat(rows.map(r => [r.id, r.name, r.kind, r.phone, r.email, r.barcode, CARD_STATE_NAME[cardState(r)], r.balance, r.expires_on, r.last_entry ? fmtDate(r.last_entry) : '', r.active ? 'yes' : 'no', r.rate, r.note])));
   } catch (err) { showError(err); }
 });
 $('#s-export-ledger').addEventListener('click', async () => {
@@ -2327,7 +2644,13 @@ $('#s-export-ledger').addEventListener('click', async () => {
     downloadCSV('pool-ledger-' + sydneyDate() + '.csv', [['id', 'at', 'member_id', 'member', 'member_kind', 'kind', 'qty', 'amount', 'product', 'adults', 'children', 'infants', 'clients', 'payment', 'note', 'reverses']].concat(rows.map(e => [e.id, e.at, e.member_id, e.pool_members && e.pool_members.name, e.pool_members && e.pool_members.kind, e.kind, e.qty, e.amount, e.pool_products && e.pool_products.name, e.adults, e.children, e.infants, e.clients, e.payment, e.note, e.reverses])));
   } catch (err) { showError(err); }
 });
-
+$('#s-export-deletions').addEventListener('click', async () => {
+  try {
+    const rows = await fetchAll(() => sb.from('pool_deletions').select('*').order('id'));
+    downloadCSV('pool-deletions-' + sydneyDate() + '.csv', [['id', 'deleted_at', 'deleted_by', 'what', 'member_id', 'member', 'member_kind', 'card', 'row_id', 'row_at', 'row_kind', 'qty', 'amount', 'adults', 'children', 'infants', 'clients', 'payment', 'row_note', 'row_by', 'undo_id', 'undone_at', 'undone_by', 'undo_reason']]
+      .concat(rows.map(d => [d.id, d.at, d.deleted_by, d.what, d.member_id, d.member_name, d.member_kind, d.barcode, d.entry_id, d.entry_at, d.entry_kind, d.qty, d.amount, d.adults, d.children, d.infants, d.clients, d.payment, d.entry_note, d.entry_by, d.reversal_id, d.reversal_at, d.reversal_by, d.reversal_note])));
+  } catch (err) { showError(err); }
+});
 // =============================================================================
 init();
 })();
