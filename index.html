@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WSLR Pool Pass</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F6B73'/%3E%3Cpath d='M6 20c3 0 3-3 6-3s3 3 6 3 3-3 6-3 3 3 6 3' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --bg: #F3F6F4; --surface: #FFFFFF; --ink: #172220; --muted: #5C6B67;
+    --line: #D3DBD7; --line-strong: #B9C4BF;
+    --accent: #0F6B73; --accent-ink: #FFFFFF; --accent-soft: #DDEFF0;
+    --red: #C9351F; --red-soft: #FBE4DF;
+    --good: #1E7B44; --good-soft: #DFF2E5;
+    --warn: #A8640B; --warn-soft: #FBEDD8;
+    --code-bg: #EEF2F0;
+    --shadow: 0 1px 2px rgba(23,34,32,.06), 0 10px 28px -14px rgba(23,34,32,.22);
+    --display: 'Bricolage Grotesque', 'Atkinson Hyperlegible', system-ui, sans-serif;
+    --body: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1514; --surface: #171F1E; --ink: #E6ECEA; --muted: #98A5A1;
+      --line: #28332F; --line-strong: #3A4843;
+      --accent: #63C6CD; --accent-ink: #0F1514; --accent-soft: #143336;
+      --red: #FF6A55; --red-soft: #3B1D18;
+      --good: #5AD08A; --good-soft: #163222;
+      --warn: #E9AC4E; --warn-soft: #332610;
+      --code-bg: #1F2A28;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  [hidden] { display: none !important; }
+  h1, h2, h3 { font-family: var(--display); margin: 0; line-height: 1.1; text-wrap: balance; }
+  h1 { font-size: 22px; font-weight: 700; }
+  h2 { font-size: 22px; font-weight: 700; }
+  h3 { font-size: 16px; font-weight: 700; }
+  p { margin: 0; }
+  a { color: var(--accent); }
+  .muted { color: var(--muted); }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .small { font-size: 14px; }
+  .eyebrow { font-family: var(--mono); font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+
+  /* App bar */
+  .appbar { display: flex; align-items: center; gap: 18px; padding: 10px 20px; background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand .logo { width: 30px; height: 30px; border-radius: 7px; background: var(--accent); display: grid; place-items: center; color: #fff; flex: none; }
+  .brand h1 { font-size: 18px; }
+  .tabs { display: flex; gap: 4px; margin-left: 8px; }
+  .tab { font: inherit; font-weight: 700; font-size: 15px; background: none; border: 0; color: var(--muted); padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+  .tab:hover { color: var(--ink); background: var(--code-bg); }
+  .tab[aria-selected="true"] { color: var(--accent); background: var(--accent-soft); }
+  .tab:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .appbar .spacer { flex: 1; }
+  .appbar .who { font-size: 13.5px; color: var(--muted); }
+  .online { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--good); margin-right: 6px; vertical-align: 1px; }
+  .online.off { background: var(--red); }
+
+  main { max-width: 1120px; margin: 0 auto; padding: 22px 20px 80px; }
+  .offline { background: var(--red); color: #fff; text-align: center; padding: 10px 16px; font-weight: 700; position: sticky; top: 52px; z-index: 19; }
+  .soft { color: var(--warn); }
+  .page[hidden] { display: none; }
+
+  /* Buttons and fields */
+  button, .btn { font: inherit; font-family: var(--body); font-weight: 700; font-size: 15px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); padding: 9px 14px; border-radius: 8px; cursor: pointer; line-height: 1.2; }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  button:disabled { opacity: .5; cursor: default; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  button.primary:hover { filter: brightness(1.08); color: var(--accent-ink); }
+  button.danger { color: var(--red); border-color: var(--red); background: var(--surface); }
+  button.danger:hover { background: var(--red-soft); }
+  button.big { font-size: 18px; padding: 14px 20px; border-radius: 10px; }
+  button.link { border: 0; background: none; padding: 4px 6px; color: var(--accent); font-weight: 700; }
+  button.link:hover { text-decoration: underline; }
+  input, select, textarea { font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 8px; padding: 9px 12px; width: 100%; }
+  input[type="number"] { font-family: var(--mono); }
+  textarea { min-height: 70px; resize: vertical; }
+  label { display: block; font-size: 13.5px; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+  .field { margin-bottom: 12px; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+  /* Panels */
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .panel + .panel { margin-top: 16px; }
+  .panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .stat { display: grid; gap: 2px; }
+  .stat .v { font-family: var(--mono); font-size: 26px; font-weight: 600; line-height: 1.1; }
+  .stat .k { font-size: 13px; color: var(--muted); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--mono); font-weight: 400; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  td.num, th.num { text-align: right; font-family: var(--mono); }
+  tr.clickable { cursor: pointer; }
+  tr.clickable:hover td { background: var(--code-bg); }
+  tr.selected td { background: var(--accent-soft); }
+  tr.dim td { color: var(--muted); }
+  .scroll { overflow-x: auto; }
+  .empty { color: var(--muted); text-align: center; padding: 24px; }
+
+  .pill { display: inline-block; font-family: var(--mono); font-size: 12px; padding: 2px 9px; border-radius: 999px; background: var(--code-bg); color: var(--ink); white-space: nowrap; }
+  .pill.good { background: var(--good-soft); color: var(--good); }
+  .pill.warn { background: var(--warn-soft); color: var(--warn); }
+  .pill.red  { background: var(--red-soft); color: var(--red); }
+  .pill.accent { background: var(--accent-soft); color: var(--accent); }
+
+  /* Scan page */
+  .scan-layout { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 900px) { .scan-layout { grid-template-columns: 1.4fr 1fr; align-items: start; } }
+  .scanbox { position: relative; }
+  #scan { position: absolute; opacity: 0; width: 1px; height: 1px; left: -9999px; }
+  .focus-note { font-size: 13.5px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .focus-note .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 3px var(--red-soft); }
+  .focus-note.ready .dot { background: var(--good); box-shadow: 0 0 0 3px var(--good-soft); }
+
+  .result { border-radius: 14px; padding: 26px 28px; min-height: 250px; border: 1px solid var(--line); background: var(--surface); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+  .result::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px; background: var(--tone, var(--line-strong)); }
+  .result[data-tone="ok"]   { --tone: var(--good); }
+  .result[data-tone="warn"] { --tone: var(--warn); }
+  .result[data-tone="bad"]  { --tone: var(--red); }
+  .result[data-tone="info"] { --tone: var(--accent); }
+  .result .state { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--tone, var(--muted)); font-weight: 600; }
+  .result .name { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 4vw, 44px); line-height: 1.05; margin-top: 8px; overflow-wrap: anywhere; }
+  .result .line { font-size: 22px; margin-top: 10px; }
+  .result .line b { font-family: var(--mono); font-weight: 600; }
+  .result .sub { color: var(--muted); margin-top: 6px; font-size: 16px; }
+  .result .idle { color: var(--muted); font-size: 20px; margin-top: 14px; max-width: 34ch; }
+  .result .actions { margin-top: 20px; }
+
+  .recent td:first-child { white-space: nowrap; font-family: var(--mono); color: var(--muted); }
+
+  .search-results { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+  .search-results button { display: flex; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: var(--surface); padding: 10px 12px; gap: 10px; align-items: center; font-weight: 400; }
+  .search-results button:last-child { border-bottom: 0; }
+  .search-results button:hover { background: var(--code-bg); color: var(--ink); }
+  .search-results .n { font-weight: 700; flex: 1; }
+
+  /* Members page */
+  .members-layout { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 900px) { .members-layout { grid-template-columns: 1fr 1.1fr; align-items: start; } }
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+  .toolbar input { max-width: 320px; }
+  .toolbar select { width: auto; }
+  .history td { font-size: 14px; }
+
+  /* Stepper */
+  .stepper { display: grid; grid-template-columns: 1fr auto auto auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .stepper:last-of-type { border-bottom: 0; }
+  .stepper .lab b { display: block; }
+  .stepper .lab span { font-size: 13px; color: var(--muted); }
+  .stepper button { width: 46px; height: 46px; font-size: 22px; padding: 0; border-radius: 10px; }
+  .stepper .val { font-family: var(--mono); font-size: 26px; font-weight: 600; min-width: 40px; text-align: center; }
+
+  /* Modal */
+  .modal-back { position: fixed; inset: 0; background: rgba(10,16,15,.45); display: grid; place-items: center; z-index: 50; padding: 16px; }
+  .modal { background: var(--surface); color: var(--ink); border-radius: 14px; padding: 22px 24px; width: min(560px, 100%); max-height: 92vh; overflow: auto; box-shadow: var(--shadow); border: 1px solid var(--line); }
+  .modal h2 { margin-bottom: 6px; }
+  .modal .lead { color: var(--muted); margin-bottom: 14px; }
+
+  /* Toast */
+  .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 15px; z-index: 60; box-shadow: var(--shadow); max-width: 90vw; }
+  .toast.err { background: var(--red); color: #fff; }
+
+  /* Login */
+  .login { max-width: 380px; margin: 60px auto; }
+  .login .panel { padding: 26px; }
+  .login h2 { margin-bottom: 4px; }
+  .login .lead { color: var(--muted); margin-bottom: 18px; }
+
+  /* Reports */
+  .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; align-items: start; }
+  .bar { height: 10px; background: var(--accent); border-radius: 4px; }
+
+  /* Card sheets (printed from Settings) */
+  .sheet { width: 170mm; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 80mm); gap: 4mm 10mm; justify-content: center; page-break-after: always; }
+  .sheet:last-child { page-break-after: auto; }
+  .pcard { width: 80mm; height: 48mm; border: 0.2mm solid #9A9A9A; position: relative; overflow: hidden; background: #fff; color: #333; font-family: Arial, Helvetica, sans-serif; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .pcard .band { height: 14mm; padding: 2.4mm 3.5mm 0; display: flex; justify-content: space-between; align-items: flex-start; }
+  .pcard .wm1 { font-size: 4.6pt; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; display: block; }
+  .pcard .wm2 { font-size: 7.8pt; font-weight: 700; display: block; line-height: 1.1; }
+  .pcard .ttl { font-size: 11pt; font-weight: 700; text-transform: uppercase; letter-spacing: -.01em; text-align: right; line-height: .95; }
+  .pcard .bc { position: absolute; left: 0; right: 0; top: 16.5mm; text-align: center; }
+  .pcard .bc svg { display: block; margin: 0 auto; }
+  .pcard .bc .num { font-family: Consolas, "Liberation Mono", monospace; font-size: 8pt; letter-spacing: .2em; color: #333; margin-top: 0.6mm; }
+  .pcard .foot { position: absolute; left: 3.5mm; right: 3.5mm; bottom: 1.8mm; font-size: 4.3pt; color: #6B7280; display: flex; justify-content: space-between; }
+  .pcard.standard .band { background: #12205A; color: #fff; }
+  .pcard.standard .wm1 { color: #88C9F7; }
+  .pcard.corporate .band { background: #F5A623; color: #12205A; }
+  .pcard.corporate .wm1 { color: #12205A; }
+  .ro-hint { font-size: 14px; color: var(--muted); }
+
+  /* Print (statements and card sheets) */
+  #print-area { display: none; }
+  @media print {
+    @page { size: A4; margin: 12mm; }
+    body { background: #fff; color: #000; }
+    body[data-printing] > * { display: none !important; }
+    body[data-printing] > #print-area { display: block !important; }
+    #print-area table { font-size: 12px; }
+    #print-area th, #print-area td { border-bottom: 1px solid #bbb; padding: 5px 8px; color: #000; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sign in -->
+<div id="login" class="login" hidden>
+  <div class="panel">
+    <div class="eyebrow">Wollongong Surf Leisure Resort</div>
+    <h2>Pool Pass</h2>
+    <p class="lead" id="login-lead">Sign in with the desk username. This computer stays signed in.</p>
+    <form id="login-form">
+      <div class="field"><label for="login-user">Username</label><input id="login-user" type="text" autocomplete="username" autocapitalize="off" spellcheck="false" required></div>
+      <div class="field"><label for="login-pass">Password</label><input id="login-pass" type="password" autocomplete="current-password" required></div>
+      <div class="field" id="login-confirm-field" hidden><label for="login-confirm">Password again</label><input id="login-confirm" type="password" autocomplete="new-password"></div>
+      <div class="actions"><button class="primary big" type="submit" id="login-btn" style="width:100%">Sign in</button></div>
+      <p id="login-error" class="small" style="color:var(--red);margin-top:10px" hidden></p>
+    </form>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app" hidden>
+  <header class="appbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 32 32"><path d="M4 20c3 0 3-3 6-3s3 3 6 3 3-3 6-3 3 3 6 3" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg></div>
+      <h1>Pool Pass</h1>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" data-page="scan" aria-selected="true">Scan</button>
+      <button class="tab" role="tab" data-page="rollover" aria-selected="false">Roll over</button>
+      <button class="tab" role="tab" data-page="members" aria-selected="false">Members</button>
+      <button class="tab" role="tab" data-page="reports" aria-selected="false">Reports</button>
+      <button class="tab" role="tab" data-page="settings" aria-selected="false">Settings</button>
+    </nav>
+    <div class="spacer"></div>
+    <div class="who"><span class="online" id="online-dot"></span><span id="who-email"></span></div>
+  </header>
+
+  <div id="offline" class="offline" hidden>No connection to the database. Write entries on the paper log and add them from the member screen when it is back.</div>
+
+  <main>
+    <!-- ================= SCAN ================= -->
+    <section id="page-scan" class="page">
+      <div class="scan-layout">
+        <div>
+          <div class="scanbox">
+            <input id="scan" autocomplete="off" aria-label="Scanner input">
+          </div>
+          <div class="row" style="justify-content:space-between;margin-bottom:10px">
+            <div class="focus-note ready" id="focus-note"><span class="dot"></span><span id="focus-text">Listening for the scanner</span></div>
+            <button class="primary" id="new-pass-btn" type="button">New pass</button>
+          </div>
+          <div class="result" id="result" data-tone="">
+            <div class="state" id="r-state">Ready</div>
+            <div class="name" id="r-name">Scan a card</div>
+            <div class="idle" id="r-idle">Hold the card under the scanner. The entry is recorded and the balance shown here. Nothing to click.</div>
+            <div id="r-body"></div>
+            <div class="actions" id="r-actions"></div>
+          </div>
+
+          <div class="panel" style="margin-top:16px">
+            <div class="panel-head"><h3>No card? Practice visit?</h3><span class="small muted">Type a few letters of the name</span></div>
+            <input id="quick-search" placeholder="Search by name, phone or practice" autocomplete="off">
+            <div id="quick-results" class="search-results" hidden></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <div class="panel-head"><h3>Today</h3><button class="link" id="refresh-today" type="button">Refresh</button></div>
+            <div class="stats">
+              <div class="stat"><div class="v" id="t-entries">–</div><div class="k">entries</div></div>
+              <div class="stat"><div class="v" id="t-people">–</div><div class="k">people through the gate</div></div>
+              <div class="stat"><div class="v" id="t-sales">–</div><div class="k">passes sold</div></div>
+            </div>
+            <div class="scroll" style="margin-top:14px">
+              <table class="recent">
+                <thead><tr><th>Time</th><th>Who</th><th class="num">Used</th><th>Kind</th><th></th></tr></thead>
+                <tbody id="recent-body"><tr><td colspan="5" class="empty">No scans yet today.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= ROLL OVER ================= -->
+    <section id="page-rollover" class="page" hidden>
+      <div class="scan-layout">
+        <div>
+          <div class="panel">
+            <div class="panel-head"><h2>Punch card to barcode card</h2><span class="small muted">Scan the new card, fill in the old one, transfer.</span></div>
+            <form id="ro-form">
+              <div class="field"><label for="ro-card">New card (scan it)</label><input id="ro-card" class="mono" autocomplete="off" placeholder="scan the new barcode card" required><div id="ro-card-note" class="small muted" style="margin-top:4px"></div></div>
+              <div class="grid2">
+                <div class="field"><label for="ro-name">Name</label><input id="ro-name" autocomplete="off" required></div>
+                <div class="field"><label for="ro-phone">Phone</label><input id="ro-phone" autocomplete="off" inputmode="tel"></div>
+                <div class="field"><label for="ro-old">Old punch card number</label><input id="ro-old" class="mono" autocomplete="off"></div>
+                <div class="field"><label for="ro-punches">Punches left on it</label><input id="ro-punches" type="number" min="0" step="1" value="0" required></div>
+                <div class="field"><label for="ro-kind">Pass type</label><select id="ro-kind"><option value="adult">Adult</option><option value="senior">Senior</option><option value="family">Family</option><option value="resident">Resident</option></select></div>
+                <div class="field"><label for="ro-expiry">Entries expire on</label><input id="ro-expiry" type="date"></div>
+              </div>
+              <div class="actions"><button class="primary big" type="submit" id="ro-go">Transfer to new card</button><button type="button" id="ro-clear">Clear</button></div>
+            </form>
+          </div>
+          <div class="result" id="ro-result" data-tone="" style="margin-top:16px;min-height:0">
+            <div class="state" id="ro-state">Ready</div>
+            <div class="name" id="ro-name-out" style="font-size:28px">Scan the next card</div>
+            <div id="ro-body"></div>
+            <div class="actions" id="ro-actions"></div>
+          </div>
+        </div>
+        <div>
+          <div class="panel">
+            <div class="panel-head"><h3>Rolled over</h3><button class="link" id="ro-refresh" type="button">Refresh</button></div>
+            <div class="stats">
+              <div class="stat"><div class="v" id="ro-today">–</div><div class="k">today</div></div>
+              <div class="stat"><div class="v" id="ro-total">–</div><div class="k">in total</div></div>
+              <div class="stat"><div class="v" id="ro-punches-total">–</div><div class="k">punches carried over</div></div>
+            </div>
+            <div class="scroll" style="margin-top:14px">
+              <table>
+                <thead><tr><th>When</th><th>Who</th><th>Old card</th><th class="num">Punches</th><th>New card</th></tr></thead>
+                <tbody id="ro-body-list"><tr><td colspan="5" class="empty">Nothing rolled over yet.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MEMBERS ================= -->
+    <section id="page-members" class="page" hidden>
+      <div class="toolbar">
+        <input id="m-search" placeholder="Search name, phone or card number" autocomplete="off">
+        <select id="m-kind">
+          <option value="">All kinds</option>
+          <option value="adult">Adult</option>
+          <option value="senior">Senior</option>
+          <option value="family">Family</option>
+          <option value="resident">Resident</option>
+          <option value="account">Practice account</option>
+        </select>
+        <label style="margin:0;display:flex;align-items:center;gap:6px;font-weight:400;color:var(--ink)"><input type="checkbox" id="m-inactive" style="width:auto"> show inactive</label>
+        <div class="spacer" style="flex:1"></div>
+        <button class="primary" id="m-add" type="button">Add member</button>
+      </div>
+      <div class="members-layout">
+        <div class="panel">
+          <div class="scroll">
+            <table>
+              <thead><tr><th>Name</th><th>Kind</th><th>Card</th><th class="num">Left</th><th>Expires</th></tr></thead>
+              <tbody id="m-body"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="panel" id="m-detail"><p class="empty">Select a member to see their card, balance and history.</p></div>
+      </div>
+    </section>
+
+    <!-- ================= REPORTS ================= -->
+    <section id="page-reports" class="page" hidden>
+      <div class="report-grid">
+        <div class="panel">
+          <div class="panel-head"><h3>Unredeemed entries</h3><span class="small muted">the contract liability</span></div>
+          <div class="stats">
+            <div class="stat"><div class="v" id="rp-liab-value">–</div><div class="k">at each holder's own price per entry</div></div>
+            <div class="stat"><div class="v" id="rp-liab-entries">–</div><div class="k">entries on active cards</div></div>
+            <div class="stat"><div class="v" id="rp-liab-holders">–</div><div class="k">holders with a balance</div></div>
+          </div>
+          <p class="small muted" style="margin-top:10px">Holders without a purchase on file (carried-over balances) are valued at the fallback rate in Settings.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Practice accounts, monthly statement</h3></div>
+          <div class="row">
+            <input type="month" id="rp-month" style="max-width:190px">
+            <button id="rp-statement" type="button">Build statement</button>
+            <button id="rp-statement-print" type="button" hidden>Print</button>
+            <button id="rp-statement-csv" type="button" hidden>CSV</button>
+          </div>
+          <div id="rp-statement-out" style="margin-top:12px"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Lapsed</h3><span class="small muted" id="rp-lapsed-note">entries left, no swim for 90 days</span></div>
+          <div class="scroll"><table><thead><tr><th>Name</th><th>Phone</th><th class="num">Left</th><th>Last swim</th></tr></thead><tbody id="rp-lapsed-body"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Expiring within 30 days</h3><span class="small muted">with entries unused</span></div>
+          <div class="scroll"><table><thead><tr><th>Name</th><th>Phone</th><th class="num">Left</th><th>Expires</th></tr></thead><tbody id="rp-expiring-body"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Entries per day</h3><span class="small muted">last 14 days</span></div>
+          <div id="rp-days"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Pass sales</h3><span class="small muted">last 30 days</span></div>
+          <div class="scroll"><table><thead><tr><th>Product</th><th class="num">Sold</th><th class="num">Value</th></tr></thead><tbody id="rp-sales-body"><tr><td colspan="3" class="empty">Loading…</td></tr></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SETTINGS ================= -->
+    <section id="page-settings" class="page" hidden>
+      <div class="panel">
+        <div class="panel-head"><h3>Passes for sale</h3><span class="small muted">Prices are what the desk charges from now on; past sales keep their price.</span></div>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Name</th><th>Holder</th><th class="num">Entries</th><th class="num">Price $</th><th class="num">Expiry (months)</th><th>Active</th></tr></thead>
+            <tbody id="s-products"></tbody>
+          </table>
+        </div>
+        <div class="actions"><button class="primary" id="s-products-save" type="button">Save passes</button><button id="s-products-add" type="button">Add a pass</button></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Desk rules</h3></div>
+        <div class="grid2">
+          <div class="field"><label for="s-double">Same card again within (seconds) is not counted. 0 = every scan counts</label><input type="number" id="s-double" min="0" step="10"></div>
+          <div class="field"><label for="s-low">Amber warning at or below (entries)</label><input type="number" id="s-low" min="0" step="1"></div>
+          <div class="field"><label for="s-undo">Desk can undo an entry up to (minutes) old. 1440 = a full day</label><input type="number" id="s-undo" min="1" step="1"></div>
+          <div class="field"><label for="s-lapsed">Lapsed after (days) without a swim</label><input type="number" id="s-lapsed" min="1" step="1"></div>
+          <div class="field"><label for="s-liab">Fallback value per entry for the liability report ($)</label><input type="number" id="s-liab" min="0" step="0.05"></div>
+        </div>
+        <div class="actions"><button class="primary" id="s-settings-save" type="button">Save rules</button></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Print cards</h3><span class="small muted">A4 sheets of 10, each 80 &times; 48 mm for a 54 &times; 86 mm pouch. Print at 100%, laminate, cut on the grey line.</span></div>
+        <div class="grid2">
+          <div class="field"><label for="pc-variant">Card</label><select id="pc-variant"><option value="standard">Standard pool pass</option><option value="corporate">Corporate pass</option></select></div>
+          <div class="field"><label for="pc-start">First number</label><input id="pc-start" type="number" min="100001" step="1"></div>
+          <div class="field"><label for="pc-count">How many</label><select id="pc-count"><option>10</option><option>20</option><option>30</option><option>50</option><option>100</option></select></div>
+        </div>
+        <p class="small muted" id="pc-note">The first number is the next one after the last sheet printed or the highest card in use, whichever is higher.</p>
+        <div class="actions"><button class="primary" id="pc-print" type="button">Print sheet</button></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Import a member list</h3></div>
+        <p class="small muted">A CSV with a header row. Recognised columns (any order, any case): <span class="mono">name, phone, kind, remaining, barcode, expires_on, note, rate, email</span>. Kind is adult, senior, family, resident or account (default adult). Remaining becomes an opening balance. Cards are assigned later at the desk, or now if the barcode column is filled.</p>
+        <div class="row" style="margin-top:10px">
+          <input type="file" id="s-import-file" accept=".csv,text/csv" style="max-width:360px">
+          <button id="s-import-run" type="button" disabled>Import</button>
+        </div>
+        <div id="s-import-out" class="small" style="margin-top:10px"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Export</h3></div>
+        <div class="actions" style="margin-top:0">
+          <button id="s-export-members" type="button">Members with balances (CSV)</button>
+          <button id="s-export-ledger" type="button">Full ledger (CSV)</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Desk logins</h3><span class="small muted">Change the password monthly. Changing it signs every computer out, so they sign in again with the new one.</span></div>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Username</th><th>Password changed</th><th>Last sign-in</th><th>Status</th><th></th></tr></thead>
+            <tbody id="s-users"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+          </table>
+        </div>
+        <div class="actions"><button class="primary" id="s-change-pass" type="button">Change my password</button><button id="s-add-user" type="button">Add a login</button></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>This computer</h3></div>
+        <p class="small muted">Signed in as <span id="s-email" class="mono"></span>. Data lives in Supabase (WSLR Kitchen project, tables prefixed pool_). Visit history is personal information: keep these logins to reception staff.</p>
+        <div class="actions"><button class="danger" id="s-signout" type="button">Sign out this computer</button></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="modal-root"></div>
+<div id="print-area"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.114.0/dist/umd/supabase.js"></script>
+<script>
+(function () {
+'use strict';
+
+// =============================================================================
+// Config
+// =============================================================================
+const SUPABASE_URL = 'https://agmonjcnxoguwvjppcxs.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_G5ZTmaaLwa8qbkFMBmUCeQ_sJs753qH';
+const TZ = 'Australia/Sydney';
+const SCANNER_GAP_MS = 100;        // keystrokes closer than this are a scanner, not a person
+const TOKEN_KEY = 'poolpass.session';
+
+const KINDS = { adult: 'Adult', senior: 'Senior', family: 'Family', resident: 'Resident', account: 'Practice account' };
+const PAYING = ['adult', 'senior', 'family'];
+
+// Desk logins live in the database (pool_users). Signing in returns a session
+// token; it rides on every request as the x-pool-token header and every table
+// policy and function checks it. No Supabase Auth involved.
+let sb;
+function readToken() { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; } }
+function writeToken(t) { try { if (t) localStorage.setItem(TOKEN_KEY, t); else localStorage.removeItem(TOKEN_KEY); } catch (e) { /* private window */ } }
+function makeClient() { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { global: { headers: { 'x-pool-token': readToken() } } }); }
+makeClient();
+
+// =============================================================================
+// Small helpers
+// =============================================================================
+const $ = (sel, root) => (root || document).querySelector(sel);
+const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = n => '$' + Number(n || 0).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const plural = (n, one, many) => n + ' ' + (n === 1 ? one : (many || one + 's'));
+
+function sydneyDate(d) {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d || new Date());
+}
+function sydneyMidnightISO(dateStr) {
+  let d = new Date(dateStr + 'T00:00:00+10:00');
+  const h = Number(new Intl.DateTimeFormat('en-AU', { timeZone: TZ, hour: 'numeric', hourCycle: 'h23' }).format(d));
+  if (h === 1) d = new Date(d.getTime() - 3600000);          // daylight saving: Sydney is +11
+  return d.toISOString();
+}
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+function monthRange(ym) {
+  const [y, m] = ym.split('-').map(Number);
+  const from = y + '-' + String(m).padStart(2, '0') + '-01';
+  const ny = m === 12 ? y + 1 : y, nm = m === 12 ? 1 : m + 1;
+  const to = ny + '-' + String(nm).padStart(2, '0') + '-01';
+  return { from: sydneyMidnightISO(from), to: sydneyMidnightISO(to), label: new Intl.DateTimeFormat('en-AU', { month: 'long', year: 'numeric' }).format(new Date(from + 'T12:00:00Z')) };
+}
+const fmtDate = iso => iso ? new Intl.DateTimeFormat('en-AU', { timeZone: TZ, day: 'numeric', month: 'short', year: '2-digit' }).format(new Date(iso)) : '';
+const fmtDateLong = iso => iso ? new Intl.DateTimeFormat('en-AU', { timeZone: TZ, weekday: 'short', day: 'numeric', month: 'short' }).format(new Date(iso)) : '';
+const fmtTime = iso => new Intl.DateTimeFormat('en-AU', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(iso));
+function rel(iso) {
+  const s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (s < 90) return Math.max(0, Math.round(s)) + ' seconds ago';
+  if (s < 3600) return Math.round(s / 60) + ' min ago';
+  if (s < 86400) return plural(Math.round(s / 3600), 'hour') + ' ago';
+  const d = Math.round(s / 86400);
+  if (d < 14) return plural(d, 'day') + ' ago';
+  if (d < 70) return plural(Math.round(d / 7), 'week') + ' ago';
+  return plural(Math.round(d / 30), 'month') + ' ago';
+}
+function daysUntil(dateStr) {
+  return Math.round((new Date(dateStr + 'T12:00:00Z') - new Date(sydneyDate() + 'T12:00:00Z')) / 86400000);
+}
+function parseDate(s) {                       // accepts 2027-03-14, 14/03/2027, 14/3/27
+  if (!s) return null;
+  s = String(s).trim();
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return m[1] + '-' + m[2].padStart(2, '0') + '-' + m[3].padStart(2, '0');
+  m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);
+  if (m) { const y = m[3].length === 2 ? '20' + m[3] : m[3]; return y + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0'); }
+  return null;
+}
+
+let toastTimer;
+function toast(msg, isErr) {
+  let t = $('.toast');
+  if (!t) { t = document.createElement('div'); document.body.appendChild(t); }
+  t.className = 'toast' + (isErr ? ' err' : '');
+  t.textContent = msg;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.remove(), isErr ? 6000 : 2600);
+}
+function showError(err) { console.error(err); toast((err && err.message) || String(err), true); }
+
+// Sounds: a chime for a good entry, a buzz for anything reception must look at.
+let audioCtx;
+function beep(kind) {
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = audioCtx.currentTime;
+    const tone = (f, start, dur, type, gain) => {
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = type || 'sine'; o.frequency.value = f; g.gain.value = gain || 0.18;
+      o.connect(g); g.connect(audioCtx.destination); o.start(t + start); o.stop(t + start + dur);
+    };
+    if (kind === 'ok') { tone(880, 0, 0.11); tone(1318, 0.12, 0.16); }
+    else if (kind === 'warn') { tone(660, 0, 0.22); tone(660, 0.28, 0.22); }
+    else { tone(150, 0, 0.4, 'square', 0.12); }
+  } catch (e) { /* no audio, no problem */ }
+}
+
+// Modal
+function openModal(html) {
+  const root = $('#modal-root');
+  root.innerHTML = '<div class="modal-back"><div class="modal" role="dialog" aria-modal="true">' + html + '</div></div>';
+  root.querySelector('.modal-back').addEventListener('mousedown', e => { if (e.target === e.currentTarget) closeModal(); });
+  const first = root.querySelector('input, select, textarea, button.primary, button');
+  if (first) setTimeout(() => first.focus(), 0);
+  return root.querySelector('.modal');
+}
+function closeModal() { $('#modal-root').innerHTML = ''; scanConsumer = null; setTimeout(guardFocus, 0); }
+function modalOpen() { return !!$('#modal-root').firstChild; }
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOpen()) closeModal(); });
+
+function stepper(id, label, hint, value, min) {
+  return '<div class="stepper" data-stepper="' + id + '" data-min="' + (min || 0) + '">' +
+    '<div class="lab"><b>' + esc(label) + '</b><span>' + esc(hint) + '</span></div>' +
+    '<button type="button" data-step="-1" aria-label="fewer">−</button>' +
+    '<div class="val">' + value + '</div>' +
+    '<button type="button" data-step="1" aria-label="more">+</button></div>';
+}
+function bindSteppers(root, onChange) {
+  $$('.stepper', root).forEach(s => {
+    s.addEventListener('click', e => {
+      const b = e.target.closest('[data-step]'); if (!b) return;
+      const v = $('.val', s), min = Number(s.dataset.min || 0);
+      v.textContent = Math.max(min, Number(v.textContent) + Number(b.dataset.step));
+      if (onChange) onChange();
+    });
+  });
+}
+const stepperValue = (root, id) => Number($('.stepper[data-stepper="' + id + '"] .val', root).textContent);
+
+// Data
+function netError(err) { return err && /Failed to fetch|NetworkError|Load failed|network/i.test(err.message || ''); }
+function setOffline(off) { const b = $('#offline'); if (b) b.hidden = !off; $('#online-dot').classList.toggle('off', off); }
+async function rpc(name, args) {
+  let res;
+  try { res = await sb.rpc(name, args); } catch (err) { if (netError(err)) setOffline(true); throw err; }
+  const { data, error } = res;
+  if (error) {
+    if (/not signed in/i.test(error.message) && session) { toast('Signed out: please sign in again.', true); signOut(); }
+    throw new Error(error.message);
+  }
+  setOffline(false);
+  return data;
+}
+async function q(builder) {
+  let res;
+  try { res = await builder; } catch (err) { if (netError(err)) setOffline(true); throw err; }
+  const { data, error } = res;
+  if (error) throw new Error(error.message);
+  setOffline(false);
+  return data;
+}
+// PostgREST returns at most 1000 rows per request; page through for exports.
+async function fetchAll(make, pageSize) {
+  pageSize = pageSize || 1000;
+  const out = [];
+  for (let from = 0; ; from += pageSize) {
+    const rows = await q(make().range(from, from + pageSize - 1));
+    out.push.apply(out, rows);
+    if (rows.length < pageSize) return out;
+  }
+}
+const clean = s => String(s || '').replace(/[,()"'%*]/g, ' ').trim().slice(0, 60);
+
+let session = null, settings = {}, products = [], currentPage = 'scan';
+let scanConsumer = null;            // a modal that wants the next scanned code
+
+async function loadSettings() {
+  const rows = await q(sb.from('pool_settings').select('*'));
+  settings = {};
+  rows.forEach(r => { settings[r.key] = r.value; });
+}
+async function loadProducts() { products = await q(sb.from('pool_products').select('*').order('sort').order('id')); }
+const setting = (k, d) => (settings[k] == null ? d : Number(settings[k]));
+
+// =============================================================================
+// Sign in and boot
+// =============================================================================
+let setupMode = false;
+
+async function init() {
+  session = null;
+  if (readToken()) {
+    try { const who = await rpc('pool_whoami'); if (who && who.username) session = { username: who.username }; }
+    catch (err) { console.warn(err); }
+    if (!session) { writeToken(''); makeClient(); }
+  }
+  if (!session) {
+    try { setupMode = await rpc('pool_setup_needed'); } catch (err) { setupMode = false; showError(err); }
+  }
+  renderAuth();
+}
+
+function renderAuth() {
+  $('#login').hidden = !!session;
+  $('#app').hidden = !session;
+  if (!session) {
+    $('#login-lead').textContent = setupMode ? 'No logins exist yet. Create the first username and password for the desk.' : 'Sign in with the desk username. This computer stays signed in.';
+    $('#login-btn').textContent = setupMode ? 'Create login and sign in' : 'Sign in';
+    $('#login-confirm-field').hidden = !setupMode;
+    $('#login-error').hidden = true;
+    $('#login-user').focus();
+    return;
+  }
+  $('#who-email').textContent = session.username;
+  $('#s-email').textContent = session.username;
+  Promise.all([loadSettings(), loadProducts()]).then(() => showPage('scan')).catch(showError);
+}
+
+function loginError(msg) { $('#login-error').textContent = msg; $('#login-error').hidden = false; }
+
+$('#login-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = $('#login-btn'); $('#login-error').hidden = true;
+  const username = $('#login-user').value.trim(), password = $('#login-pass').value;
+  if (!username || !password) return;
+  if (setupMode && password !== $('#login-confirm').value) { loginError('The two passwords do not match.'); return; }
+  btn.disabled = true;
+  try {
+    const r = await rpc(setupMode ? 'pool_bootstrap' : 'pool_login', { p_username: username, p_password: password });
+    if (!r || r.error) { loginError((r && r.error) || 'Sign-in failed.'); return; }
+    writeToken(r.token); makeClient();
+    session = { username: r.username }; setupMode = false;
+    $('#login-pass').value = ''; $('#login-confirm').value = '';
+    renderAuth();
+  } catch (err) { loginError(err.message); }
+  finally { btn.disabled = false; }
+});
+
+async function signOut() {
+  try { await rpc('pool_logout'); } catch (e) { /* token may already be dead */ }
+  writeToken(''); makeClient(); session = null;
+  init();
+}
+$('#s-signout').addEventListener('click', signOut);
+
+// A dead session (password changed on another computer, or expired) makes reads
+// come back empty rather than failing, so check in every few minutes.
+setInterval(async () => {
+  if (!session) return;
+  try { const who = await rpc('pool_whoami'); if (!who || !who.username) { toast('Signed out: the password was changed or the session expired.', true); signOut(); } }
+  catch (e) { /* offline, try again later */ }
+}, 5 * 60 * 1000);
+
+window.addEventListener('online', () => setOffline(false));
+window.addEventListener('offline', () => setOffline(true));
+
+// Pages
+$$('.tab').forEach(t => t.addEventListener('click', () => showPage(t.dataset.page)));
+function showPage(name) {
+  currentPage = name;
+  $$('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.page === name)));
+  $$('.page').forEach(p => { p.hidden = p.id !== 'page-' + name; });
+  if (name === 'scan') { loadToday(); guardFocus(); }
+  if (name === 'rollover') { loadRollovers(); rolloverReady(); }
+  if (name === 'members') loadMembers();
+  if (name === 'reports') loadReports();
+  if (name === 'settings') loadSettingsPage();
+}
+
+// =============================================================================
+// The scanner
+//   The scanner is a keyboard. The hidden #scan field is kept focused on the scan
+//   page, and a burst detector catches scans that land anywhere else.
+// =============================================================================
+const scanInput = $('#scan');
+scanInput.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  const code = scanInput.value.trim(); scanInput.value = '';
+  if (code) routeScan(code);
+});
+
+function guardFocus() {
+  if (!session || modalOpen()) return;
+  if (currentPage !== 'scan') return;
+  const a = document.activeElement;
+  const typing = a && a !== scanInput && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.tagName === 'SELECT');
+  const note = $('#focus-note');
+  if (typing) { note.classList.remove('ready'); $('#focus-text').textContent = 'Cursor is in a text box: scans still work, but click away when done'; return; }
+  note.classList.add('ready'); $('#focus-text').textContent = 'Listening for the scanner';
+  if (a !== scanInput) scanInput.focus();
+}
+setInterval(guardFocus, 700);
+document.addEventListener('click', e => {
+  if (e.target.closest('input, textarea, select, button, a, .modal, label')) return;
+  setTimeout(guardFocus, 0);
+});
+
+// Burst detector: scanner-speed keystrokes ending in Enter, wherever they landed.
+let burst = [], burstLast = 0;
+document.addEventListener('keydown', e => {
+  const now = performance.now();
+  if (e.key === 'Enter') {
+    const isBurst = burst.length >= 4 && now - burstLast < SCANNER_GAP_MS;
+    const code = burst.map(b => b.ch).join('');
+    burst = [];
+    if (!isBurst || e.target === scanInput) return;
+    const t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') && typeof t.value === 'string' && t.value.endsWith(code)) {
+      t.value = t.value.slice(0, -code.length);
+      t.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    e.preventDefault(); e.stopPropagation();
+    routeScan(code);
+    return;
+  }
+  if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    if (now - burstLast > SCANNER_GAP_MS) burst = [];
+    burst.push({ ch: e.key, t: now }); burstLast = now;
+  } else if (e.key !== 'Shift') { burst = []; }
+}, true);
+
+function routeScan(code) {
+  if (scanConsumer) { scanConsumer(code); return; }
+  if (modalOpen()) { toast('Finish or cancel the open window first, then scan again', true); return; }
+  if (currentPage === 'rollover') { rolloverCard(code); return; }
+  if (currentPage === 'members') { $('#m-search').value = code; loadMembers(); return; }
+  if (currentPage !== 'scan') showPage('scan');
+  onScan(code);
+}
+
+// =============================================================================
+// Scan screen
+// =============================================================================
+let lastResult = null;
+
+function setResult(o) {
+  const r = $('#result');
+  r.dataset.tone = o.tone || '';
+  $('#r-state').textContent = o.state || '';
+  $('#r-name').textContent = o.name || '';
+  $('#r-idle').hidden = !o.idle;
+  if (o.idle) $('#r-idle').textContent = o.idle;
+  $('#r-body').innerHTML = (o.line ? '<div class="line">' + o.line + '</div>' : '') + (o.sub ? '<div class="sub">' + o.sub + '</div>' : '');
+  const acts = $('#r-actions'); acts.innerHTML = '';
+  (o.actions || []).forEach(a => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = a.cls || ''; b.innerHTML = a.label;
+    b.addEventListener('click', () => a.run(b));
+    acts.appendChild(b);
+  });
+  if (o.beep) beep(o.beep);
+}
+function resetResult() {
+  setResult({ tone: '', state: 'Ready', name: 'Scan a card', idle: 'Hold the card under the scanner. The entry is recorded and the balance shown here. Nothing to click.' });
+}
+
+function memberLine(m, balance) {
+  const bits = [];
+  if (m.kind === 'account') bits.push('<b>' + balance * -1 + '</b> client visits owing');
+  else if (m.kind === 'resident') bits.push('Resident, no charge');
+  else bits.push('<b>' + balance + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + ' left');
+  if (m.expires_on && PAYING.includes(m.kind)) bits.push('expires ' + fmtDate(m.expires_on));
+  return bits.join(' &middot; ');
+}
+function kindPill(k) { return '<span class="pill ' + (k === 'account' ? 'accent' : '') + '">' + esc(KINDS[k] || k) + '</span>'; }
+
+async function undoEntry(entryId, note) {
+  await rpc('pool_reverse', { p_entry_id: entryId, p_note: note || 'undone at the desk' });
+  toast('Entry undone');
+  loadToday();
+}
+function sellAction(m, label) {
+  return { label: label || 'Sell a pass', cls: 'primary', run: () => openSell(m, { fromScan: true }) };
+}
+
+async function onScan(code, extra) {
+  let res;
+  try { res = await rpc('pool_scan', Object.assign({ p_barcode: code }, extra || {})); }
+  catch (err) { showError(err); return; }
+  presentScan(res, { code });
+}
+async function onMemberEntry(memberId, extra) {           // no card present
+  let res;
+  try { res = await rpc('pool_scan', Object.assign({ p_member_id: memberId }, extra || {})); }
+  catch (err) { showError(err); return; }
+  presentScan(res, { memberId });
+}
+function again(ctx, extra) { return ctx.code ? onScan(ctx.code, extra) : onMemberEntry(ctx.memberId, extra); }
+
+async function presentScan(res, ctx) {
+  const m = res.member, bal = res.balance;
+  lastResult = res;
+  switch (res.state) {
+    case 'ok':
+    case 'low': {
+      const low = res.state === 'low';
+      let line;
+      if (m.kind === 'account') line = '<b>' + res.deducted + '</b> ' + (res.deducted === 1 ? 'client' : 'clients') + ' recorded &middot; <b>' + (-bal) + '</b> owing this period';
+      else if (m.kind === 'resident') line = 'Resident &middot; visit recorded, no charge';
+      else if (m.kind === 'family') line = '<b>' + res.deducted + '</b> punches used &middot; <b>' + bal + '</b> left' + (m.expires_on ? ' &middot; expires ' + fmtDate(m.expires_on) : '');
+      else line = memberLine(m, bal);
+      const actions = [];
+      if (low && PAYING.includes(m.kind)) actions.push(sellAction(m, bal === 0 ? 'Sell a new pass' : 'Top up now'));
+      const secs = res.last_entry ? (Date.now() - new Date(res.last_entry).getTime()) / 1000 : null;
+      const repeat = secs != null && secs < 300;
+      setResult({ tone: low ? 'warn' : 'ok', state: low ? (bal === 0 ? 'Entered · card now empty' : 'Entered · running low') : 'Entered', name: m.name, line: line,
+        sub: repeat ? '<span class="soft">Also scanned ' + rel(res.last_entry) + '. Counted again; undo it from the Today list if that was a double.</span>'
+           : (res.last_entry ? 'Last swim ' + rel(res.last_entry) : (m.kind === 'account' ? 'Invoiced monthly in arrears' : 'First swim on this card')),
+        actions: actions, beep: low ? 'warn' : 'ok' });
+      if (m.kind === 'account') showMonthCount(m);
+      break;
+    }
+    case 'double':
+      setResult({ tone: 'warn', state: 'Not counted', name: m.name, line: 'Already scanned <b>' + rel(res.last_entry) + '</b>', sub: memberLine(m, bal) + '. Same card twice within ' + setting('double_scan_seconds', 120) + ' seconds is one swimmer.',
+        actions: [{ label: 'Count it anyway', cls: '', run: () => again(ctx, { p_force: true }) }], beep: 'bad' });
+      break;
+    case 'empty':
+      setResult({ tone: 'bad', state: 'Not counted', name: m.name, line: 'No entries left', sub: (m.expires_on ? 'Card valid to ' + fmtDate(m.expires_on) + '. ' : '') + 'Sell a pass and scan again.',
+        actions: [sellAction(m, 'Sell a pass')], beep: 'bad' });
+      break;
+    case 'expired':
+      setResult({ tone: 'bad', state: 'Not counted', name: m.name, line: 'Card expired <b>' + plural(res.days_expired, 'day') + ' ago</b> &middot; <b>' + bal + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + ' unused',
+        sub: 'A new pass restarts the 12 months and keeps the unused balance.',
+        actions: [sellAction(m, 'Sell a new pass'), { label: 'Extend expiry', cls: '', run: () => openExtend(m, ctx) }], beep: 'bad' });
+      break;
+    case 'insufficient':
+      setResult({ tone: 'bad', state: 'Not counted', name: m.name, line: 'Needs <b>' + res.needed + '</b> punches, only <b>' + bal + '</b> left',
+        sub: 'Sell a pass, or change the party.',
+        actions: [sellAction(m, 'Sell a pass'), { label: 'Change party', cls: '', run: () => openParty(m, bal, null, ctx) }], beep: 'bad' });
+      break;
+    case 'inactive':
+      setResult({ tone: 'bad', state: 'Not counted', name: m.name, line: 'This card is deactivated', sub: memberLine(m, bal) + '. Reactivate it on the Members page if that is wrong.', beep: 'bad' });
+      break;
+    case 'unknown':
+      setResult({ tone: 'info', state: 'New card', name: 'Card ' + esc(res.barcode), line: 'Not assigned to anyone yet', sub: 'A new pass, or a replacement card for someone already in the system.',
+        actions: [{ label: 'New pass', cls: 'primary', run: () => openNewPass(res.barcode) }, { label: 'Existing member', cls: '', run: () => openAssign(res.barcode) }], beep: 'bad' });
+      break;
+    case 'needs_party':
+      setResult({ tone: 'info', state: 'Family pass', name: m.name, line: '<b>' + bal + '</b> punches left' + (m.expires_on ? ' &middot; expires ' + fmtDate(m.expires_on) : ''), sub: 'Who is going in?' });
+      openParty(m, bal, res.last_party, ctx);
+      break;
+    case 'needs_count':
+      setResult({ tone: 'info', state: 'Practice account', name: m.name, line: '<b>' + (-bal) + '</b> client visits owing', sub: 'How many clients today?' });
+      openCount(m, ctx);
+      break;
+    default:
+      setResult({ tone: 'bad', state: 'Unexpected', name: res.state || '?', beep: 'bad' });
+  }
+  loadToday();
+}
+
+async function showMonthCount(m) {
+  try {
+    const r = monthRange(sydneyDate().slice(0, 7));
+    const rows = await q(sb.from('pool_entries').select('qty').eq('member_id', m.id).in('kind', ['entry', 'adjustment']).gte('at', r.from).lt('at', r.to));
+    const n = rows.reduce((a, x) => a - x.qty, 0);
+    const sub = $('#r-body .sub'); if (sub) sub.innerHTML = '<b>' + n + '</b> client visits so far in ' + r.label + (m.rate ? ' &middot; ' + money(n * m.rate) + ' at ' + money(m.rate) + ' each' : '');
+  } catch (e) { /* cosmetic */ }
+}
+
+// Family party picker
+function openParty(m, balance, last, ctx) {
+  const p = last || { adults: 1, children: 0, infants: 0 };
+  const modal = openModal(
+    '<h2>' + esc(m.name) + ' &middot; family pass</h2>' +
+    '<p class="lead"><b class="mono">' + balance + '</b> punches left. Adults use 2, children 1, under-5s are free with a paying adult.</p>' +
+    stepper('adults', 'Adults', '2 punches each', p.adults, 0) +
+    stepper('children', 'Children 5 to 17', '1 punch each', p.children, 0) +
+    stepper('infants', 'Under 5', 'free with an adult', p.infants || 0, 0) +
+    '<div class="row" style="justify-content:space-between;margin-top:14px"><div class="line">Uses <b class="mono" id="party-total">0</b> punches</div>' +
+    '<div class="actions" style="margin:0"><button type="button" id="party-cancel">Cancel</button><button type="button" class="primary big" id="party-go">Enter</button></div></div>');
+  const total = () => 2 * stepperValue(modal, 'adults') + stepperValue(modal, 'children');
+  const refresh = () => {
+    const t = total(); $('#party-total', modal).textContent = t;
+    $('#party-go', modal).disabled = t === 0 || t > balance;
+    $('#party-go', modal).textContent = t > balance ? 'Not enough punches' : 'Enter';
+  };
+  bindSteppers(modal, refresh); refresh();
+  $('#party-cancel', modal).addEventListener('click', () => { closeModal(); resetResult(); });
+  $('#party-go', modal).addEventListener('click', () => {
+    const extra = { p_adults: stepperValue(modal, 'adults'), p_children: stepperValue(modal, 'children'), p_infants: stepperValue(modal, 'infants') };
+    closeModal(); again(ctx, extra);
+  });
+}
+
+// Practice head count
+function openCount(m, ctx) {
+  const modal = openModal(
+    '<h2>' + esc(m.name) + '</h2>' +
+    '<p class="lead">Recorded to the account' + (m.rate ? ' at ' + money(m.rate) + ' per client' : '') + ' and invoiced monthly.</p>' +
+    stepper('clients', 'Clients today', 'the practitioner is not counted', 1, 1) +
+    '<div class="field" style="margin-top:12px"><label for="count-note">Practitioner (for the record)</label><input id="count-note" placeholder="e.g. Sam, Coast Physio" autocomplete="off"></div>' +
+    '<div class="actions"><button type="button" id="count-cancel">Cancel</button><button type="button" class="primary big" id="count-go">Record visit</button></div>');
+  bindSteppers(modal);
+  $('#count-cancel', modal).addEventListener('click', () => { closeModal(); resetResult(); });
+  $('#count-go', modal).addEventListener('click', () => {
+    const extra = { p_clients: stepperValue(modal, 'clients'), p_note: $('#count-note', modal).value.trim() || null };
+    closeModal(); again(ctx, extra);
+  });
+}
+
+// Sell a pass
+function openSell(m, opts) {
+  opts = opts || {};
+  const list = products.filter(p => p.active);
+  if (!list.length) { toast('No passes are set up. Add them under Settings.', true); return; }
+  const preferred = list.find(p => p.holder_kind === m.kind) || list[0];
+  const modal = openModal(
+    '<h2>Sell a pass &middot; ' + esc(m.name) + '</h2>' +
+    '<p class="lead">Expiry restarts from today. Any unused balance carries over.</p>' +
+    '<div class="field">' + list.map(p =>
+      '<label style="display:flex;gap:10px;align-items:center;font-weight:400;color:var(--ink);font-size:16px;padding:8px 0;border-bottom:1px solid var(--line);margin:0">' +
+      '<input type="radio" name="sell-product" value="' + p.id + '" style="width:auto"' + (p.id === preferred.id ? ' checked' : '') + '>' +
+      '<span style="flex:1"><b>' + esc(p.name) + '</b> <span class="muted small">' + p.entries + ' ' + (p.holder_kind === 'family' ? 'punches' : 'entries') + ', ' + (p.expiry_months ? p.expiry_months + ' months' : 'no expiry') + '</span></span>' +
+      '<span class="mono">' + money(p.price) + '</span></label>').join('') + '</div>' +
+    '<div class="grid2"><div class="field"><label for="sell-pay">Paid by</label><select id="sell-pay"><option value="card">Card</option><option value="cash">Cash</option><option value="other">Other / account</option></select></div>' +
+    '<div class="field"><label for="sell-note">Note</label><input id="sell-note" placeholder="optional" autocomplete="off"></div></div>' +
+    (m.kind !== preferred.holder_kind && m.kind !== 'resident' ? '<p class="small muted">This member is set as ' + esc(KINDS[m.kind]) + '. Selling a different pass type changes them to match.</p>' : '') +
+    '<div class="actions"><button type="button" id="sell-cancel">Cancel</button><button type="button" class="primary big" id="sell-go">Record sale</button></div>');
+  $('#sell-cancel', modal).addEventListener('click', closeModal);
+  $('#sell-go', modal).addEventListener('click', async btn => {
+    const pid = Number((modal.querySelector('input[name="sell-product"]:checked') || {}).value);
+    if (!pid) return;
+    $('#sell-go', modal).disabled = true;
+    try {
+      const r = await rpc('pool_sell', { p_member_id: m.id, p_product_id: pid, p_payment: $('#sell-pay', modal).value, p_note: $('#sell-note', modal).value.trim() || null });
+      const p = list.find(x => x.id === pid);
+      closeModal();
+      toast('Sold ' + p.name + ' to ' + m.name);
+      if (opts.fromScan) {
+        setResult({ tone: 'ok', state: 'Pass sold', name: m.name, line: esc(p.name) + ' &middot; ' + money(p.price) + ' &middot; <b>' + r.balance + '</b> ' + (p.holder_kind === 'family' ? 'punches' : 'entries') + ' now on the card',
+          sub: r.member.expires_on ? 'Expires ' + fmtDate(r.member.expires_on) + '. Scan the card again to enter.' : 'Scan the card again to enter.', beep: 'ok' });
+        loadToday();
+      }
+      if (opts.after) opts.after(r);
+    } catch (err) { showError(err); $('#sell-go', modal).disabled = false; }
+  });
+}
+
+// Extend expiry without a sale (goodwill, illness, the pool was closed)
+function openExtend(m, ctx) {
+  const modal = openModal(
+    '<h2>Extend expiry &middot; ' + esc(m.name) + '</h2>' +
+    '<p class="lead">Currently ' + (m.expires_on ? fmtDate(m.expires_on) : 'no expiry') + '.</p>' +
+    '<div class="grid2"><div class="field"><label for="ext-date">New expiry date</label><input type="date" id="ext-date" value="' + addDays(sydneyDate(), 30) + '"></div>' +
+    '<div class="field"><label for="ext-note">Reason</label><input id="ext-note" placeholder="required" autocomplete="off"></div></div>' +
+    '<div class="actions"><button type="button" id="ext-cancel">Cancel</button><button type="button" class="primary" id="ext-go">Extend</button></div>');
+  $('#ext-cancel', modal).addEventListener('click', closeModal);
+  $('#ext-go', modal).addEventListener('click', async () => {
+    const d = $('#ext-date', modal).value, note = $('#ext-note', modal).value.trim();
+    if (!d || !note) { toast('Date and reason are both needed', true); return; }
+    try {
+      await q(sb.from('pool_members').update({ expires_on: d, note: ((m.note ? m.note + '\n' : '') + sydneyDate() + ' expiry extended to ' + d + ': ' + note) }).eq('id', m.id));
+      closeModal(); toast('Expiry extended to ' + fmtDate(d));
+      if (ctx) again(ctx);
+    } catch (err) { showError(err); }
+  });
+}
+
+// A new card for someone already in the system (a replacement, or a member who was imported)
+function openAssign(code) {
+  const modal = openModal(
+    '<h2>Card ' + esc(code) + ' for an existing member</h2>' +
+    '<p class="lead">Type a name or phone. Their old card stops working the moment this one is saved.</p>' +
+    '<div class="field"><label for="as-search">Member</label><input id="as-search" placeholder="Type a name or phone" autocomplete="off"><div id="as-results" class="search-results" hidden></div></div>' +
+    '<div class="actions"><button type="button" id="as-cancel">Cancel</button><button type="button" id="as-new">It is a new pass instead</button></div>');
+  $('#as-cancel', modal).addEventListener('click', () => { closeModal(); resetResult(); });
+  $('#as-new', modal).addEventListener('click', () => { closeModal(); openNewPass(code); });
+  const search = $('#as-search', modal), results = $('#as-results', modal);
+  let timer;
+  search.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(async () => {
+    const s = clean(search.value); if (s.length < 2) { results.hidden = true; return; }
+    const rows = await q(sb.from('pool_member_state').select('*').or('name.ilike.%' + s + '%,phone.ilike.%' + s + '%').order('name').limit(8));
+    results.innerHTML = rows.length ? rows.map(r => '<button type="button" data-id="' + r.id + '"><span class="n">' + esc(r.name) + '</span>' + kindPill(r.kind) + '<span class="mono small">' + (r.barcode ? 'card ' + esc(r.barcode) : 'no card') + ' · ' + r.balance + ' left</span></button>').join('') : '<button type="button" disabled>No matches</button>';
+    results.hidden = false;
+    $$('button[data-id]', results).forEach(b => b.addEventListener('click', () => assignTo(rows.find(r => r.id === Number(b.dataset.id)))));
+  }, 250); });
+  async function assignTo(r) {
+    if (r.barcode && r.barcode !== code && !confirm('Replace ' + r.name + '\'s card ' + r.barcode + ' with ' + code + '? The old card will stop working.')) return;
+    try {
+      const patch = { barcode: code };
+      if (r.barcode && r.barcode !== code) patch.note = ((r.note ? r.note + '\n' : '') + sydneyDate() + ' card ' + r.barcode + ' replaced by ' + code);
+      await q(sb.from('pool_members').update(patch).eq('id', r.id));
+      closeModal(); toast('Card ' + code + ' assigned to ' + r.name);
+      onScan(code);
+    } catch (err) { showError(/duplicate|unique/i.test(err.message) ? new Error('Card ' + code + ' already belongs to another member') : err); }
+  }
+}
+
+// New pass: a fresh card, a name and a number, the pass they are buying, and any
+// entries being carried over. One call, nothing half done.
+function openNewPass(code) {
+  const list = products.filter(p => p.active);
+  const modal = openModal(
+    '<h2>New pass &middot; card ' + esc(code) + '</h2>' +
+    '<p class="lead">Name and phone go in the system against this card. Pick the pass they are buying, or none if they already have entries to carry over.</p>' +
+    '<div class="grid2">' + field('Name', '<input id="np-name" autocomplete="off" required>') + field('Phone', '<input id="np-phone" autocomplete="off" inputmode="tel">') + '</div>' +
+    '<div class="field"><label>Pass</label>' +
+      list.map(p => '<label style="display:flex;gap:10px;align-items:center;font-weight:400;color:var(--ink);font-size:16px;padding:7px 0;border-bottom:1px solid var(--line);margin:0">' +
+        '<input type="radio" name="np-product" value="' + p.id + '" style="width:auto"' + (p === list[0] ? ' checked' : '') + '>' +
+        '<span style="flex:1"><b>' + esc(p.name) + '</b> <span class="muted small">' + p.entries + ' ' + (p.holder_kind === 'family' ? 'punches' : 'entries') + ', ' + (p.expiry_months ? p.expiry_months + ' months' : 'no expiry') + '</span></span><span class="mono">' + money(p.price) + '</span></label>').join('') +
+      '<label style="display:flex;gap:10px;align-items:center;font-weight:400;color:var(--ink);font-size:16px;padding:7px 0;margin:0"><input type="radio" name="np-product" value="" style="width:auto"><span style="flex:1"><b>No pass today</b> <span class="muted small">card only, or carrying entries over</span></span></label>' +
+    '</div>' +
+    '<div class="grid2">' + field('Paid by', '<select id="np-pay"><option value="card">Card</option><option value="cash">Cash</option><option value="other">Other</option></select>') +
+      field('Entries carried over', '<input id="np-carry" type="number" min="0" step="1" value="0">') +
+      field('Kind if no pass', '<select id="np-kind">' + ['adult', 'senior', 'family', 'resident'].map(k => '<option value="' + k + '">' + KINDS[k] + '</option>').join('') + '</select>') + '</div>' +
+    '<div class="actions"><button type="button" id="np-cancel">Cancel</button><button type="button" id="np-existing">Existing member instead</button><button type="button" class="primary big" id="np-go">Create pass</button></div>');
+  $('#np-cancel', modal).addEventListener('click', () => { closeModal(); resetResult(); });
+  $('#np-existing', modal).addEventListener('click', () => { closeModal(); openAssign(code); });
+  $('#np-go', modal).addEventListener('click', async () => {
+    const name = $('#np-name', modal).value.trim(); if (!name) { toast('A name is needed', true); return; }
+    const pid = (modal.querySelector('input[name="np-product"]:checked') || {}).value;
+    const carry = Number($('#np-carry', modal).value) || 0;
+    $('#np-go', modal).disabled = true;
+    try {
+      const r = await rpc('pool_new_pass', { p_barcode: code, p_name: name, p_phone: $('#np-phone', modal).value.trim() || null,
+        p_product_id: pid ? Number(pid) : null, p_payment: $('#np-pay', modal).value, p_carry_over: carry,
+        p_kind: pid ? null : $('#np-kind', modal).value });
+      const p = pid ? list.find(x => x.id === Number(pid)) : null;
+      const m = r.member;
+      closeModal(); toast('New pass for ' + m.name);
+      setResult({ tone: 'ok', state: 'New pass', name: m.name,
+        line: (p ? esc(p.name) + ' &middot; ' + money(p.price) + ' &middot; ' : '') + '<b>' + r.balance + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + ' on card ' + esc(code) + (carry ? ' (' + carry + ' carried over)' : ''),
+        sub: m.expires_on ? 'Expires ' + fmtDate(m.expires_on) + '. Going in now?' : 'Going in now?',
+        actions: [{ label: 'Enter now', cls: 'primary', run: () => onScan(code) }], beep: 'ok' });
+      loadToday();
+    } catch (err) { showError(err); $('#np-go', modal).disabled = false; }
+  });
+}
+
+// The New pass button: scan the blank card first
+$('#new-pass-btn').addEventListener('click', () => {
+  const modal = openModal(
+    '<h2>New pass</h2><p class="lead">Scan the new card now, or type its number.</p>' +
+    field('Card number', '<input id="npc-code" class="mono" autocomplete="off" placeholder="scan or type">') +
+    '<div class="actions"><button type="button" id="npc-cancel">Cancel</button><button type="button" class="primary" id="npc-go">Next</button></div>');
+  const input = $('#npc-code', modal);
+  const go = async () => {
+    const code = input.value.trim(); if (!code) return;
+    try {
+      const rows = await q(sb.from('pool_members').select('id, name').eq('barcode', code).limit(1));
+      closeModal();
+      if (rows.length) { toast('Card ' + code + ' already belongs to ' + rows[0].name, true); onScan(code); return; }
+      openNewPass(code);
+    } catch (err) { showError(err); }
+  };
+  scanConsumer = code => { input.value = code; go(); };
+  $('#npc-cancel', modal).addEventListener('click', closeModal);
+  $('#npc-go', modal).addEventListener('click', go);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+});
+
+// Quick search on the scan page: practices without a card, or a member who forgot theirs
+(function () {
+  const input = $('#quick-search'), out = $('#quick-results');
+  let timer;
+  input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(run, 220); });
+  input.addEventListener('focus', () => { if (input.value.trim().length >= 2) run(); });
+  async function run() {
+    const s = clean(input.value); if (s.length < 2) { out.hidden = true; return; }
+    try {
+      const rows = await q(sb.from('pool_member_state').select('*').eq('active', true).or('name.ilike.%' + s + '%,phone.ilike.%' + s + '%').order('kind').order('name').limit(8));
+      rows.sort((a, b) => (a.kind === 'account' ? -1 : 0) - (b.kind === 'account' ? -1 : 0));
+      out.innerHTML = rows.length ? rows.map(r => '<button type="button" data-id="' + r.id + '"><span class="n">' + esc(r.name) + '</span>' + kindPill(r.kind) + '<span class="mono small">' + (r.kind === 'account' ? (-r.balance) + ' owing' : r.balance + ' left') + '</span></button>').join('') : '<button type="button" disabled>No matches</button>';
+      out.hidden = false;
+      $$('button[data-id]', out).forEach(b => b.addEventListener('click', () => { out.hidden = true; input.value = ''; onMemberEntry(Number(b.dataset.id)); }));
+    } catch (err) { showError(err); }
+  }
+  document.addEventListener('click', e => { if (!e.target.closest('#quick-search, #quick-results')) out.hidden = true; });
+})();
+
+// Today panel
+async function loadToday() {
+  try {
+    const from = sydneyMidnightISO(sydneyDate());
+    const [entries, sales] = await Promise.all([
+      fetchAll(() => sb.from('pool_entries').select('id, at, qty, kind, adults, children, infants, clients, reverses, pool_members(name, kind)').gte('at', from).in('kind', ['entry', 'adjustment']).order('at', { ascending: false })),
+      fetchAll(() => sb.from('pool_entries').select('id').gte('at', from).eq('kind', 'purchase').order('id'))
+    ]);
+    const live = entries.filter(e => e.kind === 'entry');
+    const reversed = new Set(entries.filter(e => e.reverses).map(e => e.reverses));
+    const counted = live.filter(e => !reversed.has(e.id));
+    const people = counted.reduce((n, e) => {
+      const m = e.pool_members || {};
+      if (m.kind === 'family') return n + (e.adults || 0) + (e.children || 0) + (e.infants || 0);
+      if (m.kind === 'account') return n + (e.clients || 0);
+      return n + 1;
+    }, 0);
+    $('#t-entries').textContent = counted.length;
+    $('#t-people').textContent = people;
+    $('#t-sales').textContent = sales.length;
+    const body = $('#recent-body');
+    body.innerHTML = live.length ? live.slice(0, 30).map(e => {
+      const m = e.pool_members || {};
+      let used = String(-e.qty);
+      if (m.kind === 'family') used = -e.qty + ' <span class="small muted">(' + (e.adults || 0) + 'A ' + (e.children || 0) + 'C' + (e.infants ? ' ' + e.infants + 'U5' : '') + ')</span>';
+      if (m.kind === 'account') used = (e.clients || 0) + ' <span class="small muted">clients</span>';
+      if (m.kind === 'resident') used = '<span class="small muted">free</span>';
+      const undone = reversed.has(e.id);
+      return '<tr class="' + (undone ? 'dim' : '') + '"><td>' + fmtTime(e.at) + '</td><td>' + esc(m.name || '?') + (undone ? ' <span class="pill">undone</span>' : '') + '</td><td class="num">' + used + '</td><td>' + kindPill(m.kind) + '</td>' +
+        '<td>' + (undone ? '' : '<button type="button" class="link small" data-undo="' + e.id + '">undo</button>') + '</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="empty">No scans yet today.</td></tr>';
+    $$('button[data-undo]', body).forEach(b => b.addEventListener('click', async () => {
+      b.disabled = true;
+      try { await undoEntry(Number(b.dataset.undo), 'undone from the Today list'); } catch (err) { showError(err); b.disabled = false; }
+    }));
+  } catch (err) { showError(err); }
+}
+setInterval(() => { if (session && currentPage === 'scan' && !modalOpen()) loadToday(); }, 2 * 60 * 1000);
+
+// =============================================================================
+// Roll over: punch card holders onto barcode cards
+// =============================================================================
+function rolloverReady() {
+  if (!$('#ro-expiry').value) $('#ro-expiry').value = addDays(sydneyDate(), 365);
+  setTimeout(() => { const c = $('#ro-card'); if (!c.value) c.focus(); else $('#ro-name').focus(); }, 0);
+}
+async function rolloverCard(code) {
+  const field = $('#ro-card'), note = $('#ro-card-note');
+  field.value = code; note.textContent = 'Checking…';
+  try {
+    const rows = await q(sb.from('pool_member_state').select('id, name, balance').eq('barcode', code).limit(1));
+    if (rows.length) { note.innerHTML = '<span style="color:var(--red)">Card ' + esc(code) + ' already belongs to ' + esc(rows[0].name) + ' (' + rows[0].balance + ' left). Scan a fresh card.</span>'; field.value = ''; field.focus(); return; }
+    note.textContent = 'Card ' + code + ' is free. Now the old card.';
+    $('#ro-name').focus();
+  } catch (err) { showError(err); }
+}
+$('#ro-card').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const c = $('#ro-card').value.trim(); if (c) rolloverCard(c); } });
+$('#ro-clear').addEventListener('click', () => { $('#ro-form').reset(); $('#ro-card-note').textContent = ''; rolloverReady(); });
+$('#ro-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const code = $('#ro-card').value.trim(), name = $('#ro-name').value.trim();
+  if (!code) { toast('Scan the new card first', true); $('#ro-card').focus(); return; }
+  if (!name) { toast('A name is needed', true); $('#ro-name').focus(); return; }
+  const btn = $('#ro-go'); btn.disabled = true;
+  try {
+    const punches = Number($('#ro-punches').value) || 0;
+    const r = await rpc('pool_rollover', { p_barcode: code, p_name: name, p_phone: $('#ro-phone').value.trim() || null, p_kind: $('#ro-kind').value,
+      p_old_card: $('#ro-old').value.trim() || null, p_punches: punches, p_expires_on: $('#ro-expiry').value || null });
+    const m = r.member;
+    $('#ro-result').dataset.tone = 'ok';
+    $('#ro-state').textContent = 'Transferred';
+    $('#ro-name-out').textContent = m.name;
+    $('#ro-body').innerHTML = '<div class="line">' + (m.legacy_card ? 'Punch card <b>' + esc(m.legacy_card) + '</b>' : 'Punch card') + ' &rarr; card <b>' + esc(code) + '</b> &middot; <b>' + r.balance + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + '</div>' +
+      '<div class="sub">' + esc(KINDS[m.kind]) + (m.expires_on ? ' &middot; expires ' + fmtDate(m.expires_on) : '') + '. Keep the old card in the drawer for the audit.</div>';
+    const acts = $('#ro-actions'); acts.innerHTML = '';
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'primary'; b.textContent = 'Enter now';
+    b.addEventListener('click', () => { showPage('scan'); onScan(code); });
+    acts.appendChild(b);
+    beep('ok');
+    $('#ro-form').reset(); $('#ro-card-note').textContent = '';
+    rolloverReady();
+    loadRollovers();
+  } catch (err) { showError(err); }
+  finally { btn.disabled = false; }
+});
+async function loadRollovers() {
+  try {
+    const rows = await fetchAll(() => sb.from('pool_members').select('id, name, barcode, legacy_card, note, created_at').not('legacy_card', 'is', null).order('created_at', { ascending: false }));
+    const ids = rows.map(r => r.id);
+    let opening = {};
+    if (ids.length) {
+      const es = await fetchAll(() => sb.from('pool_entries').select('member_id, qty').eq('kind', 'opening').in('member_id', ids.slice(0, 500)).order('id'));
+      es.forEach(e => { opening[e.member_id] = (opening[e.member_id] || 0) + e.qty; });
+    }
+    const today = sydneyDate();
+    $('#ro-today').textContent = rows.filter(r => sydneyDate(new Date(r.created_at)) === today).length;
+    $('#ro-total').textContent = rows.length;
+    $('#ro-punches-total').textContent = Object.values(opening).reduce((a, b) => a + b, 0);
+    $('#ro-body-list').innerHTML = rows.length ? rows.slice(0, 40).map(r => '<tr><td class="mono small" style="white-space:nowrap">' + fmtDate(r.created_at) + ' ' + fmtTime(r.created_at) + '</td><td>' + esc(r.name) + '</td><td class="mono">' + esc(r.legacy_card) + '</td><td class="num">' + (opening[r.id] || 0) + '</td><td class="mono">' + esc(r.barcode || '') + '</td></tr>').join('')
+      : '<tr><td colspan="5" class="empty">Nothing rolled over yet.</td></tr>';
+  } catch (err) { showError(err); }
+}
+$('#ro-refresh').addEventListener('click', loadRollovers);
+$('#refresh-today').addEventListener('click', loadToday);
+
+// =============================================================================
+// Members
+// =============================================================================
+let membersCache = [], selectedId = null, mTimer;
+['input', 'change'].forEach(evt => {
+  $('#m-search').addEventListener(evt, () => { clearTimeout(mTimer); mTimer = setTimeout(loadMembers, 250); });
+});
+$('#m-kind').addEventListener('change', loadMembers);
+$('#m-inactive').addEventListener('change', loadMembers);
+$('#m-add').addEventListener('click', () => openNewMember());
+
+async function loadMembers() {
+  const s = clean($('#m-search').value), kind = $('#m-kind').value, inactive = $('#m-inactive').checked;
+  try {
+    let b = sb.from('pool_member_state').select('*').order('name').limit(1000);
+    if (s) b = b.or('name.ilike.%' + s + '%,phone.ilike.%' + s + '%,barcode.ilike.%' + s + '%');
+    if (kind) b = b.eq('kind', kind);
+    if (!inactive) b = b.eq('active', true);
+    membersCache = await q(b);
+    const body = $('#m-body');
+    body.innerHTML = membersCache.length ? membersCache.map(r =>
+      '<tr class="clickable' + (r.id === selectedId ? ' selected' : '') + (r.active ? '' : ' dim') + '" data-id="' + r.id + '"><td>' + esc(r.name) + (r.active ? '' : ' <span class="pill">inactive</span>') + '</td><td>' + kindPill(r.kind) + '</td><td class="mono">' + esc(r.barcode || '') + '</td>' +
+      '<td class="num">' + (r.kind === 'account' ? '<span class="muted">' + (-r.balance) + ' owing</span>' : r.kind === 'resident' ? '<span class="muted">free</span>' : r.balance) + '</td><td>' + expiryCell(r) + '</td></tr>').join('')
+      : '<tr><td colspan="5" class="empty">' + (s || kind ? 'No matches.' : 'No members yet. Press New pass on the Scan tab, or import a list under Settings.') + '</td></tr>';
+    $$('tr[data-id]', body).forEach(tr => tr.addEventListener('click', () => selectMember(Number(tr.dataset.id))));
+    if (selectedId && membersCache.some(r => r.id === selectedId)) selectMember(selectedId);
+  } catch (err) { showError(err); }
+}
+function expiryCell(r) {
+  if (!PAYING.includes(r.kind) || !r.expires_on) return '<span class="muted">–</span>';
+  const d = daysUntil(r.expires_on);
+  const cls = d < 0 ? 'red' : d <= 30 ? 'warn' : '';
+  return '<span class="pill ' + cls + '">' + fmtDate(r.expires_on) + '</span>';
+}
+
+async function selectMember(id) {
+  selectedId = id;
+  $$('#m-body tr').forEach(tr => tr.classList.toggle('selected', Number(tr.dataset.id) === id));
+  const panel = $('#m-detail');
+  panel.innerHTML = '<p class="empty">Loading…</p>';
+  try {
+    const [m, hist] = await Promise.all([
+      q(sb.from('pool_member_state').select('*').eq('id', id).single()),
+      q(sb.from('pool_entries').select('*, pool_products(name)').eq('member_id', id).order('at', { ascending: false }).limit(1000))
+    ]);
+    renderMember(m, hist);
+  } catch (err) { showError(err); }
+}
+
+function renderMember(m, hist) {
+  const panel = $('#m-detail');
+  const reversedIds = new Set(hist.filter(h => h.reverses).map(h => h.reverses));
+  const isAcct = m.kind === 'account';
+  panel.innerHTML =
+    '<div class="panel-head"><div><h2>' + esc(m.name) + '</h2><div class="small muted">' + KINDS[m.kind] + ' &middot; member #' + m.id + ' &middot; since ' + fmtDate(m.created_at) + '</div></div>' +
+    '<div class="stat"><div class="v">' + (isAcct ? (-m.balance) : m.balance) + '</div><div class="k">' + (isAcct ? 'client visits owing' : m.kind === 'resident' ? 'visits logged: ' + m.entry_count : (m.kind === 'family' ? 'punches' : 'entries') + ' left') + '</div></div></div>' +
+    '<div class="row" style="margin-bottom:12px"><span class="pill ' + (m.barcode ? 'accent' : 'warn') + '">' + (m.barcode ? 'card ' + esc(m.barcode) : 'no card assigned') + '</span>' + (m.last_entry ? '<span class="small muted">last swim ' + rel(m.last_entry) + '</span>' : '') + '</div>' +
+    '<div class="actions" style="margin:0 0 16px">' +
+      (isAcct ? '<button type="button" class="primary" id="d-visit">Record a visit</button>' : m.kind === 'resident' ? '' : '<button type="button" class="primary" id="d-sell">Sell a pass</button>') +
+      '<button type="button" id="d-card">' + (m.barcode ? 'Replace card' : 'Assign card') + '</button>' +
+      '<button type="button" id="d-adjust">Adjust balance</button>' +
+    '</div>' +
+    '<form id="d-form"><div class="grid2">' +
+      field('Name', '<input name="name" value="' + esc(m.name) + '" required>') +
+      field('Phone', '<input name="phone" value="' + esc(m.phone) + '">') +
+      field('Email', '<input name="email" type="email" value="' + esc(m.email) + '">') +
+      field('Kind', '<select name="kind">' + Object.keys(KINDS).map(k => '<option value="' + k + '"' + (k === m.kind ? ' selected' : '') + '>' + KINDS[k] + '</option>').join('') + '</select>') +
+      field('Rate per client $ (accounts)', '<input name="rate" type="number" step="0.01" min="0" value="' + (m.rate == null ? '' : m.rate) + '">') +
+      field('Expires on', '<input name="expires_on" type="date" value="' + (m.expires_on || '') + '">') +
+      field('Active', '<label style="display:flex;gap:8px;align-items:center;font-weight:400;color:var(--ink);margin-top:8px"><input type="checkbox" name="active" style="width:auto"' + (m.active ? ' checked' : '') + '> card works at the desk</label>') +
+    '</div>' +
+    field('Notes', '<textarea name="note">' + esc(m.note) + '</textarea>') +
+    '<div class="actions" style="margin-top:4px"><button type="submit" class="primary">Save changes</button></div></form>' +
+    '<h3 style="margin:22px 0 8px">History</h3>' +
+    '<div class="scroll"><table class="history"><thead><tr><th>When</th><th>What</th><th class="num">Qty</th><th class="num">$</th><th></th></tr></thead><tbody>' +
+    (hist.length ? hist.map(h => {
+      const what = h.kind === 'purchase' ? 'Bought ' + esc(h.pool_products ? h.pool_products.name : 'pass') + (h.payment ? ' (' + esc(h.payment) + ')' : '')
+        : h.kind === 'entry' ? (m.kind === 'family' ? 'Entry: ' + (h.adults || 0) + ' adults, ' + (h.children || 0) + ' children' + (h.infants ? ', ' + h.infants + ' under 5' : '') : isAcct ? 'Visit: ' + (h.clients || 0) + ' clients' : 'Entry')
+        : h.kind === 'opening' ? 'Opening balance' : (h.reverses ? 'Reversal of #' + h.reverses : 'Adjustment');
+      const canReverse = !h.reverses && !reversedIds.has(h.id);
+      return '<tr class="' + (reversedIds.has(h.id) ? 'dim' : '') + '"><td class="mono small">' + fmtDate(h.at) + ' ' + fmtTime(h.at) + '</td><td>' + what + (h.note ? '<div class="small muted">' + esc(h.note) + '</div>' : '') + (reversedIds.has(h.id) ? ' <span class="pill">reversed</span>' : '') + '</td>' +
+        '<td class="num">' + (h.qty > 0 ? '+' : '') + h.qty + '</td><td class="num">' + (h.amount == null ? '' : money(h.amount)) + '</td>' +
+        '<td>' + (canReverse ? '<button type="button" class="link small" data-reverse="' + h.id + '">reverse</button>' : '') + '</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="empty">Nothing yet.</td></tr>') +
+    '</tbody></table></div>';
+
+  const sellBtn = $('#d-sell', panel); if (sellBtn) sellBtn.addEventListener('click', () => openSell(m, { after: () => { selectMember(m.id); loadMembers(); } }));
+  const visitBtn = $('#d-visit', panel); if (visitBtn) visitBtn.addEventListener('click', () => { showPage('scan'); onMemberEntry(m.id); });
+  $('#d-card', panel).addEventListener('click', () => openCardCapture(m));
+  $('#d-adjust', panel).addEventListener('click', () => openAdjust(m));
+  $$('button[data-reverse]', panel).forEach(b => b.addEventListener('click', async () => {
+    const reason = prompt('Reason for reversing this row (it stays in the history):'); if (reason === null) return;
+    try { await rpc('pool_reverse', { p_entry_id: Number(b.dataset.reverse), p_note: reason || 'reversed from member screen', p_admin: true }); toast('Reversed'); selectMember(m.id); loadMembers(); }
+    catch (err) { showError(err); }
+  }));
+  $('#d-form', panel).addEventListener('submit', async e => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const patch = {
+      name: f.get('name').trim(), phone: f.get('phone').trim() || null, email: f.get('email').trim() || null,
+      kind: f.get('kind'), rate: f.get('rate') === '' ? null : Number(f.get('rate')), expires_on: f.get('expires_on') || null,
+      active: f.get('active') === 'on', note: f.get('note').trim() || null
+    };
+    try { await q(sb.from('pool_members').update(patch).eq('id', m.id)); toast('Saved'); selectMember(m.id); loadMembers(); }
+    catch (err) { showError(err); }
+  });
+}
+function field(label, control) { return '<div class="field"><label>' + label + '</label>' + control + '</div>'; }
+
+function openNewMember() {
+  const modal = openModal(
+    '<h2>Add a member</h2><p class="lead">Cards are assigned by scanning them at the desk, or here after saving.</p>' +
+    '<div class="grid2">' + field('Name', '<input id="nm-name" required autocomplete="off">') + field('Phone', '<input id="nm-phone" autocomplete="off">') +
+    field('Kind', '<select id="nm-kind">' + Object.keys(KINDS).map(k => '<option value="' + k + '">' + KINDS[k] + '</option>').join('') + '</select>') +
+    field('Rate per client $ (accounts)', '<input id="nm-rate" type="number" step="0.01" min="0">') +
+    field('Email', '<input id="nm-email" type="email" autocomplete="off">') + '</div>' +
+    field('Notes', '<textarea id="nm-note"></textarea>') +
+    '<div class="actions"><button type="button" id="nm-cancel">Cancel</button><button type="button" class="primary" id="nm-go">Add member</button></div>');
+  $('#nm-cancel', modal).addEventListener('click', closeModal);
+  $('#nm-go', modal).addEventListener('click', async () => {
+    const name = $('#nm-name', modal).value.trim(); if (!name) { toast('A name is needed', true); return; }
+    try {
+      const rows = await q(sb.from('pool_members').insert({ name: name, phone: $('#nm-phone', modal).value.trim() || null, email: $('#nm-email', modal).value.trim() || null, kind: $('#nm-kind', modal).value,
+        rate: $('#nm-rate', modal).value === '' ? null : Number($('#nm-rate', modal).value), note: $('#nm-note', modal).value.trim() || null }).select());
+      closeModal(); toast('Added ' + name);
+      selectedId = rows[0].id; $('#m-search').value = ''; loadMembers();
+    } catch (err) { showError(err); }
+  });
+}
+
+function openCardCapture(m) {
+  const modal = openModal(
+    '<h2>' + (m.barcode ? 'Replace card' : 'Assign a card') + ' &middot; ' + esc(m.name) + '</h2>' +
+    '<p class="lead">Scan the new card now, or type its number.</p>' +
+    (m.barcode ? '<p class="small muted">Current card ' + esc(m.barcode) + ' stops working the moment the new one is saved.</p>' : '') +
+    field('Card number', '<input id="cc-code" class="mono" autocomplete="off" placeholder="scan or type">') +
+    '<div class="actions"><button type="button" id="cc-cancel">Cancel</button><button type="button" class="primary" id="cc-go">Save card</button></div>');
+  const input = $('#cc-code', modal);
+  scanConsumer = code => { input.value = code; save(); };
+  $('#cc-cancel', modal).addEventListener('click', closeModal);
+  $('#cc-go', modal).addEventListener('click', save);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
+  async function save() {
+    const code = input.value.trim(); if (!code) return;
+    const patch = { barcode: code };
+    if (m.barcode && m.barcode !== code) patch.note = ((m.note ? m.note + '\n' : '') + sydneyDate() + ' card ' + m.barcode + ' replaced by ' + code);
+    try { await q(sb.from('pool_members').update(patch).eq('id', m.id)); closeModal(); toast('Card ' + code + ' saved'); selectMember(m.id); loadMembers(); }
+    catch (err) { showError(/duplicate|unique/i.test(err.message) ? new Error('Card ' + code + ' already belongs to another member') : err); }
+  }
+}
+
+function openAdjust(m) {
+  const modal = openModal(
+    '<h2>Adjust balance &middot; ' + esc(m.name) + '</h2>' +
+    '<p class="lead">Adds a row to the history. Use a minus number to take entries off.</p>' +
+    '<div class="grid2">' + field('Entries (+ or −)', '<input id="adj-qty" type="number" step="1" value="1">') + field('Reason', '<input id="adj-note" placeholder="required" autocomplete="off">') + '</div>' +
+    '<div class="actions"><button type="button" id="adj-cancel">Cancel</button><button type="button" class="primary" id="adj-go">Apply</button></div>');
+  $('#adj-cancel', modal).addEventListener('click', closeModal);
+  $('#adj-go', modal).addEventListener('click', async () => {
+    const qty = Number($('#adj-qty', modal).value), note = $('#adj-note', modal).value.trim();
+    if (!qty || !note) { toast('Quantity and reason are both needed', true); return; }
+    try { await rpc('pool_adjust', { p_member_id: m.id, p_qty: qty, p_note: note }); closeModal(); toast('Balance adjusted'); selectMember(m.id); loadMembers(); }
+    catch (err) { showError(err); }
+  });
+}
+
+// =============================================================================
+// Reports
+// =============================================================================
+let statement = null;
+$('#rp-month').value = sydneyDate().slice(0, 7);
+$('#rp-statement').addEventListener('click', buildStatement);
+$('#rp-statement-print').addEventListener('click', printStatement);
+$('#rp-statement-csv').addEventListener('click', () => {
+  if (!statement) return;
+  const rows = [['Practice', 'Date', 'Time', 'Clients', 'Note', 'Rate', 'Amount']];
+  statement.groups.forEach(g => g.lines.forEach(l => rows.push([g.name, fmtDate(l.at), fmtTime(l.at), l.clients, l.note || '', g.rate == null ? '' : g.rate, g.rate == null ? '' : (l.clients * g.rate).toFixed(2)])));
+  downloadCSV('pool-practice-statement-' + $('#rp-month').value + '.csv', rows);
+});
+
+async function loadReports() {
+  const today = sydneyDate();
+  try {
+    const paying = await q(sb.from('pool_member_state').select('*').eq('active', true).in('kind', PAYING).gt('balance', 0).order('name'));
+    const fallback = setting('liability_unit_value', 7.25);
+    const value = paying.reduce((s, r) => s + r.balance * (r.unit_value == null ? fallback : Number(r.unit_value)), 0);
+    $('#rp-liab-value').textContent = money(value);
+    $('#rp-liab-entries').textContent = paying.reduce((s, r) => s + r.balance, 0);
+    $('#rp-liab-holders').textContent = paying.length;
+
+    const lapsedDays = setting('lapsed_days', 90);
+    $('#rp-lapsed-note').textContent = 'entries left, no swim for ' + lapsedDays + ' days';
+    const cutoff = Date.now() - lapsedDays * 86400000;
+    const lapsed = paying.filter(r => !r.last_entry || new Date(r.last_entry).getTime() < cutoff);
+    $('#rp-lapsed-body').innerHTML = lapsed.length ? lapsed.map(r => '<tr><td>' + esc(r.name) + '</td><td class="mono">' + esc(r.phone) + '</td><td class="num">' + r.balance + '</td><td>' + (r.last_entry ? fmtDate(r.last_entry) : '<span class="muted">never</span>') + '</td></tr>').join('') : '<tr><td colspan="4" class="empty">Nobody has lapsed.</td></tr>';
+
+    const soon = paying.filter(r => r.expires_on && daysUntil(r.expires_on) <= 30).sort((a, b) => a.expires_on < b.expires_on ? -1 : 1);
+    $('#rp-expiring-body').innerHTML = soon.length ? soon.map(r => '<tr><td>' + esc(r.name) + '</td><td class="mono">' + esc(r.phone) + '</td><td class="num">' + r.balance + '</td><td>' + expiryCell(r) + '</td></tr>').join('') : '<tr><td colspan="4" class="empty">Nothing expiring in the next 30 days.</td></tr>';
+
+    const from14 = sydneyMidnightISO(addDays(today, -13));
+    const entries = await fetchAll(() => sb.from('pool_entries').select('id, at, qty, kind, reverses').gte('at', from14).in('kind', ['entry', 'adjustment']).order('id'));
+    const reversed = new Set(entries.filter(e => e.reverses).map(e => e.reverses));
+    const byDay = {};
+    for (let i = 13; i >= 0; i--) byDay[addDays(today, -i)] = 0;
+    entries.forEach(e => { if (e.kind === 'entry' && !reversed.has(e.id)) { const d = sydneyDate(new Date(e.at)); if (d in byDay) byDay[d]++; } });
+    const max = Math.max(1, ...Object.values(byDay));
+    $('#rp-days').innerHTML = '<table>' + Object.keys(byDay).map(d => '<tr><td class="mono small" style="white-space:nowrap">' + fmtDateLong(d + 'T12:00:00Z') + '</td><td style="width:100%"><div class="bar" style="width:' + Math.round(100 * byDay[d] / max) + '%;min-width:' + (byDay[d] ? 6 : 0) + 'px"></div></td><td class="num">' + byDay[d] + '</td></tr>').join('') + '</table>';
+
+    const from30 = sydneyMidnightISO(addDays(today, -29));
+    const sales = await fetchAll(() => sb.from('pool_entries').select('id, amount, kind, product_id, pool_products(name)').gte('at', from30).not('amount', 'is', null).order('id'));
+    const byProd = {};
+    sales.forEach(s => { const n = (s.pool_products && s.pool_products.name) || 'Pass'; byProd[n] = byProd[n] || { n: 0, v: 0 }; byProd[n].n += s.kind === 'purchase' ? 1 : -1; byProd[n].v += Number(s.amount); });
+    const names = Object.keys(byProd);
+    $('#rp-sales-body').innerHTML = names.length ? names.map(n => '<tr><td>' + esc(n) + '</td><td class="num">' + byProd[n].n + '</td><td class="num">' + money(byProd[n].v) + '</td></tr>').join('') + '<tr><td><b>Total</b></td><td class="num"><b>' + names.reduce((s, n) => s + byProd[n].n, 0) + '</b></td><td class="num"><b>' + money(names.reduce((s, n) => s + byProd[n].v, 0)) + '</b></td></tr>' : '<tr><td colspan="3" class="empty">No sales in the last 30 days.</td></tr>';
+  } catch (err) { showError(err); }
+}
+
+async function buildStatement() {
+  const ym = $('#rp-month').value; if (!ym) return;
+  const r = monthRange(ym);
+  try {
+    const rows = await q(sb.from('pool_entries').select('id, at, qty, kind, clients, note, reverses, member_id, pool_members!inner(id, name, kind, rate, phone, email)').eq('pool_members.kind', 'account').in('kind', ['entry', 'adjustment']).gte('at', r.from).lt('at', r.to).order('at'));
+    const groups = {};
+    rows.forEach(x => {
+      const m = x.pool_members;
+      groups[m.id] = groups[m.id] || { id: m.id, name: m.name, rate: m.rate, phone: m.phone, email: m.email, lines: [], clients: 0 };
+      groups[m.id].lines.push({ at: x.at, clients: -x.qty, note: x.note, reversal: !!x.reverses });
+      groups[m.id].clients += -x.qty;
+    });
+    statement = { label: r.label, groups: Object.values(groups).sort((a, b) => a.name.localeCompare(b.name)) };
+    const out = $('#rp-statement-out');
+    if (!statement.groups.length) { out.innerHTML = '<p class="empty">No practice visits in ' + r.label + '.</p>'; $('#rp-statement-print').hidden = true; $('#rp-statement-csv').hidden = true; return; }
+    out.innerHTML = statement.groups.map(g => '<div style="margin-bottom:14px"><div class="row" style="justify-content:space-between"><b>' + esc(g.name) + '</b><span class="mono">' + g.clients + ' clients' + (g.rate != null ? ' &middot; ' + money(g.clients * g.rate) + ' at ' + money(g.rate) : ' &middot; no rate set') + '</span></div>' +
+      '<table><tbody>' + g.lines.map(l => '<tr' + (l.reversal ? ' class="dim"' : '') + '><td class="mono small" style="white-space:nowrap">' + fmtDate(l.at) + ' ' + fmtTime(l.at) + '</td><td class="small">' + esc(l.note) + '</td><td class="num">' + l.clients + '</td></tr>').join('') + '</tbody></table></div>').join('');
+    $('#rp-statement-print').hidden = false; $('#rp-statement-csv').hidden = false;
+  } catch (err) { showError(err); }
+}
+function printStatement() {
+  if (!statement) return;
+  const org = settings.org_name || 'Wollongong Surf Leisure Resort';
+  $('#print-area').innerHTML = statement.groups.map(g =>
+    '<div style="page-break-after:always;font-family:Arial,sans-serif;color:#000"><h2 style="margin:0">' + esc(org) + '</h2><div>Pool access statement &middot; ' + esc(statement.label) + '</div><h3 style="margin:18px 0 4px">' + esc(g.name) + '</h3>' +
+    '<div style="font-size:13px;margin-bottom:10px">' + esc(g.phone || '') + (g.email ? ' &middot; ' + esc(g.email) : '') + '</div>' +
+    '<table style="width:100%;border-collapse:collapse"><thead><tr><th style="text-align:left">Date</th><th style="text-align:left">Practitioner / note</th><th style="text-align:right">Clients</th></tr></thead><tbody>' +
+    g.lines.map(l => '<tr><td>' + fmtDate(l.at) + ' ' + fmtTime(l.at) + '</td><td>' + esc(l.note) + (l.reversal ? ' (reversal)' : '') + '</td><td style="text-align:right">' + l.clients + '</td></tr>').join('') +
+    '</tbody><tfoot><tr><td></td><td style="text-align:right;font-weight:bold">Total clients</td><td style="text-align:right;font-weight:bold">' + g.clients + '</td></tr>' +
+    (g.rate != null ? '<tr><td></td><td style="text-align:right;font-weight:bold">Amount at ' + money(g.rate) + ' per client</td><td style="text-align:right;font-weight:bold">' + money(g.clients * g.rate) + '</td></tr>' : '') +
+    '</tfoot></table><p style="font-size:12px;margin-top:20px">Prepared ' + fmtDate(new Date().toISOString()) + '. Enter in Xero as a sales invoice to the practice.</p></div>').join('');
+  document.body.setAttribute('data-printing', '');
+  const done = () => { document.body.removeAttribute('data-printing'); window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  window.print();
+  setTimeout(done, 60000);
+}
+
+// =============================================================================
+// Settings, import, export
+// =============================================================================
+async function loadSettingsPage() {
+  try { await Promise.all([loadSettings(), loadProducts()]); } catch (err) { showError(err); return; }
+  renderProducts();
+  loadUsers();
+  suggestCardStart();
+  $('#s-double').value = setting('double_scan_seconds', 120);
+  $('#s-low').value = setting('low_balance', 4);
+  $('#s-undo').value = setting('undo_minutes', 10);
+  $('#s-lapsed').value = setting('lapsed_days', 90);
+  $('#s-liab').value = setting('liability_unit_value', 7.25);
+}
+function renderProducts() {
+  $('#s-products').innerHTML = products.map(p => productRow(p)).join('');
+}
+function productRow(p) {
+  return '<tr data-id="' + (p.id || '') + '" data-code="' + esc(p.code || '') + '"><td><input name="name" value="' + esc(p.name) + '"></td>' +
+    '<td><select name="holder_kind">' + ['adult', 'senior', 'family'].map(k => '<option value="' + k + '"' + (k === p.holder_kind ? ' selected' : '') + '>' + KINDS[k] + '</option>').join('') + '</select></td>' +
+    '<td><input name="entries" type="number" min="1" step="1" value="' + p.entries + '"></td>' +
+    '<td><input name="price" type="number" min="0" step="0.01" value="' + p.price + '"></td>' +
+    '<td><input name="expiry_months" type="number" min="0" step="1" value="' + p.expiry_months + '"></td>' +
+    '<td><input type="checkbox" name="active" style="width:auto"' + (p.active ? ' checked' : '') + '></td></tr>';
+}
+$('#s-products-add').addEventListener('click', () => {
+  $('#s-products').insertAdjacentHTML('beforeend', productRow({ name: 'New pass', holder_kind: 'adult', entries: 10, price: 0, expiry_months: 12, active: true }));
+});
+$('#s-products-save').addEventListener('click', async () => {
+  const rows = $$('#s-products tr').map((tr, i) => {
+    const g = n => tr.querySelector('[name="' + n + '"]');
+    const row = { name: g('name').value.trim(), holder_kind: g('holder_kind').value, entries: Number(g('entries').value), price: Number(g('price').value), expiry_months: Number(g('expiry_months').value), active: g('active').checked, sort: (i + 1) * 10 };
+    if (tr.dataset.id) { row.id = Number(tr.dataset.id); row.code = tr.dataset.code; }
+    else row.code = row.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now().toString(36);
+    return row;
+  });
+  if (rows.some(r => !r.name || !(r.entries > 0) || !(r.price >= 0))) { toast('Every pass needs a name, entries and a price', true); return; }
+  try {
+    for (const r of rows) {
+      if (r.id) { const id = r.id; delete r.id; await q(sb.from('pool_products').update(r).eq('id', id)); }
+      else await q(sb.from('pool_products').insert(r));
+    }
+    toast('Passes saved'); await loadProducts(); renderProducts();
+  } catch (err) { showError(err); }
+});
+$('#s-settings-save').addEventListener('click', async () => {
+  const rows = [
+    { key: 'double_scan_seconds', value: Number($('#s-double').value) },
+    { key: 'low_balance', value: Number($('#s-low').value) },
+    { key: 'undo_minutes', value: Number($('#s-undo').value) },
+    { key: 'lapsed_days', value: Number($('#s-lapsed').value) },
+    { key: 'liability_unit_value', value: Number($('#s-liab').value) }
+  ];
+  try { await q(sb.from('pool_settings').upsert(rows, { onConflict: 'key' })); await loadSettings(); toast('Rules saved'); }
+  catch (err) { showError(err); }
+});
+
+// Card sheets: numbered Code 128 cards for the laminator
+const CARD_RANGES = { standard: [100001, 149999], corporate: [150001, 199999] };
+function loadScript(src) {
+  return new Promise((res, rej) => { if (document.querySelector('script[src="' + src + '"]')) return res(); const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('Could not load ' + src)); document.head.appendChild(s); });
+}
+async function suggestCardStart() {
+  const v = $('#pc-variant').value, range = CARD_RANGES[v];
+  try {
+    const rows = await fetchAll(() => sb.from('pool_members').select('barcode').not('barcode', 'is', null).order('id'));
+    let top = range[0] - 1;
+    rows.forEach(r => { const n = Number(r.barcode); if (/^\d{6}$/.test(r.barcode || '') && n >= range[0] && n <= range[1] && n > top) top = n; });
+    const saved = Number(settings['next_card_' + v] || 0);
+    $('#pc-start').value = Math.max(top + 1, saved || 0, range[0]);
+  } catch (err) { showError(err); }
+}
+$('#pc-variant').addEventListener('change', suggestCardStart);
+$('#pc-print').addEventListener('click', async () => {
+  const v = $('#pc-variant').value, start = Number($('#pc-start').value), count = Number($('#pc-count').value), range = CARD_RANGES[v];
+  if (!(start >= range[0] && start + count - 1 <= range[1])) { toast((v === 'corporate' ? 'Corporate' : 'Standard') + ' cards use numbers ' + range[0] + ' to ' + range[1], true); return; }
+  const btn = $('#pc-print'); btn.disabled = true;
+  try {
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.12.3/JsBarcode.all.min.js');
+    const corp = v === 'corporate';
+    let html = '';
+    for (let i = 0; i < count; i++) {
+      if (i % 10 === 0) html += '<div class="sheet">';
+      const n = String(start + i);
+      html += '<div class="pcard ' + v + '">' +
+        '<div class="band"><div><span class="wm1">Wollongong</span><span class="wm2">Surf Leisure Resort</span></div><div class="ttl">' + (corp ? 'Corporate<br>pass' : 'Pool<br>pass') + '</div></div>' +
+        '<div class="bc"><svg data-code="' + n + '"></svg><div class="num">' + n + '</div></div>' +
+        '<div class="foot"><span>' + (corp ? 'Client visits invoiced monthly' : 'Present at reception before every swim') + '</span><span>wslr.com.au &middot; 02 4283 6999</span></div></div>';
+      if (i % 10 === 9 || i === count - 1) html += '</div>';
+    }
+    const area = $('#print-area');
+    area.innerHTML = html;
+    // 1.5 px per module prints as 0.40 mm; 16 px margin is a 4.2 mm quiet zone; 46 px bars are 12 mm tall
+    $$('svg[data-code]', area).forEach(svg => JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: 1.5, height: 46, margin: 16, displayValue: false, lineColor: '#000', background: '#fff' }));
+    document.body.setAttribute('data-printing', '');
+    const done = () => { document.body.removeAttribute('data-printing'); window.removeEventListener('afterprint', done); };
+    window.addEventListener('afterprint', done);
+    window.print();
+    setTimeout(done, 60000);
+    await q(sb.from('pool_settings').upsert([{ key: 'next_card_' + v, value: start + count }], { onConflict: 'key' }));
+    settings['next_card_' + v] = start + count;
+    toast('Sheet sent to the printer: cards ' + start + ' to ' + (start + count - 1));
+    suggestCardStart();
+  } catch (err) { showError(err); }
+  finally { btn.disabled = false; }
+});
+
+// Desk logins
+async function loadUsers() {
+  try {
+    const users = (await rpc('pool_users_list')) || [];
+    const body = $('#s-users');
+    body.innerHTML = users.length ? users.map(u => {
+      const age = Math.round((Date.now() - new Date(u.password_changed_at).getTime()) / 86400000);
+      return '<tr' + (u.active ? '' : ' class="dim"') + '><td><b>' + esc(u.username) + '</b>' + (u.me ? ' <span class="pill accent">this computer</span>' : '') + '</td>' +
+        '<td>' + fmtDate(u.password_changed_at) + ' <span class="pill ' + (age > 31 ? 'warn' : '') + '">' + age + ' days ago</span></td>' +
+        '<td>' + (u.last_login ? fmtDate(u.last_login) + ' ' + fmtTime(u.last_login) : '<span class="muted">never</span>') + '</td>' +
+        '<td>' + (u.active ? '<span class="pill good">active</span>' : '<span class="pill">off</span>') + '</td>' +
+        '<td style="white-space:nowrap"><button type="button" class="link small" data-reset="' + esc(u.username) + '">reset password</button>' +
+        (u.me ? '' : '<button type="button" class="link small" data-toggle="' + esc(u.username) + '" data-active="' + u.active + '">' + (u.active ? 'turn off' : 'turn on') + '</button>') + '</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="empty">No logins.</td></tr>';
+    $$('button[data-reset]', body).forEach(b => b.addEventListener('click', () => openSetPassword(b.dataset.reset)));
+    $$('button[data-toggle]', body).forEach(b => b.addEventListener('click', async () => {
+      const on = b.dataset.active !== 'true';
+      if (!on && !confirm('Turn off the login "' + b.dataset.toggle + '"? Any computer using it is signed out.')) return;
+      try { await rpc('pool_user_set_active', { p_username: b.dataset.toggle, p_active: on }); toast(on ? 'Login turned on' : 'Login turned off'); loadUsers(); }
+      catch (err) { showError(err); }
+    }));
+  } catch (err) { showError(err); }
+}
+$('#s-change-pass').addEventListener('click', () => {
+  const modal = openModal(
+    '<h2>Change my password</h2><p class="lead">Every computer signed in as ' + esc(session.username) + ' will need the new password; this one stays signed in.</p>' +
+    field('Current password', '<input id="cp-cur" type="password" autocomplete="current-password">') +
+    '<div class="grid2">' + field('New password', '<input id="cp-new" type="password" autocomplete="new-password">') + field('New password again', '<input id="cp-again" type="password" autocomplete="new-password">') + '</div>' +
+    '<div class="actions"><button type="button" id="cp-cancel">Cancel</button><button type="button" class="primary" id="cp-go">Change password</button></div>');
+  $('#cp-cancel', modal).addEventListener('click', closeModal);
+  $('#cp-go', modal).addEventListener('click', async () => {
+    const cur = $('#cp-cur', modal).value, nw = $('#cp-new', modal).value;
+    if (nw !== $('#cp-again', modal).value) { toast('The two new passwords do not match', true); return; }
+    if (nw.length < 4) { toast('Password needs at least 4 characters', true); return; }
+    try {
+      const r = await rpc('pool_change_password', { p_current: cur, p_new: nw });
+      if (!r || r.error) throw new Error((r && r.error) || 'Could not change the password');
+      writeToken(r.token); makeClient();
+      closeModal(); toast('Password changed'); loadUsers();
+    } catch (err) { showError(err); }
+  });
+});
+$('#s-add-user').addEventListener('click', () => {
+  const modal = openModal(
+    '<h2>Add a login</h2><p class="lead">Another username for the desk, or one for yourself.</p>' +
+    '<div class="grid2">' + field('Username', '<input id="au-user" autocomplete="off" autocapitalize="off">') + field('Password', '<input id="au-pass" type="password" autocomplete="new-password">') + '</div>' +
+    '<div class="actions"><button type="button" id="au-cancel">Cancel</button><button type="button" class="primary" id="au-go">Add login</button></div>');
+  $('#au-cancel', modal).addEventListener('click', closeModal);
+  $('#au-go', modal).addEventListener('click', async () => {
+    try { await rpc('pool_user_add', { p_username: $('#au-user', modal).value.trim(), p_password: $('#au-pass', modal).value }); closeModal(); toast('Login added'); loadUsers(); }
+    catch (err) { showError(err); }
+  });
+});
+function openSetPassword(username) {
+  const modal = openModal(
+    '<h2>Reset password &middot; ' + esc(username) + '</h2><p class="lead">Other computers signed in as ' + esc(username) + ' are signed out.</p>' +
+    '<div class="grid2">' + field('New password', '<input id="sp-new" type="password" autocomplete="new-password">') + field('New password again', '<input id="sp-again" type="password" autocomplete="new-password">') + '</div>' +
+    '<div class="actions"><button type="button" id="sp-cancel">Cancel</button><button type="button" class="primary" id="sp-go">Set password</button></div>');
+  $('#sp-cancel', modal).addEventListener('click', closeModal);
+  $('#sp-go', modal).addEventListener('click', async () => {
+    const nw = $('#sp-new', modal).value;
+    if (nw !== $('#sp-again', modal).value) { toast('The two passwords do not match', true); return; }
+    try { await rpc('pool_user_set_password', { p_username: username, p_password: nw }); closeModal(); toast('Password set'); loadUsers(); }
+    catch (err) { showError(err); }
+  });
+}
+
+// CSV
+function parseCSV(text) {
+  const rows = []; let row = [], cell = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) { if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else inQ = false; } else cell += c; }
+    else if (c === '"') inQ = true;
+    else if (c === ',') { row.push(cell); cell = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && text[i + 1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
+    else cell += c;
+  }
+  if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim() !== ''));
+}
+function toCSV(rows) { return rows.map(r => r.map(v => { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(',')).join('\r\n'); }
+function downloadCSV(name, rows) {
+  const blob = new Blob(['﻿' + toCSV(rows)], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+let importRows = null;
+$('#s-import-file').addEventListener('change', async e => {
+  const f = e.target.files[0]; importRows = null; $('#s-import-run').disabled = true;
+  if (!f) return;
+  const text = await f.text();
+  const rows = parseCSV(text);
+  if (rows.length < 2) { $('#s-import-out').textContent = 'That file has no data rows.'; return; }
+  const head = rows[0].map(h => h.trim().toLowerCase().replace(/[^a-z_]/g, ''));
+  const aliases = { name: 'name', fullname: 'name', member: 'name', phone: 'phone', mobile: 'phone', telephone: 'phone', kind: 'kind', type: 'kind', remaining: 'remaining', balance: 'remaining', left: 'remaining', entriesleft: 'remaining', punches: 'remaining', punchesleft: 'remaining', barcode: 'barcode', card: 'barcode', cardno: 'barcode', cardnumber: 'barcode', newcard: 'barcode', expires_on: 'expires_on', expireson: 'expires_on', expiry: 'expires_on', expires: 'expires_on', note: 'note', notes: 'note', rate: 'rate', email: 'email' };
+  const map = head.map(h => aliases[h] || null);
+  if (!map.includes('name')) { $('#s-import-out').textContent = 'No name column found. Headers seen: ' + rows[0].join(', '); return; }
+  importRows = rows.slice(1).map(r => { const o = {}; map.forEach((k, i) => { if (k) o[k] = (r[i] || '').trim(); }); return o; }).filter(o => o.name);
+  $('#s-import-out').innerHTML = '<b>' + importRows.length + '</b> members ready. Columns matched: ' + map.filter(Boolean).join(', ') + '.';
+  $('#s-import-run').disabled = false;
+});
+$('#s-import-run').addEventListener('click', async () => {
+  if (!importRows) return;
+  const btn = $('#s-import-run'); btn.disabled = true;
+  const out = $('#s-import-out'); const log = [];
+  let ok = 0, bad = 0;
+  for (let i = 0; i < importRows.length; i++) {
+    const r = importRows[i];
+    const kind = KINDS[(r.kind || '').toLowerCase()] ? r.kind.toLowerCase() : 'adult';
+    const remaining = parseInt(r.remaining, 10);
+    try {
+      const rows = await q(sb.from('pool_members').insert({ name: r.name, phone: r.phone || null, email: r.email || null, kind: kind, rate: r.rate ? Number(r.rate) : null,
+        barcode: r.barcode || null, expires_on: parseDate(r.expires_on), note: r.note || null }).select());
+      if (remaining > 0) await rpc('pool_adjust', { p_member_id: rows[0].id, p_qty: remaining, p_note: 'Opening balance carried over', p_kind: 'opening' });
+      ok++;
+    } catch (err) { bad++; log.push('Row ' + (i + 2) + ' (' + r.name + '): ' + err.message); }
+    out.innerHTML = 'Imported ' + ok + ' of ' + importRows.length + (bad ? ', ' + bad + ' failed' : '') + '…';
+  }
+  out.innerHTML = '<b>Done.</b> ' + ok + ' imported' + (bad ? ', ' + bad + ' failed' : '') + '.' + (log.length ? '<ul style="margin:8px 0 0 18px;padding:0">' + log.map(l => '<li>' + esc(l) + '</li>').join('') + '</ul>' : '');
+  importRows = null; $('#s-import-file').value = '';
+});
+
+$('#s-export-members').addEventListener('click', async () => {
+  try {
+    const rows = await fetchAll(() => sb.from('pool_member_state').select('*').order('name'));
+    downloadCSV('pool-members-' + sydneyDate() + '.csv', [['id', 'name', 'kind', 'phone', 'email', 'card', 'balance', 'expires_on', 'last_swim', 'active', 'rate', 'note']].concat(rows.map(r => [r.id, r.name, r.kind, r.phone, r.email, r.barcode, r.balance, r.expires_on, r.last_entry ? fmtDate(r.last_entry) : '', r.active ? 'yes' : 'no', r.rate, r.note])));
+  } catch (err) { showError(err); }
+});
+$('#s-export-ledger').addEventListener('click', async () => {
+  try {
+    const rows = await fetchAll(() => sb.from('pool_entries').select('*, pool_members(name, kind), pool_products(name)').order('id'));
+    downloadCSV('pool-ledger-' + sydneyDate() + '.csv', [['id', 'at', 'member_id', 'member', 'member_kind', 'kind', 'qty', 'amount', 'product', 'adults', 'children', 'infants', 'clients', 'payment', 'note', 'reverses']].concat(rows.map(e => [e.id, e.at, e.member_id, e.pool_members && e.pool_members.name, e.pool_members && e.pool_members.kind, e.kind, e.qty, e.amount, e.pool_products && e.pool_products.name, e.adults, e.children, e.infants, e.clients, e.payment, e.note, e.reverses])));
+  } catch (err) { showError(err); }
+});
+
+// =============================================================================
+init();
+})();
+</script>
+</body>
+</html>
