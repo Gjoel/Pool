@@ -20,7 +20,6 @@
     --k-adult: #1D5FBF;    --k-adult-soft: #DCE8FA;
     --k-senior: #6B4FBB;   --k-senior-soft: #E9E3F8;
     --k-family: #C2571A;   --k-family-soft: #FBE5D6;
-    --k-resident: #1E7B44; --k-resident-soft: #DFF2E5;
     --k-account: #8A6100;  --k-account-soft: #FBEFC9;
     --shadow: 0 1px 2px rgba(23,34,32,.06), 0 10px 28px -14px rgba(23,34,32,.22);
     --display: 'Bricolage Grotesque', 'Atkinson Hyperlegible', system-ui, sans-serif;
@@ -39,7 +38,6 @@
       --k-adult: #7FB0F5;    --k-adult-soft: #16294A;
       --k-senior: #B39CF0;   --k-senior-soft: #2A2246;
       --k-family: #F0955C;   --k-family-soft: #3D2314;
-      --k-resident: #5AD08A; --k-resident-soft: #163222;
       --k-account: #F0C15C;  --k-account-soft: #3A2E0C;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
     }
@@ -130,7 +128,6 @@
   .kind-adult    { --kc: var(--k-adult);    --kc-soft: var(--k-adult-soft); }
   .kind-senior   { --kc: var(--k-senior);   --kc-soft: var(--k-senior-soft); }
   .kind-family   { --kc: var(--k-family);   --kc-soft: var(--k-family-soft); }
-  .kind-resident { --kc: var(--k-resident); --kc-soft: var(--k-resident-soft); }
   .kind-account  { --kc: var(--k-account);  --kc-soft: var(--k-account-soft); }
   .pill.kind { background: var(--kc-soft); color: var(--kc); font-weight: 600; }
   .seg { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -239,14 +236,15 @@
   .pcard.front .bleed { position: absolute; left: -2mm; top: -2mm; right: -2mm; bottom: -2mm; overflow: hidden; }
   .pcard.front.standard .bleed { background: #12205A; color: #fff; }
   .pcard.front.corporate .bleed { background: #F5A623; color: #12205A; }
+  .pcard.front.family .bleed { background: #0367AC; color: #fff; }
   .pcard.front .waves { position: absolute; left: 0; bottom: 0; width: 100%; height: 19mm; }
   .pcard.front .safe { position: absolute; left: 6mm; top: 5.5mm; right: 6mm; bottom: 5.5mm; }
   .pcard.front .wm1 { font-size: 4.8pt; letter-spacing: .22em; text-transform: uppercase; font-weight: 700; display: block; }
-  .pcard.front.standard .wm1 { color: #88C9F7; } .pcard.front.corporate .wm1 { color: #12205A; }
+  .pcard.front.standard .wm1 { color: #88C9F7; } .pcard.front.corporate .wm1 { color: #12205A; } .pcard.front.family .wm1 { color: #D0EDFF; }
   .pcard.front .wm2 { font-size: 8.2pt; font-weight: 700; display: block; line-height: 1.1; }
   .pcard.front .ttl { font-size: 19pt; font-weight: 700; text-transform: uppercase; letter-spacing: -.02em; line-height: .92; margin-top: 4mm; }
   .pcard.front .rule { width: 12mm; height: 1mm; border-radius: 1mm; margin-top: 2mm; }
-  .pcard.front.standard .rule { background: #F5A623; } .pcard.front.corporate .rule { background: #12205A; }
+  .pcard.front.standard .rule { background: #F5A623; } .pcard.front.corporate .rule { background: #12205A; } .pcard.front.family .rule { background: #F5A623; }
   .pcard.front .tag { font-size: 5pt; letter-spacing: .04em; margin-top: 1.8mm; opacity: .85; }
   .pcard.front .fno { position: absolute; right: 0; bottom: 0; font-family: Consolas, "Liberation Mono", monospace; font-size: 5pt; letter-spacing: .12em; opacity: .55; }
   /* back: barcode face, everything 4 mm inside the trim so a slightly offset print still cuts cleanly */
@@ -258,6 +256,14 @@
   .pcard.back .bc svg { display: block; margin: 0 auto; }
   .pcard.back .num { font-family: Consolas, "Liberation Mono", monospace; font-size: 8pt; letter-spacing: .2em; color: #333; margin-top: .4mm; }
   .pcard.back .addr { position: absolute; left: 0; right: 0; bottom: 3.6mm; text-align: center; font-size: 4.2pt; color: #6B7280; }
+  /* family back: adult and child barcodes side by side, each with its own label and quiet zone */
+  .pcard.back.family .terms { top: 8mm; font-size: 4.5pt; line-height: 1.28; }
+  .pcard .bc2 { display: flex; justify-content: space-between; align-items: flex-end; }
+  .pcard.back .bc2 { left: 4mm; right: 4mm; }
+  .pcard .bc2 .bcx { text-align: center; width: 35mm; }
+  .pcard .bc2 .lbl { font-size: 4.6pt; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: #12205A; margin-bottom: .4mm; white-space: nowrap; }
+  .pcard .bc2 .bcx svg { display: block; margin: 0 auto; }
+  .pcard .bc2 .num { font-size: 7pt; letter-spacing: .14em; }
   /* single-sided: brand band plus barcode on one face */
   .pcard.single { border: 0.2mm solid #9A9A9A; overflow: hidden; }
   .pcard.single .band { height: 14mm; padding: 2.4mm 3.5mm 0; display: flex; justify-content: space-between; align-items: flex-start; }
@@ -270,6 +276,9 @@
   .pcard.single .foot { position: absolute; left: 3.5mm; right: 3.5mm; bottom: 1.8mm; font-size: 4.3pt; color: #6B7280; display: flex; justify-content: space-between; }
   .pcard.single.standard .band { background: #12205A; color: #fff; } .pcard.single.standard .wm1 { color: #88C9F7; }
   .pcard.single.corporate .band { background: #F5A623; color: #12205A; } .pcard.single.corporate .wm1 { color: #12205A; }
+  .pcard.single.family .band { background: #0367AC; color: #fff; } .pcard.single.family .wm1 { color: #D0EDFF; }
+  .pcard.single .bc2 { top: 15.5mm; left: 3.5mm; right: 3.5mm; }
+  .pcard.single .bc2 .num { margin-top: .4mm; }
   .ro-hint { font-size: 14px; color: var(--muted); }
 
   /* Print (statements and card sheets) */
@@ -429,7 +438,6 @@
           <option value="adult">Adult</option>
           <option value="senior">Senior</option>
           <option value="family">Family</option>
-          <option value="resident">Resident</option>
           <option value="account">Practice account</option>
         </select>
         <label style="margin:0;display:flex;align-items:center;gap:6px;font-weight:400;color:var(--ink)"><input type="checkbox" id="m-inactive" style="width:auto"> show inactive</label>
@@ -524,13 +532,18 @@
       <div class="panel">
         <div class="panel-head"><h3>Print cards</h3><span class="small muted">A4 sheets of 10, each 80 &times; 48 mm for a 54 &times; 86 mm pouch. Print at 100% on card stock, cut at the corner marks, laminate.</span></div>
         <div class="grid2">
-          <div class="field"><label for="pc-variant">Card</label><select id="pc-variant"><option value="standard">Standard pool pass</option><option value="corporate">Corporate pass</option></select></div>
+          <div class="field"><label for="pc-variant">Card</label><select id="pc-variant"><option value="standard">Standard pool pass</option><option value="family">Family pass (two barcodes)</option><option value="corporate">Corporate pass</option></select></div>
           <div class="field"><label for="pc-sides">Sides</label><select id="pc-sides"><option value="long">Double-sided, flip on long edge</option><option value="short">Double-sided, flip on short edge</option><option value="single">Single-sided, barcode on the front</option></select></div>
           <div class="field"><label for="pc-start">First number</label><input id="pc-start" type="number" min="100001" step="1"></div>
           <div class="field"><label for="pc-count">How many</label><select id="pc-count"><option>10</option><option>20</option><option>30</option><option>50</option><option>100</option></select></div>
         </div>
-        <p class="small muted" id="pc-note">The first number is the next one after the last sheet printed or the highest card in use, whichever is higher. Double-sided prints the brand on the front and the barcode on the back of the same sheet; set the printer to print on both sides and match the flip setting here. The small number on the front should match the barcode behind it.</p>
+        <p class="small muted" id="pc-note">The first number is the next one after the last sheet printed or the highest card in use, whichever is higher. Double-sided prints the brand on the front and the barcode on the back of the same sheet; set the printer to print on both sides and match the flip setting here. The small number on the front should match the barcode behind it. Standard cards are numbered from 100001, family cards from 400001 (the child barcode on each is the card number plus 50000) and corporate cards from 150001.</p>
         <div class="actions"><button class="primary" id="pc-print" type="button">Print sheet</button></div>
+        <div class="row" style="margin-top:18px;align-items:flex-end">
+          <div class="field" style="margin:0;max-width:280px"><label for="pc-one">Reprint one card (lost or worn out)</label><input id="pc-one" class="mono" autocomplete="off" placeholder="scan or type the card number"></div>
+          <button id="pc-one-print" type="button">Reprint</button>
+          <span class="small muted">Same number, same balance. Also available from the member's screen.</span>
+        </div>
       </div>
 
       <div class="panel">
@@ -542,7 +555,7 @@
 
       <div class="panel">
         <div class="panel-head"><h3>Import a member list</h3></div>
-        <p class="small muted">A CSV with a header row. Recognised columns (any order, any case): <span class="mono">name, phone, kind, remaining, barcode, expires_on, note, rate, email</span>. Kind is adult, senior, family, resident or account (default adult). Remaining becomes an opening balance. Cards are assigned later at the desk, or now if the barcode column is filled.</p>
+        <p class="small muted">A CSV with a header row. Recognised columns (any order, any case): <span class="mono">name, phone, kind, remaining, barcode, expires_on, note, rate, email</span>. Kind is adult, senior, family or account (default adult). Remaining becomes an opening balance. Cards are assigned later at the desk, or now if the barcode column is filled.</p>
         <div class="row" style="margin-top:10px">
           <input type="file" id="s-import-file" accept=".csv,text/csv" style="max-width:360px">
           <button id="s-import-run" type="button" disabled>Import</button>
@@ -594,9 +607,18 @@ const TZ = 'Australia/Sydney';
 const SCANNER_GAP_MS = 100;        // keystrokes closer than this are a scanner, not a person
 const TOKEN_KEY = 'poolpass.session';
 
-const KINDS = { adult: 'Adult', senior: 'Senior', family: 'Family', resident: 'Resident', account: 'Practice account' };
+const KINDS = { adult: 'Adult', senior: 'Senior', family: 'Family', account: 'Practice account' };
 const PAYING = ['adult', 'senior', 'family'];
 const OLD_SYSTEM_BELOW = 10000;    // card numbers under this are punch cards from the old register, not barcodes
+
+// Card number ranges. Sheets printed at reception use the first block of each; the PVC
+// print run uses 200001+ (standard), 300001+ (corporate) and 500001+ (family).
+// A family card carries two barcodes: its number is the ADULT barcode (2 punches a scan)
+// and its number plus 50000 is the CHILD barcode (1 punch a scan).
+const CARD_RANGES = { standard: [100001, 149999], corporate: [150001, 199999], family: [400001, 449999] };
+const FAMILY_RANGES = [[400001, 449999], [500001, 549999]];
+const FAMILY_CHILD_OFFSET = 50000;
+const VARIANT_NAMES = { standard: 'Standard pool pass', corporate: 'Corporate pass', family: 'Family pass (two barcodes)' };
 
 // Desk logins live in the database (pool_users). Signing in returns a session
 // token; it rides on every request as the x-pool-token header and every table
@@ -763,6 +785,18 @@ function cardLabel(code, opts) {
   if (isOldCard(code)) return '<span class="pill old" title="Old register number, not a barcode card">punch card ' + esc(code) + '</span>';
   return '<span class="pill ' + (opts.plain ? 'mono' : 'accent') + '">card ' + esc(code) + '</span>';
 }
+// Family cards: the child barcode is derived from the card number, never stored.
+const familyChild = code => { const n = cardNum(code); return n != null && FAMILY_RANGES.some(r => n >= r[0] && n <= r[1]) ? String(n + FAMILY_CHILD_OFFSET) : null; };
+const familyParent = code => { const n = cardNum(code); return n != null && FAMILY_RANGES.some(r => n >= r[0] + FAMILY_CHILD_OFFSET && n <= r[1] + FAMILY_CHILD_OFFSET) ? String(n - FAMILY_CHILD_OFFSET) : null; };
+const cardCode = code => familyParent(code) || String(code == null ? '' : code).trim();   // a child barcode means its card
+function cardVariant(code) {
+  const n = cardNum(code);
+  if (n == null) return 'standard';
+  if ((n >= 150001 && n <= 199999) || (n >= 300001 && n <= 399999)) return 'corporate';
+  if (familyChild(code)) return 'family';
+  return 'standard';
+}
+const childLabel = code => familyChild(code) ? '<span class="pill mono" title="The second barcode on this family card: one scan is one child">child barcode ' + familyChild(code) + '</span>' : '';
 
 // Data
 function netError(err) { return err && /Failed to fetch|NetworkError|Load failed|network/i.test(err.message || ''); }
@@ -951,7 +985,7 @@ function routeScan(code) {
   if (scanConsumer) { scanConsumer(code); return; }
   if (modalOpen()) { toast('Finish or cancel the open window first, then scan again', true); return; }
   if (currentPage === 'rollover') { rolloverCard(code); return; }
-  if (currentPage === 'members') { $('#m-search').value = code; loadMembers(); return; }
+  if (currentPage === 'members') { $('#m-search').value = cardCode(code); loadMembers(); return; }
   if (currentPage !== 'scan') showPage('scan');
   onScan(code);
 }
@@ -980,12 +1014,15 @@ function setResult(o) {
   const m = o.member;
   if (m) {
     card.hidden = false;
-    card.innerHTML = kindPill(m.kind) + cardLabel(o.code && o.code !== m.barcode ? o.code : m.barcode, { warnNone: true }) +
+    const realCard = m.barcode && !isOldCard(m.barcode);
+    card.innerHTML = kindPill(m.kind) + cardLabel(o.code && o.code !== m.barcode ? o.code : m.barcode, { warnNone: true }) + childLabel(m.barcode) +
       (o.code && m.barcode && o.code !== m.barcode ? '<span class="small">now card ' + esc(m.barcode) + '</span>' : '') +
       '<span class="small">member #' + m.id + '</span>' +
       '<button type="button" class="link" id="rc-change">' + (m.barcode ? 'Change card' : 'Assign card') + '</button>' +
+      (realCard ? '<button type="button" class="link" id="rc-reprint">Reprint card</button>' : '') +
       '<button type="button" class="link" id="rc-edit">Edit member</button>';
     $('#rc-change', card).addEventListener('click', () => openCardCapture(m, { after: nm => { if (nm && nm.barcode) onScan(nm.barcode); } }));
+    if (realCard) $('#rc-reprint', card).addEventListener('click', () => openReprint(m));
     $('#rc-edit', card).addEventListener('click', () => { showPage('members'); $('#m-search').value = ''; selectedId = m.id; loadMembers(); });
   }
   if (o.beep) beep(o.beep);
@@ -997,7 +1034,6 @@ function resetResult() {
 function memberLine(m, balance) {
   const bits = [];
   if (m.kind === 'account') bits.push('<b>' + balance * -1 + '</b> client visits owing');
-  else if (m.kind === 'resident') bits.push('Resident, no charge');
   else bits.push('<b>' + balance + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + ' left');
   if (m.expires_on && PAYING.includes(m.kind)) bits.push('expires ' + fmtDate(m.expires_on));
   return bits.join(' &middot; ');
@@ -1031,24 +1067,26 @@ async function presentScan(res, ctx) {
   const m = res.member, bal = res.balance;
   lastResult = res;
   // every state with a member shows its card number and the amend links underneath
-  const show = o => setResult(Object.assign({ member: m, code: ctx && ctx.code }, o));
+  const show = o => setResult(Object.assign({ member: m, code: ctx && ctx.code ? cardCode(ctx.code) : null }, o));
   switch (res.state) {
     case 'ok':
     case 'low': {
       const low = res.state === 'low';
-      let line;
+      const role = res.role;                       // adult or child: a two-barcode family card, one scan per person
+      let line, sub;
       if (m.kind === 'account') line = '<b>' + res.deducted + '</b> ' + (res.deducted === 1 ? 'client' : 'clients') + ' recorded &middot; <b>' + (-bal) + '</b> owing this period';
-      else if (m.kind === 'resident') line = 'Resident &middot; visit recorded, no charge';
-      else if (m.kind === 'family') line = '<b>' + res.deducted + '</b> punches used &middot; <b>' + bal + '</b> left' + (m.expires_on ? ' &middot; expires ' + fmtDate(m.expires_on) : '');
+      else if (m.kind === 'family') line = (role ? '<b>' + (role === 'adult' ? 'Adult' : 'Child') + '</b> &middot; ' : '') + '<b>' + res.deducted + '</b> ' + (res.deducted === 1 ? 'punch' : 'punches') + ' used &middot; <b>' + bal + '</b> left' + (m.expires_on ? ' &middot; expires ' + fmtDate(m.expires_on) : '');
       else line = memberLine(m, bal);
       const actions = [];
       if (low && PAYING.includes(m.kind)) actions.push(sellAction(m, bal === 0 ? 'Sell a new pass' : 'Top up now'));
       const secs = res.last_entry ? (Date.now() - new Date(res.last_entry).getTime()) / 1000 : null;
-      const repeat = secs != null && secs < 300;
-      show({ tone: low ? 'warn' : 'ok', state: low ? (bal === 0 ? 'Entered · card now empty' : 'Entered · running low') : 'Entered', name: m.name, line: line,
-        sub: repeat ? '<span class="soft">Also scanned ' + rel(res.last_entry) + '. Counted again; undo it from the Today list if that was a double.</span>'
-           : (res.last_entry ? 'Last swim ' + rel(res.last_entry) : (m.kind === 'account' ? 'Invoiced monthly in arrears' : 'First swim on this card')),
-        actions: actions, beep: low ? 'warn' : 'ok' });
+      const repeat = secs != null && secs < 300 && !role;
+      if (role) sub = 'On this card today: <b>' + plural(res.today_adults || 0, 'adult') + '</b>, <b>' + plural(res.today_children || 0, 'child', 'children') + '</b>. Scan the adult barcode once per adult and the child barcode once per child; under-5s are free.';
+      else if (repeat) sub = '<span class="soft">Also scanned ' + rel(res.last_entry) + '. Counted again; undo it from the Today list if that was a double.</span>';
+      else sub = res.last_entry ? 'Last swim ' + rel(res.last_entry) : (m.kind === 'account' ? 'Invoiced monthly in arrears' : 'First swim on this card');
+      const stateText = role ? (role === 'adult' ? 'Adult entered' : 'Child entered') : 'Entered';
+      show({ tone: low ? 'warn' : 'ok', state: low ? (bal === 0 ? stateText + ' · card now empty' : stateText + ' · running low') : stateText, name: m.name, line: line,
+        sub: sub, actions: actions, beep: low ? 'warn' : 'ok' });
       if (m.kind === 'account') showMonthCount(m);
       break;
     }
@@ -1080,10 +1118,13 @@ async function presentScan(res, ctx) {
                   { label: 'Make this the current card', cls: '', run: async () => { try { await rpc('pool_change_card', { p_member_id: m.id, p_barcode: res.barcode, p_reason: 'old card back in use' }); toast('Card ' + res.barcode + ' is current again'); onScan(res.barcode); } catch (err) { showError(err); } } }],
         beep: 'bad' });
       break;
-    case 'unknown':
-      show({ tone: 'info', state: 'New card', name: 'Card ' + esc(res.barcode), line: 'Not assigned to anyone yet', sub: 'A new pass, or a replacement card for someone already in the system.',
+    case 'unknown': {
+      const variant = cardVariant(res.barcode);
+      show({ tone: 'info', state: 'New card', name: 'Card ' + esc(res.barcode), line: 'Not assigned to anyone yet' + (variant !== 'standard' ? ' &middot; ' + esc(VARIANT_NAMES[variant]) : ''),
+        sub: (res.child_scanned ? 'That was the child barcode; the card number is ' + esc(res.barcode) + '. ' : '') + 'A new pass, or a replacement card for someone already in the system.',
         actions: [{ label: 'New pass', cls: 'primary', run: () => openNewPass(res.barcode) }, { label: 'Existing member', cls: '', run: () => openAssign(res.barcode) }], beep: 'bad' });
       break;
+    }
     case 'needs_party':
       show({ tone: 'info', state: 'Family pass', name: m.name, line: '<b>' + bal + '</b> punches left' + (m.expires_on ? ' &middot; expires ' + fmtDate(m.expires_on) : ''), sub: 'Who is going in?' });
       openParty(m, bal, res.last_party, ctx);
@@ -1160,7 +1201,7 @@ function openSell(m, opts) {
     '<div class="field">' + productTiles('sell-product', list, preferred) + '</div>' +
     '<div class="grid2"><div class="field"><label for="sell-pay">Paid by</label><select id="sell-pay"><option value="card">Card</option><option value="cash">Cash</option><option value="other">Other / account</option></select></div>' +
     '<div class="field"><label for="sell-note">Note</label><input id="sell-note" placeholder="optional" autocomplete="off"></div></div>' +
-    (m.kind !== preferred.holder_kind && m.kind !== 'resident' ? '<p class="small muted">This member is set as ' + esc(KINDS[m.kind]) + '. Selling a different pass type changes them to match.</p>' : '') +
+    (m.kind !== preferred.holder_kind ? '<p class="small muted">This member is set as ' + esc(KINDS[m.kind]) + '. Selling a different pass type changes them to match.</p>' : '') +
     '<div class="actions"><button type="button" id="sell-cancel">Cancel</button><button type="button" class="primary big" id="sell-go">Record sale</button></div>');
   bindTiles(modal);
   $('#sell-cancel', modal).addEventListener('click', closeModal);
@@ -1205,6 +1246,7 @@ function openExtend(m, ctx) {
 
 // A new card for someone already in the system (a replacement, or a member who was imported)
 function openAssign(code) {
+  code = cardCode(code);
   const modal = openModal(
     '<h2>Card ' + esc(code) + ' for an existing member</h2>' +
     '<p class="lead">Type a name or phone. Their old card stops working the moment this one is saved.</p>' +
@@ -1234,18 +1276,24 @@ function openAssign(code) {
 // New pass: a fresh card, a name and a number, the pass they are buying, and any
 // entries being carried over. One call, nothing half done.
 function openNewPass(code) {
+  code = cardCode(code);
   const list = products.filter(p => p.active);
+  const variant = cardVariant(code);
+  // a family card (two barcodes) starts on the family pass; a corporate card on no pass
+  const first = variant === 'family' ? (list.find(p => p.holder_kind === 'family') || list[0]) : variant === 'corporate' ? null : list[0];
   const modal = openModal(
     '<h2>New pass &middot; card ' + esc(code) + '</h2>' +
     '<p class="lead">Name and phone go in the system against this card. Pick the pass they are buying, or none if they already have entries to carry over.</p>' +
+    (variant === 'family' ? '<p class="small soft" style="margin:-8px 0 12px">Family card: the adult barcode is ' + esc(code) + ', the child barcode is ' + esc(familyChild(code)) + '. One scan per person at the desk.</p>' : '') +
+    (variant === 'corporate' ? '<p class="small soft" style="margin:-8px 0 12px">Corporate card. Practice accounts are added on the Members page (Add member, type Practice account) and the card assigned there.</p>' : '') +
     '<div class="grid2">' + field('Name', '<input id="np-name" autocomplete="off" required>') + field('Phone', '<input id="np-phone" autocomplete="off" inputmode="tel">') + '</div>' +
     '<div id="np-dupe" class="found" hidden style="margin:-4px 0 12px"></div>' +
-    '<div class="field"><label>Pass</label>' + productTiles('np-product', list, list[0]) +
-      '<label class="prow"><input type="radio" name="np-product" value=""><span style="flex:1"><b style="color:var(--ink)">No pass today</b> <span class="muted small">card only, or carrying entries over</span></span></label>' +
+    '<div class="field"><label>Pass</label>' + productTiles('np-product', list, first) +
+      '<label class="prow' + (first ? '' : ' on') + '"><input type="radio" name="np-product" value=""' + (first ? '' : ' checked') + '><span style="flex:1"><b style="color:var(--ink)">No pass today</b> <span class="muted small">card only, or carrying entries over</span></span></label>' +
     '</div>' +
     '<div class="grid2">' + field('Paid by', '<select id="np-pay"><option value="card">Card</option><option value="cash">Cash</option><option value="other">Other</option></select>') +
       field('Entries carried over', '<input id="np-carry" type="number" min="0" step="1" value="0">') + '</div>' +
-    field('Type if no pass is bought today', kindSeg('np-kind', ['adult', 'senior', 'family', 'resident'], 'adult')) +
+    field('Type if no pass is bought today', kindSeg('np-kind', ['adult', 'senior', 'family'], variant === 'family' ? 'family' : 'adult')) +
     '<div class="actions"><button type="button" id="np-cancel">Cancel</button><button type="button" id="np-existing">Existing member instead</button><button type="button" class="primary big" id="np-go">Create pass</button></div>');
   bindSeg(modal); bindTiles(modal);
   $('#np-cancel', modal).addEventListener('click', () => { closeModal(); resetResult(); });
@@ -1285,9 +1333,9 @@ function openNewPass(code) {
       const p = pid ? list.find(x => x.id === Number(pid)) : null;
       const m = r.member;
       closeModal(); toast('New pass for ' + m.name);
-      setResult({ tone: 'ok', state: 'New pass', name: m.name,
+      setResult({ tone: 'ok', state: 'New pass', name: m.name, member: m, code: code,
         line: (p ? esc(p.name) + ' &middot; ' + money(p.price) + ' &middot; ' : '') + '<b>' + r.balance + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + ' on card ' + esc(code) + (carry ? ' (' + carry + ' carried over)' : ''),
-        sub: m.expires_on ? 'Expires ' + fmtDate(m.expires_on) + '. Going in now?' : 'Going in now?',
+        sub: (m.expires_on ? 'Expires ' + fmtDate(m.expires_on) + '. ' : '') + (familyChild(code) ? 'Scan the adult barcode for each adult and the child barcode for each child going in.' : 'Going in now?'),
         actions: [{ label: 'Enter now', cls: 'primary', run: () => onScan(code) }], beep: 'ok' });
       loadToday();
     } catch (err) { showError(err); $('#np-go', modal).disabled = false; }
@@ -1302,7 +1350,7 @@ $('#new-pass-btn').addEventListener('click', () => {
     '<div class="actions"><button type="button" id="npc-cancel">Cancel</button><button type="button" class="primary" id="npc-go">Next</button></div>');
   const input = $('#npc-code', modal);
   const go = async () => {
-    const code = input.value.trim(); if (!code) return;
+    const code = cardCode(input.value); if (!code) return;
     try {
       const r = await rpc('pool_lookup_card', { p_code: code });
       closeModal();
@@ -1353,6 +1401,8 @@ async function loadToday() {
       if (m.kind === 'account') return n + (e.clients || 0);
       return n + 1;
     }, 0);
+    // a family scanning person by person makes one row per person; the entries count still counts rows
+
     $('#t-entries').textContent = counted.length;
     $('#t-people').textContent = people;
     // sales: count of passes, and the money split by how it was paid (refunds come off)
@@ -1368,7 +1418,6 @@ async function loadToday() {
       let used = String(-e.qty);
       if (m.kind === 'family') used = -e.qty + ' <span class="small muted">(' + (e.adults || 0) + 'A ' + (e.children || 0) + 'C' + (e.infants ? ' ' + e.infants + 'U5' : '') + ')</span>';
       if (m.kind === 'account') used = (e.clients || 0) + ' <span class="small muted">clients</span>';
-      if (m.kind === 'resident') used = '<span class="small muted">free</span>';
       const undone = reversed.has(e.id);
       return '<tr class="' + (undone ? 'dim' : '') + '"><td>' + fmtTime(e.at) + '</td><td>' + esc(m.name || '?') + (undone ? ' <span class="pill">undone</span>' : '') + (m.barcode ? '<div class="mono small muted">' + esc(m.barcode) + '</div>' : '') + '</td><td class="num">' + used + '</td><td>' + kindPill(m.kind) + '</td>' +
         '<td style="white-space:nowrap">' + (undone ? '<button type="button" class="x" data-del="' + e.id + '" title="Delete this undone entry completely" aria-label="Delete">&times;</button>' : '<button type="button" class="link small" data-undo="' + e.id + '">undo</button>') + '</td></tr>';
@@ -1393,7 +1442,7 @@ setInterval(() => { if (session && currentPage === 'scan' && !modalOpen()) loadT
 //   instead of making a second person; a card the system has never seen makes a
 //   new record. Every transfer is logged and can be undone from the list.
 // =============================================================================
-const ROLL_KINDS = ['adult', 'senior', 'family', 'resident'];
+const ROLL_KINDS = ['adult', 'senior', 'family'];
 $('#ro-kind-seg').innerHTML = kindSeg('ro-kind', ROLL_KINDS, 'adult');
 bindSeg($('#ro-kind-seg'));
 let roLinked = null;          // the existing record the transfer goes onto, if any
@@ -1409,12 +1458,16 @@ function rolloverClear() {
 }
 async function rolloverCard(code) {
   const field = $('#ro-card'), note = $('#ro-card-note');
+  const child = familyParent(code);
+  code = cardCode(code);
   field.value = code; note.textContent = 'Checking…';
   try {
     const r = await rpc('pool_lookup_card', { p_code: code });
     if (r.state === 'current') { note.innerHTML = '<span style="color:var(--red)">Card ' + esc(code) + ' already belongs to ' + esc(r.member.name) + ' (' + r.balance + ' left). Scan a fresh card.</span>'; field.value = ''; field.focus(); return; }
     if (r.state === 'retired') note.innerHTML = '<span class="soft">Card ' + esc(code) + ' used to be ' + esc(r.member.name) + '\'s (replaced by ' + esc(r.replaced_by || '?') + '). It can be reissued.</span>';
-    else note.textContent = 'Card ' + code + ' is free. Now the old punch card.';
+    else note.textContent = 'Card ' + code + ' is free' + (cardVariant(code) === 'family' ? ' (family card, two barcodes)' : '') + '. Now the old punch card.';
+    if (child) note.innerHTML += ' <span class="small muted">The child barcode was scanned; the card number is ' + esc(code) + '.</span>';
+    if (cardVariant(code) === 'family') setSeg($('#ro-kind-seg .seg'), 'family');
     if (!$('#ro-old').value) $('#ro-old').focus(); else $('#ro-name').focus();
   } catch (err) { showError(err); }
 }
@@ -1491,6 +1544,7 @@ function rolloverPrefill(code, member) {
 }
 
 $('#ro-card').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const c = $('#ro-card').value.trim(); if (c) rolloverCard(c); } });
+$('#ro-card').addEventListener('change', () => { const c = $('#ro-card').value.trim(); if (c && familyParent(c)) rolloverCard(c); });
 $('#ro-clear').addEventListener('click', rolloverClear);
 $('#ro-form').addEventListener('submit', async e => {
   e.preventDefault();
@@ -1573,7 +1627,7 @@ $('#m-inactive').addEventListener('change', loadMembers);
 $('#m-add').addEventListener('click', () => openNewMember());
 
 async function loadMembers() {
-  const s = clean($('#m-search').value), kind = $('#m-kind').value, inactive = $('#m-inactive').checked;
+  const s = cardCode(clean($('#m-search').value)), kind = $('#m-kind').value, inactive = $('#m-inactive').checked;
   try {
     let b = sb.from('pool_member_state').select('*').order('name').limit(1000);
     if (s) b = b.or('name.ilike.%' + s + '%,phone.ilike.%' + s + '%,barcode.ilike.%' + s + '%');
@@ -1583,7 +1637,7 @@ async function loadMembers() {
     const body = $('#m-body');
     body.innerHTML = membersCache.length ? membersCache.map(r =>
       '<tr class="clickable' + (r.id === selectedId ? ' selected' : '') + (r.active ? '' : ' dim') + '" data-id="' + r.id + '"><td class="kc kind-' + esc(r.kind) + '">' + esc(r.name) + (r.active ? '' : ' <span class="pill">inactive</span>') + '</td><td>' + kindPill(r.kind) + '</td><td class="mono">' + (r.barcode ? (isOldCard(r.barcode) ? '<span class="muted" title="old register number">' + esc(r.barcode) + ' <span class="small">old</span></span>' : esc(r.barcode)) : '') + '</td>' +
-      '<td class="num">' + (r.kind === 'account' ? '<span class="muted">' + (-r.balance) + ' owing</span>' : r.kind === 'resident' ? '<span class="muted">free</span>' : r.balance) + '</td><td>' + expiryCell(r) + '</td></tr>').join('')
+      '<td class="num">' + (r.kind === 'account' ? '<span class="muted">' + (-r.balance) + ' owing</span>' : r.balance) + '</td><td>' + expiryCell(r) + '</td></tr>').join('')
       : '<tr><td colspan="5" class="empty">' + (s || kind ? 'No matches.' : 'No members yet. Press New pass on the Scan tab, or import a list under Settings.') + '</td></tr>';
     $$('tr[data-id]', body).forEach(tr => tr.addEventListener('click', () => selectMember(Number(tr.dataset.id))));
     if (selectedId && membersCache.some(r => r.id === selectedId)) selectMember(selectedId);
@@ -1616,12 +1670,14 @@ function renderMember(m, hist) {
   const isAcct = m.kind === 'account';
   panel.innerHTML =
     '<div class="panel-head"><div><h2>' + esc(m.name) + '</h2><div class="small muted">' + KINDS[m.kind] + ' &middot; member #' + m.id + ' &middot; since ' + fmtDate(m.created_at) + '</div></div>' +
-    '<div class="stat"><div class="v">' + (isAcct ? (-m.balance) : m.balance) + '</div><div class="k">' + (isAcct ? 'client visits owing' : m.kind === 'resident' ? 'visits logged: ' + m.entry_count : (m.kind === 'family' ? 'punches' : 'entries') + ' left') + '</div></div></div>' +
-    '<div class="row" style="margin-bottom:12px">' + cardLabel(m.barcode, { warnNone: true }) + (m.legacy_card ? '<span class="small muted">punch card' + (m.legacy_card.includes(',') ? 's' : '') + ' ' + esc(m.legacy_card) + '</span>' : '') + (m.last_entry ? '<span class="small muted">last swim ' + rel(m.last_entry) + '</span>' : '') + '</div>' +
+    '<div class="stat"><div class="v">' + (isAcct ? (-m.balance) : m.balance) + '</div><div class="k">' + (isAcct ? 'client visits owing' : (m.kind === 'family' ? 'punches' : 'entries') + ' left') + '</div></div></div>' +
+    '<div class="row" style="margin-bottom:12px">' + cardLabel(m.barcode, { warnNone: true }) + childLabel(m.barcode) + (m.legacy_card ? '<span class="small muted">punch card' + (m.legacy_card.includes(',') ? 's' : '') + ' ' + esc(m.legacy_card) + '</span>' : '') + (m.last_entry ? '<span class="small muted">last swim ' + rel(m.last_entry) + '</span>' : '') + '</div>' +
     (m.barcode && isOldCard(m.barcode) ? '<p class="small soft" style="margin-bottom:12px">Still on the old register number. When they present their punch card, use the Roll over tab (type ' + esc(m.barcode) + ' as the old card) and the new barcode card lands on this record.</p>' : '') +
+    (m.kind === 'family' && m.barcode && !isOldCard(m.barcode) && !familyChild(m.barcode) ? '<p class="small muted" style="margin-bottom:12px">Single-barcode card: each scan asks who is going in. A family card from the 400001 range has separate adult and child barcodes; swap it with Replace card when they are next in.</p>' : '') +
     '<div class="actions" style="margin:0 0 16px">' +
-      (isAcct ? '<button type="button" class="primary" id="d-visit">Record a visit</button>' : m.kind === 'resident' ? '' : '<button type="button" class="primary" id="d-sell">Sell a pass</button>') +
+      (isAcct ? '<button type="button" class="primary" id="d-visit">Record a visit</button>' : '<button type="button" class="primary" id="d-sell">Sell a pass</button>') +
       '<button type="button" id="d-card">' + (m.barcode && !isOldCard(m.barcode) ? 'Replace card' : 'Assign card') + '</button>' +
+      (m.barcode && !isOldCard(m.barcode) ? '<button type="button" id="d-reprint">Reprint card</button>' : '') +
       '<button type="button" id="d-adjust">Adjust balance</button>' +
       '<button type="button" id="d-merge">Merge another record into this one</button>' +
     '</div>' +
@@ -1654,6 +1710,7 @@ function renderMember(m, hist) {
   const sellBtn = $('#d-sell', panel); if (sellBtn) sellBtn.addEventListener('click', () => openSell(m, { after: () => { selectMember(m.id); loadMembers(); } }));
   const visitBtn = $('#d-visit', panel); if (visitBtn) visitBtn.addEventListener('click', () => { showPage('scan'); onMemberEntry(m.id); });
   $('#d-card', panel).addEventListener('click', () => openCardCapture(m));
+  const reprintBtn = $('#d-reprint', panel); if (reprintBtn) reprintBtn.addEventListener('click', () => openReprint(m, { after: () => { selectMember(m.id); loadMembers(); } }));
   $('#d-adjust', panel).addEventListener('click', () => openAdjust(m));
   $('#d-merge', panel).addEventListener('click', () => openMergeInto(m));
   $$('button[data-reverse]', panel).forEach(b => b.addEventListener('click', async () => {
@@ -1717,7 +1774,7 @@ function openCardCapture(m, opts) {
   $('#cc-go', modal).addEventListener('click', save);
   input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
   async function save() {
-    const code = input.value.trim(); if (!code) return;
+    const code = cardCode(input.value); if (!code) return;
     try {
       const r = await rpc('pool_change_card', { p_member_id: m.id, p_barcode: code, p_reason: $('#cc-why', modal).value.trim() || null });
       closeModal(); toast('Card ' + code + ' saved');
@@ -1974,8 +2031,7 @@ $('#s-settings-save').addEventListener('click', async () => {
   catch (err) { showError(err); }
 });
 
-// Card sheets: numbered Code 128 cards for the laminator
-const CARD_RANGES = { standard: [100001, 149999], corporate: [150001, 199999] };
+// Card sheets: numbered Code 128 cards for the laminator (CARD_RANGES is defined at the top)
 function loadScript(src) {
   return new Promise((res, rej) => { if (document.querySelector('script[src="' + src + '"]')) return res(); const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('Could not load ' + src)); document.head.appendChild(s); });
 }
@@ -1995,40 +2051,58 @@ const CARD_WAVES = '<svg class="waves" viewBox="0 0 856 200" preserveAspectRatio
   '<path d="M-20 150 C 120 90, 220 90, 340 150 S 560 210, 700 150 S 840 100, 900 140" fill="none" stroke="{c2}" stroke-width="9" stroke-linecap="round" opacity="0.7"/>' +
   '<path d="M-20 178 C 120 118, 220 118, 340 178 S 560 238, 700 178 S 840 128, 900 168" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity="0.5"/></svg>';
 const CARD_MARKS = ['tl-h', 'tl-v', 'tr-h', 'tr-v', 'bl-h', 'bl-v', 'br-h', 'br-v'].map(c => '<i class="mark ' + (c.endsWith('-h') ? 'h ' : 'v ') + c + '"></i>').join('');
-function cardFront(n, corp) {
-  return '<div class="pcard front ' + (corp ? 'corporate' : 'standard') + '"><div class="bleed">' + CARD_WAVES.replace('{c2}', corp ? '#12205A' : '#88C9F7') +
+// Three faces: standard (navy), corporate (gold) and family (blue, two barcodes).
+const FACE = {
+  standard:  { title: 'Pool<br>pass',      tag: 'Pool entry &middot; present at reception before every swim', foot: 'Present at reception before every swim', c2: '#88C9F7' },
+  corporate: { title: 'Corporate<br>pass', tag: 'Practice account &middot; client visits invoiced monthly',   foot: 'Client visits invoiced monthly',         c2: '#12205A' },
+  family:    { title: 'Family<br>pass',    tag: 'Adults 2 punches &middot; children 1 &middot; under-5s free', foot: 'One scan per person: adult barcode for adults, child barcode for children', c2: '#12205A' }
+};
+const TERMS = {
+  standard:  'Present this card at reception before every swim. Entries are recorded against the card and expire 12 months from purchase. Not transferable. Lost cards are replaced at reception and your balance moves across.',
+  corporate: 'Client visits are recorded against your practice account and invoiced monthly. Present this card at reception with each group. Not transferable.',
+  family:    'At reception, scan the ADULT barcode once for each adult (2 punches) and the CHILD barcode once for each child aged 5 to 17 (1 punch). Under-5s are free with a paying adult. Punches expire 12 months from purchase. Not transferable.'
+};
+// The barcode block: one barcode, or the adult and child pair on a family card.
+function barcodeBlock(n, variant, cls) {
+  const child = variant === 'family' ? familyChild(n) : null;
+  if (!child) return '<div class="' + cls + '"><svg data-code="' + n + '"></svg><div class="num">' + n + '</div></div>';
+  return '<div class="' + cls + ' bc2"><div class="bcx"><div class="lbl">Adult &middot; 2 punches</div><svg data-code="' + n + '" data-small="1"></svg><div class="num">' + n + '</div></div>' +
+    '<div class="bcx"><div class="lbl">Child &middot; 1 punch</div><svg data-code="' + child + '" data-small="1"></svg><div class="num">' + child + '</div></div></div>';
+}
+function cardFront(n, variant) {
+  const f = FACE[variant];
+  return '<div class="pcard front ' + variant + '"><div class="bleed">' + CARD_WAVES.replace('{c2}', f.c2) +
     '<div class="safe"><span class="wm1">Wollongong</span><span class="wm2">Surf Leisure Resort</span>' +
-    '<div class="ttl">' + (corp ? 'Corporate<br>pass' : 'Pool<br>pass') + '</div><div class="rule"></div>' +
-    '<div class="tag">' + (corp ? 'Practice account &middot; client visits invoiced monthly' : 'Pool entry &middot; present at reception before every swim') + '</div>' +
+    '<div class="ttl">' + f.title + '</div><div class="rule"></div>' +
+    '<div class="tag">' + f.tag + '</div>' +
     '<div class="fno">' + n + '</div></div></div>' + CARD_MARKS + '</div>';
 }
-function cardBack(n, corp) {
-  const terms = corp ? 'Client visits are recorded against your practice account and invoiced monthly. Present this card at reception with each group. Not transferable.'
-    : 'Present this card at reception before every swim. Entries are recorded against the card and expire 12 months from purchase. Not transferable. Lost cards are replaced at reception and your balance moves across.';
-  return '<div class="pcard back ' + (corp ? 'corporate' : 'standard') + '"><div class="row1"><b>Wollongong Surf Leisure Resort</b><span>wslr.com.au &middot; 02 4283 6999</span></div>' +
-    '<div class="terms">' + terms + '</div><div class="bc"><svg data-code="' + n + '"></svg><div class="num">' + n + '</div></div>' +
+function cardBack(n, variant) {
+  return '<div class="pcard back ' + variant + '"><div class="row1"><b>Wollongong Surf Leisure Resort</b><span>wslr.com.au &middot; 02 4283 6999</span></div>' +
+    '<div class="terms">' + TERMS[variant] + '</div>' + barcodeBlock(n, variant, 'bc') +
     '<div class="addr">201 Pioneer Road, Fairy Meadow NSW 2519</div></div>';
 }
-function cardSingle(n, corp) {
-  return '<div class="pcard single ' + (corp ? 'corporate' : 'standard') + '">' +
-    '<div class="band"><div><span class="wm1">Wollongong</span><span class="wm2">Surf Leisure Resort</span></div><div class="ttl">' + (corp ? 'Corporate<br>pass' : 'Pool<br>pass') + '</div></div>' +
-    '<div class="bc"><svg data-code="' + n + '"></svg><div class="num">' + n + '</div></div>' +
-    '<div class="foot"><span>' + (corp ? 'Client visits invoiced monthly' : 'Present at reception before every swim') + '</span><span>wslr.com.au &middot; 02 4283 6999</span></div></div>';
+function cardSingle(n, variant) {
+  const f = FACE[variant];
+  return '<div class="pcard single ' + variant + '">' +
+    '<div class="band"><div><span class="wm1">Wollongong</span><span class="wm2">Surf Leisure Resort</span></div><div class="ttl">' + f.title + '</div></div>' +
+    barcodeBlock(n, variant, 'bc') +
+    '<div class="foot"><span>' + f.foot + '</span><span>wslr.com.au &middot; 02 4283 6999</span></div></div>';
 }
 // Ten cards per A4 sheet, two columns by five rows. For double-sided printing the back
 // sheet is laid out mirrored so each barcode lands behind its own front: left-right for a
 // long-edge flip (the usual portrait setting), top-bottom for a short-edge flip.
-function buildSheets(numbers, sides, corp) {
+function buildSheets(numbers, sides, variant) {
   let html = '';
   for (let s = 0; s < numbers.length; s += 10) {
     const batch = numbers.slice(s, s + 10);
-    if (sides === 'single') { html += '<div class="sheet">' + batch.map(n => cardSingle(n, corp)).join('') + '</div>'; continue; }
-    html += '<div class="sheet">' + batch.map(n => cardFront(n, corp)).join('') + '</div>';
+    if (sides === 'single') { html += '<div class="sheet">' + batch.map(n => cardSingle(n, variant)).join('') + '</div>'; continue; }
+    html += '<div class="sheet">' + batch.map(n => cardFront(n, variant)).join('') + '</div>';
     const slots = new Array(10).fill('');
     batch.forEach((n, i) => {
       const c = i % 2, r = Math.floor(i / 2);
       const bc = sides === 'long' ? 1 - c : c, br = sides === 'short' ? 4 - r : r;
-      slots[br * 2 + bc] = cardBack(n, corp);
+      slots[br * 2 + bc] = cardBack(n, variant);
     });
     // fill blanks so the grid keeps its shape, and trim empty trailing rows on a short last sheet
     const lastRow = Math.floor((batch.length - 1) / 2);
@@ -2037,22 +2111,30 @@ function buildSheets(numbers, sides, corp) {
   }
   return html;
 }
+// Draw the cards and open the print dialog. Used for whole sheets and for a single reprint.
+async function printCards(numbers, sides, variant) {
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.12.3/JsBarcode.all.min.js');
+  const area = $('#print-area');
+  area.innerHTML = buildSheets(numbers, sides, variant);
+  // 1.5 px per module prints as 0.40 mm; 16 px margin is a 4.2 mm quiet zone; 46 px bars are 12 mm tall.
+  // The two barcodes on a family card use 1.4 px modules (0.37 mm) so both fit side by side with full quiet zones.
+  $$('svg[data-code]', area).forEach(svg => {
+    const small = !!svg.dataset.small;
+    JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: small ? 1.4 : 1.5, height: small ? 40 : 46, margin: small ? 14 : 16, displayValue: false, lineColor: '#000', background: '#fff' });
+  });
+  document.body.setAttribute('data-printing', '');
+  const done = () => { document.body.removeAttribute('data-printing'); window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  window.print();
+  setTimeout(done, 60000);
+}
 $('#pc-print').addEventListener('click', async () => {
   const v = $('#pc-variant').value, start = Number($('#pc-start').value), count = Number($('#pc-count').value), range = CARD_RANGES[v], sides = $('#pc-sides').value;
-  if (!(start >= range[0] && start + count - 1 <= range[1])) { toast((v === 'corporate' ? 'Corporate' : 'Standard') + ' cards use numbers ' + range[0] + ' to ' + range[1], true); return; }
+  if (!(start >= range[0] && start + count - 1 <= range[1])) { toast(VARIANT_NAMES[v] + ' cards use numbers ' + range[0] + ' to ' + range[1], true); return; }
   const btn = $('#pc-print'); btn.disabled = true;
   try {
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.12.3/JsBarcode.all.min.js');
     const numbers = []; for (let i = 0; i < count; i++) numbers.push(String(start + i));
-    const area = $('#print-area');
-    area.innerHTML = buildSheets(numbers, sides, v === 'corporate');
-    // 1.5 px per module prints as 0.40 mm; 16 px margin is a 4.2 mm quiet zone; 46 px bars are 12 mm tall
-    $$('svg[data-code]', area).forEach(svg => JsBarcode(svg, svg.dataset.code, { format: 'CODE128', width: 1.5, height: 46, margin: 16, displayValue: false, lineColor: '#000', background: '#fff' }));
-    document.body.setAttribute('data-printing', '');
-    const done = () => { document.body.removeAttribute('data-printing'); window.removeEventListener('afterprint', done); };
-    window.addEventListener('afterprint', done);
-    window.print();
-    setTimeout(done, 60000);
+    await printCards(numbers, sides, v);
     await q(sb.from('pool_settings').upsert([{ key: 'next_card_' + v, value: start + count }], { onConflict: 'key' }));
     settings['next_card_' + v] = start + count;
     toast('Sheet sent to the printer: cards ' + start + ' to ' + (start + count - 1));
@@ -2060,6 +2142,47 @@ $('#pc-print').addEventListener('click', async () => {
   } catch (err) { showError(err); }
   finally { btn.disabled = false; }
 });
+
+// Reprint a card that was lost or worn out. The number stays the same, so the balance,
+// history and any old card in a drawer are untouched; the reprint is noted on the record.
+function openReprint(m, opts) {
+  opts = opts || {};
+  const code = m.barcode, variant = cardVariant(code);
+  const modal = openModal(
+    '<h2>Reprint card ' + esc(code) + ' &middot; ' + esc(m.name) + '</h2>' +
+    '<p class="lead">Prints the same number again, so the balance and history stay exactly where they are. If the old card turns up it still works. To stop the old card instead, use Replace card and scan a fresh one.</p>' +
+    '<div class="row" style="margin-bottom:12px">' + kindPill(m.kind) + '<span class="pill accent">' + esc(VARIANT_NAMES[variant]) + '</span>' + childLabel(code) + '</div>' +
+    '<div class="grid2">' + field('Sides', '<select id="rp-sides"><option value="long">Double-sided, flip on long edge</option><option value="short">Double-sided, flip on short edge</option><option value="single">Single-sided, barcode on the front</option></select>') +
+      field('Reason', '<input id="rp-why" autocomplete="off" placeholder="lost, worn out, faded barcode">') + '</div>' +
+    '<p class="small muted">One card prints in the top-left slot of an A4 sheet. Cut at the corner marks and laminate as usual.</p>' +
+    '<div class="actions"><button type="button" id="rp-cancel">Cancel</button><button type="button" id="rp-change">Replace card instead</button><button type="button" class="primary" id="rp-go">Print card</button></div>');
+  $('#rp-sides', modal).value = $('#pc-sides') ? $('#pc-sides').value : 'long';
+  $('#rp-cancel', modal).addEventListener('click', closeModal);
+  $('#rp-change', modal).addEventListener('click', () => { closeModal(); openCardCapture(m, opts.after ? { after: opts.after } : {}); });
+  $('#rp-go', modal).addEventListener('click', async () => {
+    const btn = $('#rp-go', modal); btn.disabled = true;
+    const why = $('#rp-why', modal).value.trim();
+    try {
+      await printCards([code], $('#rp-sides', modal).value, variant);
+      await rpc('pool_member_note', { p_member_id: m.id, p_line: 'card ' + code + ' reprinted' + (why ? ': ' + why : '') });
+      closeModal(); toast('Card ' + code + ' sent to the printer');
+      if (opts.after) opts.after();
+    } catch (err) { showError(err); btn.disabled = false; }
+  });
+}
+// Settings: reprint by number (finds the holder, or prints a blank numbered card)
+$('#pc-one-print').addEventListener('click', async () => {
+  const code = cardCode($('#pc-one').value); if (!code) { $('#pc-one').focus(); return; }
+  try {
+    const r = await rpc('pool_lookup_card', { p_code: code });
+    if (r.state === 'current') { openReprint(r.member); return; }
+    if (r.state === 'retired') { toast('Card ' + code + ' was replaced by ' + (r.replaced_by || '?') + ' for ' + r.member.name + '. Reprint that one instead, or make this card current from the Members page.', true); return; }
+    if (!confirm('Card ' + code + ' is not assigned to anyone. Print a blank ' + VARIANT_NAMES[cardVariant(code)].toLowerCase() + ' card with that number?')) return;
+    await printCards([code], $('#pc-sides').value, cardVariant(code));
+    toast('Card ' + code + ' sent to the printer');
+  } catch (err) { showError(err); }
+});
+$('#pc-one').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('#pc-one-print').click(); } });
 
 // Desk logins
 async function loadUsers() {
