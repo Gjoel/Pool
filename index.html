@@ -185,7 +185,7 @@
   .search-results .n { font-weight: 700; flex: 1; }
   /* Members page */
   .members-layout { display: grid; grid-template-columns: 1fr; gap: 16px; }
-  @media (min-width: 900px) { .members-layout { grid-template-columns: 1fr 1.1fr; align-items: start; } }
+  @media (min-width: 900px) { .members-layout { grid-template-columns: 1.15fr 1fr; align-items: start; } }
   .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
   .toolbar input { max-width: 320px; }
   .toolbar select { width: auto; }
@@ -228,9 +228,9 @@
   .insight .none { color: var(--muted); }
   .heat { border-collapse: separate; border-spacing: 2px; width: 100%; }
   .heat th, .heat td { border-bottom: 0; padding: 0; text-align: center; }
-  .heat th { font-size: 10.5px; padding-bottom: 2px; }
+  .heat th { font-size: 10.5px; padding-bottom: 3px; letter-spacing: 0; text-transform: none; }
   .heat td.lbl { text-align: right; padding-right: 7px; white-space: nowrap; font-size: 12.5px; color: var(--muted); font-family: var(--mono); }
-  .heat td.hc { position: relative; height: 26px; min-width: 26px; border-radius: 4px; background: var(--code-bg); }
+  .heat td.hc { position: relative; height: 26px; min-width: 36px; border-radius: 4px; background: var(--code-bg); }
   .heat td.hc .fill { position: absolute; inset: 0; background: var(--accent); border-radius: 4px; }
   .heat td.hc .v { position: relative; font-family: var(--mono); font-size: 11.5px; }
   .heat td.hc.on .v { color: #fff; }
@@ -243,6 +243,36 @@
   .keyrow { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13.5px; color: var(--muted); }
   .keyrow i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; margin-right: 5px; vertical-align: -1px; }
   .ro-hint { font-size: 14px; color: var(--muted); }
+  /* Dashboard: sections top to bottom, headline first, detail underneath */
+  .dash-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .dash-head h2 { font-size: 26px; }
+  .dash-section { margin-bottom: 30px; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0 0 12px; padding-bottom: 8px; border-bottom: 2px solid var(--line); }
+  .sec-head h3 { font-size: 19px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 14px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 15px 17px; min-width: 0; }
+  .card .lab { font-size: 13px; font-weight: 700; color: var(--muted); letter-spacing: .01em; }
+  .card .v { font-family: var(--mono); font-size: 32px; font-weight: 600; line-height: 1.05; margin-top: 7px; overflow-wrap: anywhere; }
+  .card .v.words { font-family: var(--display); font-size: 23px; line-height: 1.15; }
+  .card .sub { font-size: 13.5px; color: var(--muted); margin-top: 5px; line-height: 1.35; }
+  .card.hi { border-color: var(--accent); background: var(--accent-soft); }
+  .card.hi .lab, .card.hi .sub { color: var(--accent); }
+  .card.hi .v { color: var(--accent); }
+  .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 16px; }
+  .pair > *, .report-grid > *, .cards > *, .members-layout > *, .scan-layout > * { min-width: 0; }   /* grid children must be allowed to shrink, or wide tables push out of the box */
+  .panel .scroll { max-width: 100%; }
+  .panel table { max-width: 100%; }
+  td.wrap { white-space: normal; overflow-wrap: anywhere; }
+  table.compact th, table.compact td { padding: 7px 8px; }
+  table.compact .pill { font-size: 11px; padding: 2px 7px; }
+  table.compact td.num { padding-left: 4px; }
+  .nowrap { white-space: nowrap; }
+  .exports { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 12px; }
+  .export { display: flex; gap: 12px; align-items: center; justify-content: space-between; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; min-width: 0; }
+  .export div { min-width: 0; }
+  .export b { display: block; font-size: 15px; }
+  .export span { font-size: 13px; color: var(--muted); line-height: 1.35; display: block; margin-top: 2px; }
+  .export button { flex: none; }
   /* Card sheets (printed from Settings). Cell = trim size 80 x 48 mm; the front bleeds 2 mm into a 6 mm gutter; crop marks sit in the gutter. */
   .sheet { width: 166mm; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 80mm); grid-auto-rows: 48mm; gap: 6mm 6mm; justify-content: center; page-break-after: always; }
   .sheet:last-child { page-break-after: auto; }
@@ -348,6 +378,7 @@
       <button class="tab" role="tab" data-page="scan" aria-selected="true">Scan</button>
       <button class="tab" role="tab" data-page="rollover" aria-selected="false">Roll over</button>
       <button class="tab" role="tab" data-page="members" aria-selected="false">Members</button>
+      <button class="tab" role="tab" data-page="dashboard" aria-selected="false">Dashboard</button>
       <button class="tab" role="tab" data-page="reports" aria-selected="false">Reports</button>
       <button class="tab" role="tab" data-page="settings" aria-selected="false">Settings</button>
     </nav>
@@ -391,8 +422,8 @@
               <div class="stat"><div class="v" id="t-sales">–</div><div class="k">passes sold <span id="t-money"></span></div></div>
             </div>
             <div class="scroll" style="margin-top:14px">
-              <table class="recent">
-                <thead><tr><th>Time</th><th>Who</th><th class="num">Used</th><th>Kind</th><th></th></tr></thead>
+              <table class="recent compact">
+                <thead><tr><th>Time</th><th>Who</th><th class="num">Used</th><th>Pass</th><th></th></tr></thead>
                 <tbody id="recent-body"><tr><td colspan="5" class="empty">No scans yet today.</td></tr></tbody>
               </table>
             </div>
@@ -423,14 +454,14 @@
               <div class="actions"><button class="primary big" type="submit" id="ro-go">Transfer to new card</button><button type="button" id="ro-clear">Clear</button></div>
             </form>
           </div>
-          <div class="result" id="ro-result" data-tone="" style="margin-top:16px;min-height:0">
+        </div>
+        <div>
+          <div class="result" id="ro-result" data-tone="" style="min-height:0;margin-bottom:16px">
             <div class="state" id="ro-state">Ready</div>
-            <div class="name" id="ro-name-out" style="font-size:28px">Scan the next card</div>
+            <div class="name" id="ro-name-out" style="font-size:26px">Scan the next card</div>
             <div id="ro-body"></div>
             <div class="actions" id="ro-actions"></div>
           </div>
-        </div>
-        <div>
           <div class="panel">
             <div class="panel-head"><h3>Rolled over</h3><button class="link" id="ro-refresh" type="button">Refresh</button></div>
             <div class="stats">
@@ -439,15 +470,15 @@
               <div class="stat"><div class="v" id="ro-punches-total">–</div><div class="k">punches carried over</div></div>
               <div class="stat"><div class="v" id="ro-left">–</div><div class="k">still on punch cards</div></div>
             </div>
-            <div class="scroll" style="margin-top:14px">
-              <table>
-                <thead><tr><th>When</th><th>Who</th><th>Old card</th><th class="num">Punches</th><th>New card</th><th></th></tr></thead>
-                <tbody id="ro-body-list"><tr><td colspan="6" class="empty">Nothing rolled over yet.</td></tr></tbody>
-              </table>
-            </div>
-            <p class="small muted" style="margin-top:10px">An undone transfer can be cleared off this list with the &times;. It stays on the Reports screen under Undone and deleted.</p>
           </div>
         </div>
+      </div>
+      <div class="panel" style="margin-top:16px">
+        <div class="panel-head"><h3>Transfers so far</h3><span class="small muted">newest first &middot; an undone transfer can be cleared off the list with the &times;, and stays on the Reports tab under Undone and deleted</span></div>
+        <table class="compact">
+          <thead><tr><th class="nowrap">When</th><th>Who</th><th>Punch card to new card</th><th class="num">Punches</th><th></th></tr></thead>
+          <tbody id="ro-body-list"><tr><td colspan="5" class="empty">Nothing rolled over yet.</td></tr></tbody>
+        </table>
       </div>
     </section>
     <!-- ================= MEMBERS ================= -->
@@ -476,12 +507,12 @@
       <div class="members-layout">
         <div class="panel">
           <div class="scroll">
-            <table>
+            <table class="compact">
               <thead><tr id="m-head">
                 <th class="sortable" data-sort="name" aria-sort="ascending">Name</th>
                 <th class="sortable" data-sort="kind">Kind</th>
                 <th class="sortable" data-sort="card">Card</th>
-                <th class="sortable" data-sort="cardstate">Old / new</th>
+                <th class="sortable" data-sort="cardstate" title="Old punch card, new barcode card, or none yet">Old/new</th>
                 <th class="sortable num" data-sort="balance">Left</th>
                 <th class="sortable" data-sort="expires">Expires</th>
               </tr></thead>
@@ -492,87 +523,108 @@
         <div class="panel" id="m-detail"><p class="empty">Select a member to see their card, balance and history.</p></div>
       </div>
     </section>
+    <!-- ================= DASHBOARD ================= -->
+    <section id="page-dashboard" class="page" hidden>
+      <div class="dash-head">
+        <div>
+          <h2>How the pool is going</h2>
+          <p class="small muted" id="db-range">Loading…</p>
+        </div>
+        <div class="row">
+          <div class="seg" id="db-period"></div>
+          <button class="link" id="db-refresh" type="button">Refresh</button>
+        </div>
+      </div>
+      <div class="dash-section">
+        <div class="sec-head"><h3>At a glance</h3><span class="small muted">the numbers worth knowing, for the period chosen above</span></div>
+        <div class="cards" id="db-cards"></div>
+        <div class="insight" id="db-insight"></div>
+      </div>
+      <div class="dash-section">
+        <div class="sec-head"><h3>When people swim</h3><span class="small muted">people through the gate, by day and time of day</span></div>
+        <div class="panel">
+          <div class="panel-head"><h3>Busy and quiet times</h3><span class="small muted">darker means busier &middot; the last column is the day's total</span></div>
+          <div class="scroll" id="db-heat"><p class="empty">Loading…</p></div>
+          <div class="legend" id="db-heat-legend"></div>
+        </div>
+        <div class="pair" style="margin-top:16px">
+          <div class="panel">
+            <div class="panel-head"><h3>Day of the week</h3><span class="small muted">average per day</span></div>
+            <div class="scroll" id="db-dow"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Time of day</h3><span class="small muted">when they arrive</span></div>
+            <div class="scroll" id="db-hour"></div>
+          </div>
+        </div>
+      </div>
+      <div class="dash-section">
+        <div class="sec-head"><h3>Over time</h3><span class="small muted">the same count of people, day by day, week by week, month by month</span></div>
+        <div class="panel">
+          <div class="panel-head"><h3>Each day</h3><span class="small muted" id="db-days-note"></span></div>
+          <div class="scroll" id="db-days"></div>
+        </div>
+        <div class="pair" style="margin-top:16px">
+          <div class="panel">
+            <div class="panel-head"><h3>Each week</h3><span class="small muted">Monday to Sunday</span></div>
+            <div class="scroll" id="db-weeks"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Each month</h3><span class="small muted">against the same month last year</span></div>
+            <div class="scroll" id="db-months"></div>
+          </div>
+        </div>
+      </div>
+      <div class="dash-section">
+        <div class="sec-head"><h3>Who is coming in</h3><span class="small muted">counted as people, not scans</span></div>
+        <div class="pair">
+          <div class="panel">
+            <div class="panel-head"><h3>Pass types</h3><span class="small muted">share of everyone through the gate</span></div>
+            <div id="db-mix"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Most active holders</h3><span class="small muted">top 12 in the period</span></div>
+            <div class="scroll" id="db-top"></div>
+          </div>
+        </div>
+      </div>
+      <div class="dash-section">
+        <div class="sec-head"><h3>Money</h3><span class="small muted">what was sold, and what is still owed in swims</span></div>
+        <div class="pair">
+          <div class="panel">
+            <div class="panel-head"><h3>Passes sold</h3><span class="small muted">in the period</span></div>
+            <div id="db-money"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Unredeemed entries</h3><span class="small muted">the contract liability, all active cards</span></div>
+            <div id="db-liab"></div>
+          </div>
+        </div>
+      </div>
+      <div class="dash-section">
+        <div class="sec-head"><h3>Cards</h3><span class="small muted">how the move off punch cards is going</span></div>
+        <div class="panel" id="db-cards-panel"></div>
+      </div>
+    </section>
     <!-- ================= REPORTS ================= -->
     <section id="page-reports" class="page" hidden>
-      <div class="panel">
-        <div class="panel-head">
-          <div><h2>Dashboard</h2><div class="small muted" id="rp-range">–</div></div>
-          <div class="row">
-            <div class="seg" id="rp-period">
-              <button type="button" data-days="30" aria-pressed="true">30 days</button>
-              <button type="button" data-days="90" aria-pressed="false">90 days</button>
-              <button type="button" data-days="365" aria-pressed="false">12 months</button>
-              <button type="button" data-days="4000" aria-pressed="false">All time</button>
-            </div>
-            <button class="link" id="rp-refresh" type="button">Refresh</button>
-          </div>
+      <div class="dash-head">
+        <div>
+          <h2>Reports and exports</h2>
+          <p class="small muted">Lists to work from, and CSV files that open straight in Excel.</p>
         </div>
-        <div class="stats" id="rp-kpis"><div class="empty">Loading…</div></div>
-        <div class="insight" id="rp-insight"></div>
+        <div class="row">
+          <div class="seg" id="rp-period"></div>
+          <button class="link" id="rp-refresh" type="button">Refresh</button>
+        </div>
       </div>
-      <div class="report-grid" style="margin-top:16px">
-        <div class="panel wide">
-          <div class="panel-head"><h3>Busy and quiet times</h3><span class="small muted">entries by day of the week and hour of the day</span></div>
-          <div class="scroll" id="rp-heat"><p class="empty">Loading…</p></div>
-          <div class="legend" id="rp-heat-legend"></div>
-        </div>
+      <div class="dash-section">
+        <div class="sec-head"><h3>Downloads</h3><span class="small muted">the ones marked "period" follow the buttons above</span></div>
+        <div class="panel"><div class="exports" id="rp-exports"></div></div>
+      </div>
+      <div class="dash-section">
+        <div class="sec-head"><h3>Practice accounts</h3><span class="small muted">a month at a time, for invoicing in Xero</span></div>
         <div class="panel">
-          <div class="panel-head"><h3>By day of the week</h3><span class="small muted">average per day</span></div>
-          <div id="rp-dow"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h3>By hour</h3><span class="small muted">when they arrive</span></div>
-          <div id="rp-hour"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h3>Entries per day</h3><span class="small muted" id="rp-days-note">last 21 days</span></div>
-          <div id="rp-days"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h3>By week</h3><span class="small muted">Monday to Sunday</span></div>
-          <div id="rp-weeks"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h3>By month</h3><span class="small muted">with the same month last year</span></div>
-          <div id="rp-months"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h3>Who is coming in</h3><span class="small muted">people, not scans</span></div>
-          <div id="rp-mix"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h3>Most active holders</h3><span class="small muted">in the period</span></div>
-          <div class="scroll" id="rp-top"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h3>Money</h3><span class="small muted">passes sold in the period</span></div>
-          <div id="rp-money"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h3>Unredeemed entries</h3><span class="small muted">the contract liability</span></div>
-          <div class="stats">
-            <div class="stat"><div class="v" id="rp-liab-value">–</div><div class="k">at each holder's own price per entry</div></div>
-            <div class="stat"><div class="v" id="rp-liab-entries">–</div><div class="k">entries on active cards</div></div>
-            <div class="stat"><div class="v" id="rp-liab-holders">–</div><div class="k">holders with a balance</div></div>
-          </div>
-          <div id="rp-liab-split" style="margin-top:12px"></div>
-          <p class="small muted" style="margin-top:10px">Holders without a purchase on file (carried-over balances) are valued at the fallback rate in Settings.</p>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h3>Cards</h3><span class="small muted">roll-over progress</span></div>
-          <div id="rp-cards"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h3>Expiring within 30 days</h3><span class="small muted">with entries unused</span></div>
-          <div class="scroll"><table><thead><tr><th>Name</th><th>Phone</th><th class="num">Left</th><th>Expires</th></tr></thead><tbody id="rp-expiring-body"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table></div>
-        </div>
-        <div class="panel wide">
-          <div class="panel-head"><h3>Undone and deleted</h3><div class="row"><span class="small muted" id="rp-audit-note"></span><button id="rp-audit-csv" type="button">CSV</button></div></div>
-          <div class="scroll"><table><thead><tr><th>When</th><th>What</th><th>Who it was for</th><th class="num">Entries</th><th>Reason</th><th>Staff</th></tr></thead><tbody id="rp-audit-body"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody></table></div>
-          <p class="small muted" style="margin-top:10px">Every undo and every deletion is kept here, including rows deleted off the Today list, the member history and the roll-over list.</p>
-        </div>
-        <div class="panel wide">
-          <div class="panel-head"><h3>Practice accounts, monthly statement</h3></div>
           <div class="row">
             <input type="month" id="rp-month" style="max-width:190px">
             <button id="rp-statement" type="button">Build statement</button>
@@ -580,6 +632,24 @@
             <button id="rp-statement-csv" type="button" hidden>CSV</button>
           </div>
           <div id="rp-statement-out" style="margin-top:12px"></div>
+        </div>
+      </div>
+      <div class="dash-section">
+        <div class="sec-head"><h3>Lists to act on</h3><span class="small muted">who to talk to, and what was changed</span></div>
+        <div class="pair">
+          <div class="panel">
+            <div class="panel-head"><h3>Expiring within 30 days</h3><span class="small muted">with entries unused</span></div>
+            <div class="scroll"><table><thead><tr><th>Name</th><th class="nowrap">Phone</th><th class="num">Left</th><th class="nowrap">Expires</th></tr></thead><tbody id="rp-expiring-body"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3>Unredeemed entries by holder</h3><span class="small muted">the liability, holder by holder</span></div>
+            <div class="scroll" style="max-height:420px"><table><thead><tr><th>Name</th><th>Pass</th><th class="num">Left</th><th class="num">Value</th></tr></thead><tbody id="rp-liab-body"><tr><td colspan="4" class="empty">Loading…</td></tr></tbody></table></div>
+          </div>
+        </div>
+        <div class="panel" style="margin-top:16px">
+          <div class="panel-head"><h3>Undone and deleted</h3><div class="row"><span class="small muted" id="rp-audit-note"></span><button id="rp-audit-csv" type="button">CSV</button></div></div>
+          <div class="scroll"><table><thead><tr><th class="nowrap">When</th><th>What</th><th>Who it was for</th><th class="num">Entries</th><th>Reason</th><th>Staff</th></tr></thead><tbody id="rp-audit-body"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody></table></div>
+          <p class="small muted" style="margin-top:10px">Every undo and every deletion is kept here, including rows deleted off the Today list, the member history and the roll-over list.</p>
         </div>
       </div>
     </section>
@@ -638,11 +708,8 @@
       </div>
       <div class="panel">
         <div class="panel-head"><h3>Export</h3></div>
-        <div class="actions" style="margin-top:0">
-          <button id="s-export-members" type="button">Members with balances (CSV)</button>
-          <button id="s-export-ledger" type="button">Full ledger (CSV)</button>
-          <button id="s-export-deletions" type="button">Undone and deleted (CSV)</button>
-        </div>
+        <p class="small muted">Every CSV now lives on the Reports tab, together with the statements and the lists to act on.</p>
+        <div class="actions"><button id="s-to-reports" type="button">Go to Reports</button></div>
       </div>
       <div class="panel">
         <div class="panel-head"><h3>Desk logins</h3><span class="small muted">Change the password monthly. Changing it signs every computer out, so they sign in again with the new one.</span></div>
@@ -727,7 +794,8 @@ function monthRange(ym) {
 }
 const fmtDate = iso => iso ? new Intl.DateTimeFormat('en-AU', { timeZone: TZ, day: 'numeric', month: 'short', year: '2-digit' }).format(new Date(iso)) : '';
 const fmtDateLong = iso => iso ? new Intl.DateTimeFormat('en-AU', { timeZone: TZ, weekday: 'short', day: 'numeric', month: 'short' }).format(new Date(iso)) : '';
-const fmtTime = iso => new Intl.DateTimeFormat('en-AU', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(iso));
+// Times are shown the way reception says them: 9:05am, 2:30pm.
+const fmtTime = iso => new Intl.DateTimeFormat('en-AU', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(iso)).replace(/\s+/g, '').toLowerCase();
 // Day of the week and hour of the day in Sydney time, whatever the computer is set to.
 const SYD_PARTS = new Intl.DateTimeFormat('en-AU', { timeZone: TZ, weekday: 'short', hour: 'numeric', hourCycle: 'h23' });
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -856,10 +924,11 @@ function cardLabel(code, opts) {
 // Old punch card, new barcode card, or nothing yet: used by the member list column and the reports.
 function cardState(r) { return !r.barcode ? 'none' : (isOldCard(r.barcode) ? 'old' : 'new'); }
 const CARD_STATE_NAME = { new: 'new card', old: 'punch card', none: 'no card' };
-function cardStatePill(r) {
+const CARD_STATE_SHORT = { new: 'new', old: 'punch', none: 'none' };
+function cardStatePill(r, short) {
   const s = cardState(r);
   return '<span class="pill ' + (s === 'new' ? 'good' : s === 'old' ? 'warn' : '') + '" title="' +
-    (s === 'new' ? 'On a barcode card' : s === 'old' ? 'Still on an old punch card number' : 'No card assigned yet') + '">' + CARD_STATE_NAME[s] + '</span>';
+    (s === 'new' ? 'On a barcode card' : s === 'old' ? 'Still on an old punch card number' : 'No card assigned yet') + '">' + (short ? CARD_STATE_SHORT[s] : CARD_STATE_NAME[s]) + '</span>';
 }
 // Family cards: the child barcode is derived from the card number, never stored.
 const familyChild = code => { const n = cardNum(code); return n != null && FAMILY_RANGES.some(r => n >= r[0] && n <= r[1]) ? String(n + FAMILY_CHILD_OFFSET) : null; };
@@ -988,6 +1057,7 @@ function showPage(name) {
   if (name === 'scan') { loadToday(); guardFocus(); }
   if (name === 'rollover') { loadRollovers(); rolloverReady(); }
   if (name === 'members') loadMembers();
+  if (name === 'dashboard') loadDashboard();
   if (name === 'reports') loadReports();
   if (name === 'settings') loadSettingsPage();
 }
@@ -1127,7 +1197,8 @@ function memberLine(m, balance) {
   if (m.expires_on && PAYING.includes(m.kind)) bits.push('expires ' + fmtDate(m.expires_on));
   return bits.join(' &middot; ');
 }
-function kindPill(k) { return '<span class="pill kind kind-' + esc(k) + '">' + esc(KINDS[k] || k) + '</span>'; }
+const KINDS_SHORT = { adult: 'Adult', senior: 'Senior', family: 'Family', account: 'Practice' };
+function kindPill(k, short) { return '<span class="pill kind kind-' + esc(k) + '"' + (short ? ' title="' + esc(KINDS[k] || k) + '"' : '') + '>' + esc((short ? KINDS_SHORT[k] : KINDS[k]) || k) + '</span>'; }
 async function undoEntry(entryId, note) {
   await rpc('pool_reverse', { p_entry_id: entryId, p_note: note || 'undone at the desk' });
   toast('Entry undone');
@@ -1500,7 +1571,7 @@ async function loadToday() {
       const undone = reversed.has(e.id);
       const n = times[e.member_id] || 0;
       const tally = (!undone && n > 1) ? ' <span class="pill accent" title="' + n + ' scans on this card today">&times;' + n + '</span>' : '';
-      return '<tr class="' + (undone ? 'dim' : '') + '"><td>' + fmtTime(e.at) + '</td><td>' + esc(m.name || '?') + tally + (undone ? ' <span class="pill">undone</span>' : '') + (m.barcode ? '<div class="mono small muted">' + esc(m.barcode) + '</div>' : '') + '</td><td class="num">' + used + '</td><td>' + kindPill(m.kind) + '</td>' +
+      return '<tr class="' + (undone ? 'dim' : '') + '"><td>' + fmtTime(e.at) + '</td><td>' + esc(m.name || '?') + tally + (undone ? ' <span class="pill">undone</span>' : '') + (m.barcode ? '<div class="mono small muted">' + esc(m.barcode) + '</div>' : '') + '</td><td class="num">' + used + '</td><td>' + kindPill(m.kind, true) + '</td>' +
         '<td style="white-space:nowrap">' + (undone ? '<button type="button" class="x" data-del="' + e.id + '" title="Delete this undone entry completely" aria-label="Delete">&times;</button>' : '<button type="button" class="link small" data-undo="' + e.id + '">undo</button>') + '</td></tr>';
     }).join('') : '<tr><td colspan="5" class="empty">No scans yet today.</td></tr>';
     $$('button[data-undo]', body).forEach(b => b.addEventListener('click', async () => {
@@ -1683,10 +1754,13 @@ async function loadRollovers() {
     const limit = setting('undo_minutes', 1440) * 60000;
     $('#ro-body-list').innerHTML = rows.length ? rows.slice(0, 60).map(r => {
       const canUndo = !r.undone_at && (Date.now() - new Date(r.at).getTime()) < limit;
-      return '<tr class="' + (r.undone_at ? 'dim' : '') + '"><td class="mono small" style="white-space:nowrap">' + fmtDate(r.at) + ' ' + fmtTime(r.at) + '</td><td>' + esc(r.name) + (r.undone_at ? ' <span class="pill">undone</span>' : '') + (r.created_new ? '' : ' <span class="pill accent" title="transferred onto a record that was already in the system">existing</span>') + '</td><td class="mono">' + esc(r.old_card || '') + '</td><td class="num">' + r.punches + '</td><td class="mono">' + esc(r.new_barcode) + '</td>' +
-        '<td style="white-space:nowrap">' + (canUndo ? '<button type="button" class="link small" data-undo-ro="' + r.id + '" data-name="' + esc(r.name) + '">undo</button>' : '') +
+      return '<tr class="' + (r.undone_at ? 'dim' : '') + '"><td class="mono small nowrap">' + fmtDate(r.at) + '<div class="muted">' + fmtTime(r.at) + '</div></td>' +
+        '<td class="wrap">' + esc(r.name) + (r.undone_at ? ' <span class="pill">undone</span>' : '') + (r.created_new ? '' : ' <span class="pill accent" title="transferred onto a record that was already in the system">existing</span>') + '</td>' +
+        '<td class="nowrap">' + (r.old_card ? '<span class="pill old">punch card ' + esc(r.old_card) + '</span>' : '<span class="muted small">no old number</span>') + ' <span class="muted">&rarr;</span> <span class="pill accent">card ' + esc(r.new_barcode) + '</span></td>' +
+        '<td class="num">' + r.punches + '</td>' +
+        '<td class="nowrap" style="text-align:right">' + (canUndo ? '<button type="button" class="link small" data-undo-ro="' + r.id + '" data-name="' + esc(r.name) + '">undo</button>' : '') +
         (r.undone_at ? '<button type="button" class="x" data-del-ro="' + r.id + '" data-name="' + esc(r.name) + '" title="Clear this undone transfer off the list" aria-label="Delete">&times;</button>' : '') + '</td></tr>';
-    }).join('') : '<tr><td colspan="6" class="empty">Nothing rolled over yet.</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="empty">Nothing rolled over yet.</td></tr>';
     $$('button[data-undo-ro]', $('#ro-body-list')).forEach(b => b.addEventListener('click', () => undoRollover(Number(b.dataset.undoRo), b.dataset.name, b)));
     $$('button[data-del-ro]', $('#ro-body-list')).forEach(b => b.addEventListener('click', async () => {
       if (!confirm('Clear the undone transfer for ' + b.dataset.name + ' off this list? It stays on the Undone and deleted report.')) return;
@@ -1746,8 +1820,8 @@ function renderMembers() {
   const body = $('#m-body');
   const s = $('#m-search').value.trim(), kind = $('#m-kind').value;
   body.innerHTML = rows.length ? rows.map(r =>
-    '<tr class="clickable' + (r.id === selectedId ? ' selected' : '') + (r.active ? '' : ' dim') + '" data-id="' + r.id + '"><td class="kc kind-' + esc(r.kind) + '">' + esc(r.name) + (r.active ? '' : ' <span class="pill">inactive</span>') + '</td><td>' + kindPill(r.kind) + '</td><td class="mono">' + (r.barcode ? esc(r.barcode) : '') + '</td>' +
-    '<td>' + cardStatePill(r) + '</td>' +
+    '<tr class="clickable' + (r.id === selectedId ? ' selected' : '') + (r.active ? '' : ' dim') + '" data-id="' + r.id + '"><td class="kc kind-' + esc(r.kind) + '">' + esc(r.name) + (r.active ? '' : ' <span class="pill">off</span>') + '</td><td>' + kindPill(r.kind, true) + '</td><td class="mono nowrap">' + (r.barcode ? esc(r.barcode) : '') + '</td>' +
+    '<td>' + cardStatePill(r, true) + '</td>' +
     '<td class="num">' + (r.kind === 'account' ? '<span class="muted">' + (-r.balance) + ' owing</span>' : r.balance) + '</td><td>' + expiryCell(r) + '</td></tr>').join('')
     : '<tr><td colspan="6" class="empty">' + (s || kind || cardFilter ? 'No matches.' : 'No members yet. Press New pass on the Scan tab, or import a list under Settings.') + '</td></tr>';
   $$('tr[data-id]', body).forEach(tr => tr.addEventListener('click', () => selectMember(Number(tr.dataset.id))));
@@ -1926,33 +2000,133 @@ async function mergeOne(keep, other) {
     selectedId = keep.id; selectMember(keep.id); loadMembers();
   } catch (err) { showError(err); }
 }
-// Duplicates: same name and phone number, more than one record. Merge them onto
-// the highest card number, singly or all at once.
+// Duplicates: the same person on more than one record. The register came over from
+// a spreadsheet where names were typed several ways, so reception chooses what
+// counts as a match: both name and phone, or just the name, the phone, the email
+// or a card number that turns up on two records.
+const DUP_MODES = [
+  { id: 'namephone', name: 'Name and phone', note: 'both the same: the safest match' },
+  { id: 'name', name: 'Name', note: 'the same words in any order, ignoring punctuation' },
+  { id: 'loose', name: 'Similar name', note: 'first initial and surname, so J Smith meets John Smith' },
+  { id: 'phone', name: 'Phone', note: 'the same number however it was typed' },
+  { id: 'email', name: 'Email', note: 'the same address' },
+  { id: 'card', name: 'Card number', note: 'a card or punch card number on two records' }
+];
+let dupMode = 'namephone', dupInactive = false;
+const nameKey = n => String(n || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(Boolean).sort().join(' ');
+const phoneKey = p => { const d = String(p || '').replace(/\D/g, ''); return d.length >= 8 ? d.slice(-8) : ''; };
+function looseKey(n) {
+  const w = String(n || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(Boolean);
+  if (w.length < 2) return '';
+  const last = w[w.length - 1];
+  return last.length >= 2 ? w[0].charAt(0) + ' ' + last : '';
+}
+function cardList(m) {
+  const out = [];
+  if (m.barcode) out.push(String(m.barcode).trim());
+  String(m.legacy_card || '').split(',').map(x => x.trim()).filter(Boolean).forEach(x => out.push(x));
+  return out;
+}
+function dupKeys(m) {
+  switch (dupMode) {
+    case 'name': { const k = nameKey(m.name); return k ? ['n:' + k] : []; }
+    case 'loose': { const k = looseKey(m.name); return k ? ['l:' + k] : []; }
+    case 'phone': { const k = phoneKey(m.phone); return k ? ['p:' + k] : []; }
+    case 'email': { const k = String(m.email || '').trim().toLowerCase(); return k ? ['e:' + k] : []; }
+    case 'card': return cardList(m).map(x => 'c:' + x);
+    default: { const n = nameKey(m.name), p = phoneKey(m.phone); return n && p ? ['np:' + n + '|' + p] : []; }
+  }
+}
+// Records that share any matching value end up in one group, even in a chain
+// (A shares a phone with B, B shares one with C).
+function dupGroups(rows) {
+  const parent = {};
+  const find = x => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+  const union = (a, b) => { a = find(a); b = find(b); if (a !== b) parent[a] = b; };
+  rows.forEach(r => { parent['m' + r.id] = 'm' + r.id; });
+  const keysOf = {};
+  rows.forEach(r => {
+    keysOf[r.id] = dupKeys(r);
+    keysOf[r.id].forEach(k => { if (!(k in parent)) parent[k] = k; union('m' + r.id, k); });
+  });
+  const groups = {};
+  rows.forEach(r => { if (!keysOf[r.id].length) return; const root = find('m' + r.id); (groups[root] = groups[root] || []).push(r); });
+  return Object.keys(groups).map(k => groups[k]).filter(g => g.length > 1).map(g => {
+    // the record with the highest card number is kept: barcode cards beat punch cards
+    const ranked = g.slice().sort((a, b) => ((cardNum(b.barcode) == null ? -1 : cardNum(b.barcode)) - (cardNum(a.barcode) == null ? -1 : cardNum(a.barcode))) || (b.id - a.id));
+    const keep = ranked[0];
+    const first = g[0];
+    let matched = first.name || '';
+    if (dupMode === 'phone') matched = first.phone || '';
+    else if (dupMode === 'email') matched = first.email || '';
+    else if (dupMode === 'card') {
+      const seen = {};
+      g.forEach(x => Array.from(new Set(cardList(x))).forEach(c => { seen[c] = (seen[c] || 0) + 1; }));
+      matched = Object.keys(seen).filter(c => seen[c] > 1).join(', ');
+    }
+    return { members: ranked, keep_id: keep.id, ids: g.filter(x => x.id !== keep.id).map(x => x.id),
+      same_type: g.every(x => x.kind === first.kind), matched: matched,
+      names: Array.from(new Set(g.map(x => x.name))).join(' · '),
+      phones: Array.from(new Set(g.map(x => x.phone).filter(Boolean))).join(' · ') };
+  }).sort((a, b) => (b.members.length - a.members.length) || a.names.localeCompare(b.names));
+}
 $('#m-dupes').addEventListener('click', openDuplicates);
-async function openDuplicates() {
-  let groups;
-  try { groups = (await rpc('pool_merge_candidates')) || []; } catch (err) { showError(err); return; }
-  const modal = openModal('<h2>Duplicate records</h2><div id="dupe-body"></div>');
+function openDuplicates() {
+  const modal = openModal(
+    '<h2>Duplicate records</h2>' +
+    '<p class="lead">The same person on more than one record. Merging moves every entry onto the record with the highest card number and switches the others off; nothing is lost, and scanning an old card still finds them.</p>' +
+    '<div class="field"><label>Match on</label><div class="seg" id="dupe-mode">' +
+      DUP_MODES.map(m => '<button type="button" data-mode="' + m.id + '" aria-pressed="' + (m.id === dupMode) + '" title="' + esc(m.note) + '">' + esc(m.name) + '</button>').join('') + '</div>' +
+      '<p class="small muted" id="dupe-note" style="margin-top:6px"></p></div>' +
+    '<label style="display:flex;gap:8px;align-items:center;font-weight:400;color:var(--ink);font-size:15px;margin-bottom:12px"><input type="checkbox" id="dupe-inactive" style="width:auto"' + (dupInactive ? ' checked' : '') + '> include records already switched off</label>' +
+    '<div id="dupe-body"><p class="empty">Looking…</p></div>');
   modal.classList.add('wide');
-  renderDupes(modal, groups);
+  const note = () => { const m = DUP_MODES.find(x => x.id === dupMode); $('#dupe-note', modal).textContent = m ? m.note : ''; };
+  note();
+  $('#dupe-mode', modal).addEventListener('click', e => {
+    const b = e.target.closest('button[data-mode]'); if (!b) return;
+    dupMode = b.dataset.mode;
+    $$('#dupe-mode button', modal).forEach(x => x.setAttribute('aria-pressed', String(x.dataset.mode === dupMode)));
+    note(); runDupes(modal);
+  });
+  $('#dupe-inactive', modal).addEventListener('change', e => { dupInactive = e.target.checked; runDupes(modal); });
+  runDupes(modal);
+}
+async function runDupes(modal) {
+  const body = $('#dupe-body', modal); if (!body) return;
+  body.innerHTML = '<p class="empty">Looking…</p>';
+  try {
+    const rows = await fetchAll(() => sb.from('pool_member_state').select('*').order('id'));
+    renderDupes(modal, dupGroups(rows.filter(r => dupInactive || r.active)));
+  } catch (err) { showError(err); }
 }
 function renderDupes(modal, groups) {
-  const body = $('#dupe-body', modal);
+  const body = $('#dupe-body', modal); if (!body) return;
+  const mode = DUP_MODES.find(x => x.id === dupMode) || DUP_MODES[0];
   const mergeable = groups.filter(g => g.same_type);
-  body.innerHTML = '<p class="lead">' + (groups.length ? '<b>' + groups.length + '</b> ' + (groups.length === 1 ? 'person appears' : 'people appear') + ' more than once with the same name and phone number. Merging moves every entry onto the record with the highest card number (numbers under 10000 are punch cards from the old register) and switches the others off. Nothing is lost: the old numbers stay on the record and scanning an old card still finds them.' : 'No two active records share a name and phone number.') + '</p>' +
-    (mergeable.length > 1 ? '<div class="actions" style="margin:0 0 14px"><button type="button" class="primary" id="dupe-all">Merge all ' + mergeable.length + ' same-type groups</button></div>' : '') +
-    groups.map((g, i) => '<div class="dupe" data-i="' + i + '"><div class="head"><div><b>' + esc(g.members[0].name) + '</b> <span class="mono small muted">' + esc(g.members[0].phone || g.phone) + '</span></div>' +
+  const shown = groups.slice(0, 60);
+  const people = groups.reduce((n, g) => n + g.members.length, 0);
+  body.innerHTML = '<p class="lead">' + (groups.length
+      ? '<b>' + groups.length + '</b> ' + (groups.length === 1 ? 'group' : 'groups') + ' matching on <b>' + esc(mode.name.toLowerCase()) + '</b>, covering ' + plural(people, 'record') + '.'
+        + (groups.length > shown.length ? ' The first ' + shown.length + ' are listed.' : '')
+        + (dupMode === 'namephone' ? '' : ' <span class="soft">A looser match than name and phone: check each group before merging.</span>')
+      : 'No two records match on ' + esc(mode.name.toLowerCase()) + '.') + '</p>' +
+    (dupMode === 'namephone' && mergeable.length > 1 ? '<div class="actions" style="margin:0 0 14px"><button type="button" class="primary" id="dupe-all">Merge all ' + mergeable.length + ' same-type groups</button></div>' : '') +
+    shown.map((g, i) => '<div class="dupe" data-i="' + i + '"><div class="head"><div><b>' + esc(g.names) + '</b>' +
+      (g.phones ? ' <span class="mono small muted">' + esc(g.phones) + '</span>' : '') +
+      '<div class="small muted">matched on ' + esc(mode.name.toLowerCase()) + (g.matched ? ': ' + esc(g.matched) : '') + '</div></div>' +
       (g.same_type ? '<button type="button" class="primary" data-merge="' + i + '">Merge ' + g.members.length + ' into one</button>'
-                   : '<span class="small soft">Family and non-family passes: punches and entries are not worth the same, so these are left as separate cards. <button type="button" class="link" data-merge="' + i + '">Merge anyway</button></span>') + '</div>' +
-      '<table><thead><tr><th>Card</th><th>Type</th><th class="num">Left</th><th>Expires</th><th>Last swim</th><th></th></tr></thead><tbody>' +
-      g.members.map(m => '<tr class="' + (m.id === g.keep_id ? 'keep' : '') + '"><td>' + cardLabel(m.barcode) + '</td><td>' + kindPill(m.kind) + '</td><td class="num">' + m.balance + '</td><td>' + (m.expires_on ? fmtDate(m.expires_on) : '<span class="muted">–</span>') + '</td><td>' + (m.last_entry ? fmtDate(m.last_entry) : '<span class="muted">never</span>') + '</td><td>' + (m.id === g.keep_id ? '<span class="pill good">keeps</span>' : '<span class="small muted">merges in</span>') + '</td></tr>').join('') +
-      '</tbody></table></div>').join('');
-  const doMerge = async g => { const r = await rpc('pool_merge_members', { p_keep_id: g.keep_id, p_ids: g.ids }); return r; };
+                   : '<span class="small soft">Family and non-family passes: punches and entries are not worth the same, so these are left alone. <button type="button" class="link" data-merge="' + i + '">Merge anyway</button></span>') + '</div>' +
+      '<div class="scroll"><table><thead><tr><th>Name</th><th>Card</th><th>Type</th><th class="num">Left</th><th class="nowrap">Expires</th><th class="nowrap">Last swim</th><th></th></tr></thead><tbody>' +
+      g.members.map(m => '<tr class="' + (m.id === g.keep_id ? 'keep' : '') + '"><td>' + esc(m.name) + (m.active ? '' : ' <span class="pill">off</span>') + '</td><td class="nowrap">' + cardLabel(m.barcode) + '</td><td>' + kindPill(m.kind) + '</td><td class="num">' + m.balance + '</td><td class="nowrap">' + (m.expires_on ? fmtDate(m.expires_on) : '<span class="muted">–</span>') + '</td><td class="nowrap">' + (m.last_entry ? fmtDate(m.last_entry) : '<span class="muted">never</span>') + '</td><td>' + (m.id === g.keep_id ? '<span class="pill good">keeps</span>' : '<span class="small muted">merges in</span>') + '</td></tr>').join('') +
+      '</tbody></table></div></div>').join('');
+  const doMerge = g => rpc('pool_merge_members', { p_keep_id: g.keep_id, p_ids: g.ids });
   $$('button[data-merge]', body).forEach(b => b.addEventListener('click', async () => {
-    const g = groups[Number(b.dataset.merge)];
+    const g = shown[Number(b.dataset.merge)];
     if (!g.same_type && !confirm('Merge a family pass with a non-family pass? The balance becomes a plain sum; adjust it afterwards if needed.')) return;
+    if (dupMode !== 'namephone' && !confirm('Merge these ' + g.members.length + ' records into ' + (g.members.find(m => m.id === g.keep_id) || {}).name + '? They were matched on ' + mode.name.toLowerCase() + ' only.')) return;
     b.disabled = true;
-    try { const r = await doMerge(g); toast('Merged: ' + r.balance + ' on ' + r.member.name); renderDupes(modal, groups.filter(x => x !== g)); loadMembers(); }
+    try { const r = await doMerge(g); toast('Merged: ' + r.balance + ' on ' + r.member.name); runDupes(modal); loadMembers(); }
     catch (err) { showError(err); b.disabled = false; }
   }));
   const all = $('#dupe-all', body);
@@ -1962,8 +2136,7 @@ function renderDupes(modal, groups) {
     let done = 0;
     for (const g of mergeable) { try { await doMerge(g); done++; } catch (err) { showError(err); break; } }
     toast(done + ' merged');
-    renderDupes(modal, groups.filter(g => !g.same_type || !mergeable.slice(0, done).includes(g)));
-    loadMembers();
+    runDupes(modal); loadMembers();
   });
 }
 function openAdjust(m) {
@@ -1981,31 +2154,37 @@ function openAdjust(m) {
   });
 }
 // =============================================================================
-// Reports: a dashboard over the ledger
-//   Everything here counts PEOPLE, not scans, unless it says otherwise: a family
-//   party of four is four people whether it came through as one scan or four.
+// Dashboard and Reports
+//   One fetch feeds both tabs: the Dashboard draws the picture, the Reports tab
+//   lists and exports the detail. Everything counts PEOPLE, not scans, unless it
+//   says otherwise: a family of four is four people whether they came through as
+//   one scan or four.
 // =============================================================================
+let periodDays = 30;          // the period both tabs are showing
+let periodCache = null;       // { days, at, data } so switching tabs does not refetch
 let statement = null;
-let rpDays = 30;              // the period the dashboard is showing
-let rpAudit = [];             // the combined undo and delete list, kept for the CSV button
-const hh = h => String(h).padStart(2, '0') + ':00';
+let rpAudit = [];
+const PERIODS = [[30, '30 days'], [90, '90 days'], [365, '12 months'], [4000, 'All time']];
+const hh12 = h => (h % 12 || 12) + (h < 12 ? 'am' : 'pm');       // 14 -> 2pm
+const hourSpan = h => hh12(h) + ' to ' + hh12((h + 1) % 24);
 const monthLabel = ym => new Intl.DateTimeFormat('en-AU', { month: 'short', year: '2-digit' }).format(new Date(ym + '-01T12:00:00Z'));
 function weekStart(dateStr) {
   const d = new Date(dateStr + 'T12:00:00Z');
-  return addDays(dateStr, -((d.getUTCDay() + 6) % 7));      // back to the Monday
+  return addDays(dateStr, -((d.getUTCDay() + 6) % 7));            // back to the Monday
 }
 function peopleIn(e, kind) {
   if (kind === 'family') return (e.adults || 0) + (e.children || 0) + (e.infants || 0);
   if (kind === 'account') return (e.clients || 0);
   return 1;
 }
+// A label, a bar and a number. Used for every "by day / by hour / by month" list.
 function barTable(rows, opts) {
   opts = opts || {};
   if (!rows.length) return '<p class="empty">Nothing in this period.</p>';
   const max = Math.max(1, ...rows.map(r => r.value));
-  return '<table class="barlist">' + rows.map(r => '<tr><td class="mono small" style="white-space:nowrap">' + esc(r.label) + '</td>' +
-    '<td style="width:100%"><div class="bar' + (r.alt ? ' alt' : '') + '" style="width:' + Math.round(100 * r.value / max) + '%;min-width:' + (r.value ? 6 : 0) + 'px"></div></td>' +
-    '<td class="num" style="white-space:nowrap">' + (opts.fmt ? opts.fmt(r.value) : r.value) + (r.note ? ' <span class="small muted">' + esc(r.note) + '</span>' : '') + '</td></tr>').join('') + '</table>';
+  return '<table class="barlist"><tbody>' + rows.map(r => '<tr><td class="mono small nowrap">' + esc(r.label) + '</td>' +
+    '<td style="width:100%"><div class="bar" style="width:' + Math.round(100 * r.value / max) + '%;min-width:' + (r.value ? 6 : 0) + 'px"></div></td>' +
+    '<td class="num nowrap">' + (opts.fmt ? opts.fmt(r.value) : r.value) + (r.note ? ' <span class="small muted">' + esc(r.note) + '</span>' : '') + '</td></tr>').join('') + '</tbody></table>';
 }
 function renderHeat(grid, byHour, byDow) {
   const hrs = Object.keys(byHour).map(Number);
@@ -2014,13 +2193,13 @@ function renderHeat(grid, byHour, byDow) {
   let max = 0;
   Object.keys(grid).forEach(k => { if (grid[k] > max) max = grid[k]; });
   let html = '<table class="heat"><thead><tr><th></th>';
-  for (let h = h0; h <= h1; h++) html += '<th>' + h + '</th>';
-  html += '<th></th></tr></thead><tbody>';
+  for (let h = h0; h <= h1; h++) html += '<th class="nowrap" title="' + hourSpan(h) + '">' + hh12(h) + '</th>';
+  html += '<th class="tot">all day</th></tr></thead><tbody>';
   DOW.forEach((d, i) => {
     html += '<tr><td class="lbl">' + d + '</td>';
     for (let h = h0; h <= h1; h++) {
       const v = grid[i + ':' + h] || 0, share = max ? v / max : 0;
-      html += '<td class="hc' + (share > 0.55 ? ' on' : '') + (v ? '' : ' zero') + '" title="' + DOW_LONG[d] + ' ' + hh(h) + ' to ' + hh(h + 1) + ': ' + plural(v, 'person', 'people') + '">' +
+      html += '<td class="hc' + (share > 0.55 ? ' on' : '') + (v ? '' : ' zero') + '" title="' + DOW_LONG[d] + ', ' + hourSpan(h) + ': ' + plural(v, 'person', 'people') + '">' +
         (v ? '<span class="fill" style="opacity:' + (0.15 + 0.85 * share).toFixed(2) + '"></span>' : '') +
         '<span class="v">' + (v || '·') + '</span></td>';
     }
@@ -2028,14 +2207,388 @@ function renderHeat(grid, byHour, byDow) {
   });
   return html + '</tbody></table>';
 }
-$('#rp-month').value = sydneyDate().slice(0, 7);
-$('#rp-period').addEventListener('click', e => {
-  const b = e.target.closest('button[data-days]'); if (!b) return;
-  rpDays = Number(b.dataset.days);
-  $$('#rp-period button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-  loadReports();
+// The period buttons, on both tabs, driving one setting
+function paintPeriodSegs() {
+  ['db-period', 'rp-period'].forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    el.innerHTML = PERIODS.map(p => '<button type="button" data-days="' + p[0] + '" aria-pressed="' + (p[0] === periodDays) + '">' + p[1] + '</button>').join('');
+  });
+}
+function bindPeriod(id) {
+  document.getElementById(id).addEventListener('click', e => {
+    const b = e.target.closest('button[data-days]'); if (!b) return;
+    periodDays = Number(b.dataset.days);
+    periodCache = null;
+    paintPeriodSegs();
+    if (currentPage === 'dashboard') loadDashboard(); else loadReports();
+  });
+}
+paintPeriodSegs(); bindPeriod('db-period'); bindPeriod('rp-period');
+$('#db-refresh').addEventListener('click', () => { periodCache = null; loadDashboard(); });
+$('#rp-refresh').addEventListener('click', () => { periodCache = null; loadReports(); });
+// -----------------------------------------------------------------------------
+// One fetch, everything worked out once
+// -----------------------------------------------------------------------------
+async function periodData(force) {
+  if (!force && periodCache && periodCache.days === periodDays && Date.now() - periodCache.at < 120000) return periodCache.data;
+  const today = sydneyDate();
+  const fromDate = addDays(today, -(periodDays - 1));
+  const from = sydneyMidnightISO(fromDate);
+  const fromMs = new Date(from).getTime();
+  const [members, ledger, deletions, rollovers] = await Promise.all([
+    fetchAll(() => sb.from('pool_member_state').select('*').order('id')),
+    fetchAll(() => sb.from('pool_entries').select('id, at, qty, kind, amount, payment, member_id, adults, children, infants, clients, reverses, note, created_by, pool_products(name)').gte('at', from).order('id')),
+    fetchAll(() => sb.from('pool_deletions').select('*').gte('at', from).order('id')),
+    fetchAll(() => sb.from('pool_rollovers').select('id, at, name, new_barcode, old_card, punches, undone_at, undone_by, created_by, created_new').order('id'))
+  ]);
+  const mById = {}; members.forEach(m => { mById[m.id] = m; });
+  const kindOf = id => (mById[id] || {}).kind || 'adult';
+  const nameOf = id => (mById[id] || {}).name || ('member #' + id);
+  const inPeriod = new Set(ledger.map(e => e.id));
+  const reversed = new Set(ledger.filter(e => e.reverses).map(e => e.reverses));
+  const live = ledger.filter(e => e.kind === 'entry' && !reversed.has(e.id));
+  const sales = ledger.filter(e => e.kind === 'purchase' && e.amount != null && !reversed.has(e.id));
+  // a refund of a sale inside the period is already left out above; one against an
+  // older sale still belongs in this period's takings
+  const refunds = ledger.filter(e => e.amount != null && e.reverses && !inPeriod.has(e.reverses));
+  const byDate = {}, byDow = [0, 0, 0, 0, 0, 0, 0], byHour = {}, grid = {}, byWeek = {}, byMonth = {}, byKind = {}, byMember = {}, byDateKind = {};
+  let people = 0;
+  live.forEach(e => {
+    const k = kindOf(e.member_id), p = peopleIn(e, k), t = sydneyParts(e.at), d = sydneyDate(new Date(e.at));
+    people += p;
+    byDate[d] = (byDate[d] || 0) + p;
+    byDateKind[d] = byDateKind[d] || {}; byDateKind[d][k] = (byDateKind[d][k] || 0) + p;
+    if (t.dow >= 0) { byDow[t.dow] += p; grid[t.dow + ':' + t.hour] = (grid[t.dow + ':' + t.hour] || 0) + p; }
+    byHour[t.hour] = (byHour[t.hour] || 0) + p;
+    byWeek[weekStart(d)] = (byWeek[weekStart(d)] || 0) + p;
+    byMonth[d.slice(0, 7)] = (byMonth[d.slice(0, 7)] || 0) + p;
+    byKind[k] = (byKind[k] || 0) + p;
+    byMember[e.member_id] = (byMember[e.member_id] || 0) + p;
+  });
+  const firstData = Object.keys(byDate).sort()[0] || today;
+  const startDate = firstData > fromDate ? firstData : fromDate;
+  const days = [];
+  for (let d = startDate; d <= today; d = addDays(d, 1)) days.push(d);
+  const dowCount = [0, 0, 0, 0, 0, 0, 0];
+  days.forEach(d => { dowCount[(new Date(d + 'T12:00:00Z').getUTCDay() + 6) % 7]++; });
+  // money
+  const revenue = sales.reduce((s, x) => s + Number(x.amount), 0) + refunds.reduce((s, x) => s + Number(x.amount), 0);
+  const soldCount = sales.length - refunds.length;
+  const byProduct = {}, byPay = {};
+  sales.concat(refunds).forEach(x => {
+    const n = (x.pool_products && x.pool_products.name) || (x.reverses ? 'Refund' : 'Pass');
+    byProduct[n] = byProduct[n] || { n: 0, v: 0 };
+    byProduct[n].n += x.reverses ? -1 : 1; byProduct[n].v += Number(x.amount);
+    const p = x.payment || 'other'; byPay[p] = (byPay[p] || 0) + Number(x.amount);
+  });
+  // the liability, and the cards, are as they stand today rather than for the period
+  const fallback = setting('liability_unit_value', 7.25);
+  const unit = r => (r.unit_value == null ? fallback : Number(r.unit_value));
+  const paying = members.filter(r => r.active && PAYING.includes(r.kind) && r.balance > 0)
+    .sort((a, b) => (b.balance * unit(b)) - (a.balance * unit(a)));
+  const liabValue = paying.reduce((s, r) => s + r.balance * unit(r), 0);
+  const liabEntries = paying.reduce((s, r) => s + r.balance, 0);
+  const activePaying = members.filter(r => r.active && PAYING.includes(r.kind));
+  const cardCounts = { new: 0, old: 0, none: 0 };
+  activePaying.forEach(r => { cardCounts[cardState(r)]++; });
+  const soon = members.filter(r => r.active && PAYING.includes(r.kind) && r.balance > 0 && r.expires_on && daysUntil(r.expires_on) <= 30)
+    .sort((a, b) => (a.expires_on < b.expires_on ? -1 : 1));
+  // undone and deleted
+  const KIND_WORD = { entry: 'entry', purchase: 'pass sale', adjustment: 'adjustment', opening: 'opening balance', rollover: 'roll-over' };
+  const audit = [];
+  ledger.filter(e => e.reverses).forEach(e => {
+    const orig = ledger.find(x => x.id === e.reverses);
+    audit.push({ at: e.at, what: 'Undone', who: nameOf(e.member_id), of: KIND_WORD[orig ? orig.kind : 'entry'] || 'row',
+      qty: Math.abs(orig ? orig.qty : e.qty), amount: e.amount == null ? null : Number(e.amount),
+      origAt: orig ? orig.at : null, reason: e.note, staff: e.created_by });
+  });
+  deletions.forEach(d => {
+    audit.push({ at: d.at, what: d.what === 'rollover' ? 'Roll-over deleted' : 'Deleted', who: d.member_name || nameOf(d.member_id),
+      of: KIND_WORD[d.entry_kind] || d.entry_kind || 'row', qty: Math.abs(d.qty || 0), amount: d.amount == null ? null : Number(d.amount),
+      origAt: d.entry_at, reason: d.reversal_note || d.entry_note, staff: d.deleted_by });
+  });
+  rollovers.filter(r => r.undone_at && new Date(r.undone_at).getTime() >= fromMs).forEach(r => {
+    audit.push({ at: r.undone_at, what: 'Roll-over undone', who: r.name, of: 'roll-over', qty: r.punches, amount: null,
+      origAt: r.at, reason: 'punch card ' + (r.old_card || '?') + ' to card ' + r.new_barcode, staff: r.undone_by });
+  });
+  audit.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
+  const data = { today: today, fromDate: fromDate, from: from, fromMs: fromMs, startDate: startDate, days: days,
+    members: members, mById: mById, kindOf: kindOf, nameOf: nameOf, ledger: ledger, live: live, sales: sales, refunds: refunds,
+    deletions: deletions, rollovers: rollovers, people: people, byDate: byDate, byDateKind: byDateKind, byDow: byDow, byHour: byHour,
+    grid: grid, byWeek: byWeek, byMonth: byMonth, byKind: byKind, byMember: byMember, dowCount: dowCount,
+    revenue: revenue, soldCount: soldCount, byProduct: byProduct, byPay: byPay,
+    paying: paying, unit: unit, liabValue: liabValue, liabEntries: liabEntries, activePaying: activePaying,
+    cardCounts: cardCounts, soon: soon, audit: audit };
+  periodCache = { days: periodDays, at: Date.now(), data: data };
+  rpAudit = audit;
+  return data;
+}
+// -----------------------------------------------------------------------------
+// Dashboard
+// -----------------------------------------------------------------------------
+function card(lab, v, sub, opts) {
+  opts = opts || {};
+  return '<div class="card' + (opts.hi ? ' hi' : '') + '"><div class="lab">' + lab + '</div>' +
+    '<div class="v' + (opts.words ? ' words' : '') + '">' + v + '</div><div class="sub">' + (sub || '') + '</div></div>';
+}
+async function loadDashboard() {
+  let d;
+  try { d = await periodData(); } catch (err) { showError(err); return; }
+  const avg = d.days.length ? (d.people / d.days.length).toFixed(1) : '0';
+  $('#db-range').textContent = d.live.length
+    ? fmtDateLong(d.startDate + 'T12:00:00Z') + ' to ' + fmtDateLong(d.today + 'T12:00:00Z') + ' · ' + plural(d.days.length, 'day')
+    : 'Nothing scanned in the last ' + plural(periodDays, 'day') + '.';
+  // busiest hour of the week
+  let best = null;
+  Object.keys(d.grid).forEach(k => { if (!best || d.grid[k] > best.v) best = { k: k, v: d.grid[k] }; });
+  const bestDow = best ? Number(best.k.split(':')[0]) : null, bestHour = best ? Number(best.k.split(':')[1]) : null;
+  const topDow = d.byDow.indexOf(Math.max.apply(null, d.byDow));
+  let quietDow = -1, quietVal = Infinity;
+  d.byDow.forEach((v, i) => { if (d.dowCount[i] && v / d.dowCount[i] < quietVal) { quietVal = v / d.dowCount[i]; quietDow = i; } });
+  const oldCards = d.cardCounts.old + d.cardCounts.none;
+  const rolledPct = d.activePaying.length ? Math.round(100 * d.cardCounts.new / d.activePaying.length) : 0;
+  $('#db-cards').innerHTML =
+    card('People through the gate', d.people, plural(d.live.length, 'scan') + ' · ' + avg + ' a day') +
+    card('Passes sold', d.soldCount, money0(d.revenue) + ' taken' + (d.soldCount ? ' · ' + money0(d.revenue / d.soldCount) + ' average' : '')) +
+    card('Owed in unused entries', money0(d.liabValue), d.liabEntries + ' entries on ' + plural(d.paying.length, 'card'), { hi: true }) +
+    card('Busiest time', best ? DOW_LONG[DOW[bestDow]] + '<br>' + hourSpan(bestHour) : '–', best ? plural(best.v, 'person', 'people') + ' in that hour across the period' : 'nothing scanned yet', { words: true }) +
+    card('Expiring within 30 days', d.soon.length, d.soon.reduce((s, r) => s + r.balance, 0) + ' entries unused on those cards') +
+    card('Still on punch cards', oldCards, rolledPct + '% of ' + plural(d.activePaying.length, 'active holder') + ' are on a barcode card');
+  const hoursSeen = Object.keys(d.byHour).map(Number).sort((a, b) => a - b);
+  let win = null;
+  hoursSeen.forEach(h => { const v = (d.byHour[h] || 0) + (d.byHour[h + 1] || 0); if (!win || v > win.v) win = { h: h, v: v }; });
+  const quietDays = d.days.filter(x => !d.byDate[x]).length;
+  $('#db-insight').innerHTML = d.live.length
+    ? 'The busiest day of the week is <b>' + DOW_LONG[DOW[topDow]] + '</b> (' + (d.byDow[topDow] / Math.max(1, d.dowCount[topDow])).toFixed(1) + ' people on an average one)' +
+      (quietDow >= 0 && quietDow !== topDow ? ', the quietest is <b>' + DOW_LONG[DOW[quietDow]] + '</b> (' + quietVal.toFixed(1) + ')' : '') + '. ' +
+      (win ? 'The busiest two hours of the day are <b>' + hh12(win.h) + ' to ' + hh12((win.h + 2) % 24) + '</b>, ' + Math.round(100 * win.v / Math.max(1, d.people)) + '% of everyone who came in. ' : '') +
+      (quietDays ? '<b>' + quietDays + '</b> of the ' + d.days.length + ' days had nobody in at all.' : 'Somebody came in on every day of the period.')
+    : '<span class="none">Nothing scanned in this period yet. The dashboard fills itself in as the desk uses the scanner, so give it a few weeks before reading much into it.</span>';
+  // when they swim
+  $('#db-heat').innerHTML = renderHeat(d.grid, d.byHour, d.byDow);
+  $('#db-heat-legend').innerHTML = hoursSeen.length
+    ? '<span>quiet</span><i style="opacity:.15"></i><i style="opacity:.4"></i><i style="opacity:.65"></i><i style="opacity:1"></i><span>busy</span><span class="muted">&nbsp;· each square is one hour, Sydney time</span>'
+    : '';
+  $('#db-dow').innerHTML = barTable(DOW.map((x, i) => ({
+    label: DOW_LONG[x], value: d.dowCount[i] ? Number((d.byDow[i] / d.dowCount[i]).toFixed(1)) : 0, note: '· ' + (d.byDow[i] || 0) + ' in total'
+  })));
+  if (hoursSeen.length) {
+    const rows = [];
+    for (let h = hoursSeen[0]; h <= hoursSeen[hoursSeen.length - 1]; h++) rows.push({ label: hh12(h), value: d.byHour[h] || 0 });
+    $('#db-hour').innerHTML = barTable(rows);
+  } else { $('#db-hour').innerHTML = '<p class="empty">Nothing in this period.</p>'; }
+  // over time
+  const lastDays = d.days.slice(-21);
+  $('#db-days-note').textContent = 'last ' + plural(lastDays.length, 'day');
+  $('#db-days').innerHTML = barTable(lastDays.map(x => ({ label: fmtDateLong(x + 'T12:00:00Z'), value: d.byDate[x] || 0 })));
+  const weeks = Object.keys(d.byWeek).sort().slice(-12);
+  $('#db-weeks').innerHTML = barTable(weeks.map(w => ({ label: 'w/c ' + fmtDate(w + 'T12:00:00Z'), value: d.byWeek[w] })));
+  const months = Object.keys(d.byMonth).sort().slice(-13);
+  $('#db-months').innerHTML = barTable(months.map(ym => {
+    const ly = d.byMonth[(Number(ym.slice(0, 4)) - 1) + ym.slice(4)];
+    const diff = ly ? Math.round(100 * (d.byMonth[ym] - ly) / ly) : null;
+    return { label: monthLabel(ym), value: d.byMonth[ym], note: diff == null ? '' : '· ' + (diff >= 0 ? '+' : '') + diff + '% on last year' };
+  }));
+  // who
+  const mixKinds = ['adult', 'senior', 'family', 'account'].filter(k => d.byKind[k]);
+  const cardsUsed = Object.keys(d.byMember).length;
+  $('#db-mix').innerHTML = mixKinds.length
+    ? '<div class="mixbar">' + mixKinds.map(k => '<span class="kind-' + k + '" style="background:var(--kc);width:' + (100 * d.byKind[k] / d.people).toFixed(1) + '%" title="' + KINDS[k] + ': ' + d.byKind[k] + '"></span>').join('') + '</div>' +
+      '<div class="keyrow">' + mixKinds.map(k => '<span class="kind-' + k + '"><i style="background:var(--kc)"></i>' + KINDS[k] + ' ' + Math.round(100 * d.byKind[k] / d.people) + '%</span>').join('') + '</div>' +
+      '<div class="scroll" style="margin-top:12px"><table><thead><tr><th>Pass</th><th class="num">People</th><th class="num">Cards</th><th class="num">Per card</th></tr></thead><tbody>' +
+      mixKinds.map(k => {
+        const cards = Object.keys(d.byMember).filter(id => d.kindOf(id) === k).length;
+        return '<tr><td>' + kindPill(k) + '</td><td class="num">' + d.byKind[k] + '</td><td class="num">' + cards + '</td><td class="num">' + (cards ? (d.byKind[k] / cards).toFixed(1) : '–') + '</td></tr>';
+      }).join('') +
+      '<tr><td><b>All</b></td><td class="num"><b>' + d.people + '</b></td><td class="num"><b>' + cardsUsed + '</b></td><td class="num"><b>' + (cardsUsed ? (d.people / cardsUsed).toFixed(1) : '–') + '</b></td></tr></tbody></table></div>'
+    : '<p class="empty">Nothing in this period.</p>';
+  const top = Object.keys(d.byMember).map(id => ({ id: id, n: d.byMember[id], m: d.mById[id] })).sort((a, b) => b.n - a.n).slice(0, 12);
+  $('#db-top').innerHTML = top.length
+    ? '<table><thead><tr><th>Name</th><th>Pass</th><th class="num">People</th><th class="num">Left</th></tr></thead><tbody>' +
+      top.map(t => '<tr><td>' + esc(d.nameOf(t.id)) + '</td><td>' + kindPill(d.kindOf(t.id)) + '</td><td class="num">' + t.n + '</td><td class="num nowrap">' + (t.m ? (t.m.kind === 'account' ? (-t.m.balance) + ' owing' : t.m.balance) : '') + '</td></tr>').join('') + '</tbody></table>'
+    : '<p class="empty">Nothing in this period.</p>';
+  // money
+  const prodNames = Object.keys(d.byProduct).sort((a, b) => d.byProduct[b].v - d.byProduct[a].v);
+  $('#db-money').innerHTML =
+    '<div class="stats">' +
+      '<div class="stat"><div class="v">' + money0(d.revenue) + '</div><div class="k">taken in the period</div></div>' +
+      '<div class="stat"><div class="v">' + d.soldCount + '</div><div class="k">passes sold</div></div>' +
+      '<div class="stat"><div class="v">' + (d.people ? money(d.revenue / d.people) : '$0.00') + '</div><div class="k">per person through the gate</div></div>' +
+    '</div>' +
+    (prodNames.length
+      ? '<div class="scroll" style="margin-top:12px"><table><thead><tr><th>Pass</th><th class="num">Sold</th><th class="num">Value</th></tr></thead><tbody>' +
+        prodNames.map(n => '<tr><td>' + esc(n) + '</td><td class="num">' + d.byProduct[n].n + '</td><td class="num nowrap">' + money(d.byProduct[n].v) + '</td></tr>').join('') +
+        '<tr><td><b>Total</b></td><td class="num"><b>' + d.soldCount + '</b></td><td class="num nowrap"><b>' + money(d.revenue) + '</b></td></tr></tbody></table></div>' +
+        '<h3 style="margin:16px 0 6px;font-size:14px">How it was paid</h3>' +
+        barTable(Object.keys(d.byPay).sort((a, b) => d.byPay[b] - d.byPay[a]).map(x => ({ label: x, value: Math.round(d.byPay[x]) })), { fmt: v => money0(v) })
+      : '<p class="empty" style="margin-top:12px">No passes sold in this period.</p>');
+  const liabKinds = PAYING.filter(k => d.paying.some(r => r.kind === k));
+  $('#db-liab').innerHTML =
+    '<div class="stats">' +
+      '<div class="stat"><div class="v">' + money0(d.liabValue) + '</div><div class="k">at each holder\'s own price per entry</div></div>' +
+      '<div class="stat"><div class="v">' + d.liabEntries + '</div><div class="k">entries on active cards</div></div>' +
+      '<div class="stat"><div class="v">' + d.paying.length + '</div><div class="k">holders with a balance</div></div>' +
+    '</div>' +
+    (liabKinds.length ? '<div class="scroll" style="margin-top:12px"><table><thead><tr><th>Pass</th><th class="num">Holders</th><th class="num">Entries</th><th class="num">Value</th></tr></thead><tbody>' +
+      liabKinds.map(k => {
+        const rows = d.paying.filter(r => r.kind === k);
+        return '<tr><td>' + kindPill(k) + '</td><td class="num">' + rows.length + '</td><td class="num">' + rows.reduce((s, r) => s + r.balance, 0) + '</td><td class="num nowrap">' + money(rows.reduce((s, r) => s + r.balance * d.unit(r), 0)) + '</td></tr>';
+      }).join('') + '</tbody></table></div>' : '') +
+    '<p class="small muted" style="margin-top:10px">Holders without a purchase on file (carried-over balances) are valued at the fallback rate in Settings. The holder-by-holder list is on the Reports tab.</p>';
+  // cards
+  const rolledPeriod = d.rollovers.filter(r => !r.undone_at && new Date(r.at).getTime() >= d.fromMs).length;
+  const total = Math.max(1, d.activePaying.length);
+  const bits = [['new', 'var(--good)'], ['old', 'var(--warn)'], ['none', 'var(--line-strong)']];
+  $('#db-cards-panel').innerHTML =
+    '<div class="mixbar">' + bits.map(b => '<span style="background:' + b[1] + ';width:' + (100 * d.cardCounts[b[0]] / total).toFixed(1) + '%" title="' + CARD_STATE_NAME[b[0]] + ': ' + d.cardCounts[b[0]] + '"></span>').join('') + '</div>' +
+    '<div class="keyrow">' + bits.map(b => '<span><i style="background:' + b[1] + '"></i>' + CARD_STATE_NAME[b[0]] + ' ' + d.cardCounts[b[0]] + '</span>').join('') + '</div>' +
+    '<div class="stats" style="margin-top:16px">' +
+      '<div class="stat"><div class="v">' + rolledPct + '%</div><div class="k">of active pass holders are on a barcode card</div></div>' +
+      '<div class="stat"><div class="v">' + oldCards + '</div><div class="k">still to roll over</div></div>' +
+      '<div class="stat"><div class="v">' + rolledPeriod + '</div><div class="k">rolled over in this period</div></div>' +
+    '</div>';
+}
+// -----------------------------------------------------------------------------
+// Reports tab: the lists to act on, and every CSV
+// -----------------------------------------------------------------------------
+const dtRow = iso => [fmtDate(iso), fmtTime(iso)];
+const EXPORTS = [
+  { name: 'Members with balances', note: 'Everyone on file: card, type of card, what is left, expiry.', run: async () => {
+    const rows = await fetchAll(() => sb.from('pool_member_state').select('*').order('name'));
+    return ['pool-members-' + sydneyDate() + '.csv',
+      [['id', 'name', 'kind', 'phone', 'email', 'card', 'card_type', 'balance', 'expires_on', 'last_swim', 'active', 'rate', 'note']]
+        .concat(rows.map(r => [r.id, r.name, r.kind, r.phone, r.email, r.barcode, CARD_STATE_NAME[cardState(r)], r.balance, r.expires_on, r.last_entry ? fmtDate(r.last_entry) : '', r.active ? 'yes' : 'no', r.rate, r.note]))];
+  } },
+  { name: 'Full ledger', note: 'Every row ever written: entries, sales, adjustments, reversals.', run: async () => {
+    const rows = await fetchAll(() => sb.from('pool_entries').select('*, pool_members(name, kind), pool_products(name)').order('id'));
+    return ['pool-ledger-' + sydneyDate() + '.csv',
+      [['id', 'at', 'date', 'time', 'member_id', 'member', 'member_kind', 'kind', 'qty', 'amount', 'product', 'adults', 'children', 'infants', 'clients', 'payment', 'note', 'reverses', 'staff']]
+        .concat(rows.map(e => [e.id, e.at, fmtDate(e.at), fmtTime(e.at), e.member_id, e.pool_members && e.pool_members.name, e.pool_members && e.pool_members.kind, e.kind, e.qty, e.amount, e.pool_products && e.pool_products.name, e.adults, e.children, e.infants, e.clients, e.payment, e.note, e.reverses, e.created_by]))];
+  } },
+  { name: 'Entries, one row per scan (period)', note: 'Every swim recorded in the period, with who went in.', run: async d => {
+    return ['pool-entries-' + d.fromDate + '-to-' + d.today + '.csv',
+      [['date', 'time', 'day', 'hour', 'member_id', 'name', 'pass', 'card', 'people', 'entries_used', 'adults', 'children', 'under_5', 'clients', 'staff', 'note']]
+        .concat(d.live.map(e => {
+          const m = d.mById[e.member_id] || {}, t = sydneyParts(e.at);
+          return dtRow(e.at).concat([DOW_LONG[DOW[t.dow]] || '', hh12(t.hour), e.member_id, m.name || '', m.kind || '', m.barcode || '',
+            peopleIn(e, m.kind), -e.qty, e.adults, e.children, e.infants, e.clients, e.created_by, e.note]);
+        }))];
+  } },
+  { name: 'Day by day summary (period)', note: 'One row per day: scans, people, and the split by pass type.', run: async d => {
+    return ['pool-daily-' + d.fromDate + '-to-' + d.today + '.csv',
+      [['date', 'day', 'people', 'adult', 'senior', 'family', 'practice']]
+        .concat(d.days.map(x => {
+          const k = d.byDateKind[x] || {};
+          return [x, DOW_LONG[DOW[(new Date(x + 'T12:00:00Z').getUTCDay() + 6) % 7]], d.byDate[x] || 0, k.adult || 0, k.senior || 0, k.family || 0, k.account || 0];
+        }))];
+  } },
+  { name: 'Busy times grid (period)', note: 'The heatmap as numbers: people by day of the week and hour.', run: async d => {
+    const hrs = Object.keys(d.byHour).map(Number).sort((a, b) => a - b);
+    const h0 = hrs.length ? hrs[0] : 6, h1 = hrs.length ? hrs[hrs.length - 1] : 20;
+    const head = ['day'];
+    for (let h = h0; h <= h1; h++) head.push(hh12(h));
+    head.push('all day');
+    return ['pool-busy-times-' + d.fromDate + '-to-' + d.today + '.csv',
+      [head].concat(DOW.map((x, i) => {
+        const row = [DOW_LONG[x]];
+        for (let h = h0; h <= h1; h++) row.push(d.grid[i + ':' + h] || 0);
+        row.push(d.byDow[i] || 0);
+        return row;
+      }))];
+  } },
+  { name: 'Pass sales (period)', note: 'Sales and refunds with the payment type, for Xero.', run: async d => {
+    return ['pool-sales-' + d.fromDate + '-to-' + d.today + '.csv',
+      [['date', 'time', 'member_id', 'name', 'pass', 'product', 'amount', 'paid_by', 'entries_added', 'staff', 'note', 'refund_of']]
+        .concat(d.sales.concat(d.refunds).sort((a, b) => (a.at < b.at ? -1 : 1)).map(x => {
+          const m = d.mById[x.member_id] || {};
+          return dtRow(x.at).concat([x.member_id, m.name || '', m.kind || '', (x.pool_products && x.pool_products.name) || '', x.amount, x.payment, x.qty, x.created_by, x.note, x.reverses || '']);
+        }))];
+  } },
+  { name: 'Unredeemed entries by holder', note: 'The liability schedule as it stands today, valued per holder.', run: async d => {
+    return ['pool-unredeemed-' + sydneyDate() + '.csv',
+      [['name', 'pass', 'card', 'card_type', 'entries_left', 'value_per_entry', 'value', 'expires_on', 'last_swim', 'phone']]
+        .concat(d.paying.map(r => [r.name, r.kind, r.barcode, CARD_STATE_NAME[cardState(r)], r.balance, d.unit(r).toFixed(2), (r.balance * d.unit(r)).toFixed(2), r.expires_on, r.last_entry ? fmtDate(r.last_entry) : '', r.phone]))
+        .concat([['TOTAL', '', '', '', d.liabEntries, '', d.liabValue.toFixed(2), '', '', '']])];
+  } },
+  { name: 'Expiring within 60 days', note: 'Cards with entries left that are about to run out of time.', run: async d => {
+    const rows = d.members.filter(r => r.active && PAYING.includes(r.kind) && r.balance > 0 && r.expires_on && daysUntil(r.expires_on) <= 60)
+      .sort((a, b) => (a.expires_on < b.expires_on ? -1 : 1));
+    return ['pool-expiring-' + sydneyDate() + '.csv',
+      [['name', 'phone', 'email', 'pass', 'card', 'entries_left', 'expires_on', 'days_left']]
+        .concat(rows.map(r => [r.name, r.phone, r.email, r.kind, r.barcode, r.balance, r.expires_on, daysUntil(r.expires_on)]))];
+  } },
+  { name: 'Practice account visits (period)', note: 'Client visits by practice, ready to check against an invoice.', run: async d => {
+    const rows = d.live.filter(e => d.kindOf(e.member_id) === 'account');
+    return ['pool-practice-visits-' + d.fromDate + '-to-' + d.today + '.csv',
+      [['date', 'time', 'practice', 'clients', 'rate', 'amount', 'practitioner_note', 'staff']]
+        .concat(rows.map(e => {
+          const m = d.mById[e.member_id] || {};
+          return dtRow(e.at).concat([m.name || '', e.clients || -e.qty, m.rate == null ? '' : m.rate, m.rate == null ? '' : ((e.clients || -e.qty) * m.rate).toFixed(2), e.note, e.created_by]);
+        }))];
+  } },
+  { name: 'Visits per holder (period)', note: 'How often each card was used, most used first.', run: async d => {
+    const rows = Object.keys(d.byMember).map(id => ({ id: id, n: d.byMember[id], m: d.mById[id] || {} })).sort((a, b) => b.n - a.n);
+    return ['pool-visits-per-holder-' + d.fromDate + '-to-' + d.today + '.csv',
+      [['name', 'pass', 'card', 'people_through', 'scans', 'entries_used', 'balance_now', 'last_swim']]
+        .concat(rows.map(r => {
+          const mine = d.live.filter(e => String(e.member_id) === String(r.id));
+          return [r.m.name || ('member #' + r.id), r.m.kind || '', r.m.barcode || '', r.n, mine.length, mine.reduce((s, e) => s - e.qty, 0), r.m.balance, r.m.last_entry ? fmtDate(r.m.last_entry) : ''];
+        }))];
+  } },
+  { name: 'Undone and deleted (period)', note: 'Every undo and deletion, with the staff name and reason.', run: async d => {
+    return ['pool-undone-and-deleted-' + d.fromDate + '-to-' + d.today + '.csv',
+      [['date', 'time', 'what', 'member', 'kind of row', 'entries', 'amount', 'original date', 'reason', 'staff']]
+        .concat(d.audit.map(a => dtRow(a.at).concat([a.what, a.who, a.of, a.qty, a.amount == null ? '' : a.amount, a.origAt ? fmtDate(a.origAt) : '', a.reason || '', a.staff || ''])))];
+  } },
+  { name: 'Deletions, full detail', note: 'The deletions log itself, every field, all time.', run: async () => {
+    const rows = await fetchAll(() => sb.from('pool_deletions').select('*').order('id'));
+    return ['pool-deletions-' + sydneyDate() + '.csv',
+      [['id', 'deleted_at', 'deleted_by', 'what', 'member_id', 'member', 'member_kind', 'card', 'row_id', 'row_at', 'row_kind', 'qty', 'amount', 'adults', 'children', 'infants', 'clients', 'payment', 'row_note', 'row_by', 'undo_id', 'undone_at', 'undone_by', 'undo_reason']]
+        .concat(rows.map(x => [x.id, x.at, x.deleted_by, x.what, x.member_id, x.member_name, x.member_kind, x.barcode, x.entry_id, x.entry_at, x.entry_kind, x.qty, x.amount, x.adults, x.children, x.infants, x.clients, x.payment, x.entry_note, x.entry_by, x.reversal_id, x.reversal_at, x.reversal_by, x.reversal_note]))];
+  } },
+  { name: 'Roll-over log', note: 'Every punch card moved onto a barcode card, undone ones marked.', run: async () => {
+    const rows = await fetchAll(() => sb.from('pool_rollovers').select('*').order('id'));
+    return ['pool-rollovers-' + sydneyDate() + '.csv',
+      [['id', 'date', 'time', 'name', 'old_card', 'punches', 'new_card', 'new_record', 'staff', 'undone_at', 'undone_by']]
+        .concat(rows.map(r => [r.id].concat(dtRow(r.at)).concat([r.name, r.old_card, r.punches, r.new_barcode, r.created_new ? 'yes' : 'no', r.created_by, r.undone_at ? fmtDate(r.undone_at) : '', r.undone_by])))];
+  } }
+];
+function renderExports() {
+  $('#rp-exports').innerHTML = EXPORTS.map((x, i) => '<div class="export"><div><b>' + esc(x.name) + '</b><span>' + esc(x.note) + '</span></div>' +
+    '<button type="button" data-x="' + i + '">CSV</button></div>').join('');
+  $$('#rp-exports button[data-x]').forEach(b => b.addEventListener('click', async () => {
+    const label = b.textContent; b.disabled = true; b.textContent = '…';
+    try { const d = await periodData(); const r = await EXPORTS[Number(b.dataset.x)].run(d); downloadCSV(r[0], r[1]); toast('Saved ' + r[0]); }
+    catch (err) { showError(err); }
+    finally { b.disabled = false; b.textContent = label; }
+  }));
+}
+async function loadReports() {
+  renderExports();
+  let d;
+  try { d = await periodData(); } catch (err) { showError(err); return; }
+  $('#rp-expiring-body').innerHTML = d.soon.length
+    ? d.soon.map(r => '<tr><td>' + esc(r.name) + '</td><td class="mono nowrap">' + esc(r.phone) + '</td><td class="num">' + r.balance + '</td><td class="nowrap">' + expiryCell(r) + '</td></tr>').join('')
+    : '<tr><td colspan="4" class="empty">Nothing expiring in the next 30 days.</td></tr>';
+  $('#rp-liab-body').innerHTML = d.paying.length
+    ? d.paying.map(r => '<tr><td>' + esc(r.name) + '</td><td>' + kindPill(r.kind) + '</td><td class="num">' + r.balance + '</td><td class="num nowrap">' + money(r.balance * d.unit(r)) + '</td></tr>').join('') +
+      '<tr><td><b>Total</b></td><td></td><td class="num"><b>' + d.liabEntries + '</b></td><td class="num nowrap"><b>' + money(d.liabValue) + '</b></td></tr>'
+    : '<tr><td colspan="4" class="empty">No unused entries on any active card.</td></tr>';
+  $('#rp-audit-note').textContent = d.audit.length ? plural(d.audit.length, 'row') + ' in this period' : '';
+  $('#rp-audit-body').innerHTML = d.audit.length
+    ? d.audit.slice(0, 200).map(a => '<tr><td class="mono small nowrap">' + fmtDate(a.at) + ' ' + fmtTime(a.at) + '</td>' +
+      '<td class="nowrap"><span class="pill ' + (a.what === 'Undone' ? 'warn' : 'red') + '">' + esc(a.what) + '</span> <span class="small muted">' + esc(a.of) + '</span></td>' +
+      '<td>' + esc(a.who) + (a.origAt ? '<div class="small muted nowrap">from ' + fmtDate(a.origAt) + ' ' + fmtTime(a.origAt) + '</div>' : '') + '</td>' +
+      '<td class="num">' + (a.qty || '') + (a.amount ? '<div class="small muted">' + money(a.amount) + '</div>' : '') + '</td>' +
+      '<td class="small wrap">' + esc(a.reason || '') + '</td><td class="small mono">' + esc(a.staff || '') + '</td></tr>').join('')
+    : '<tr><td colspan="6" class="empty">Nothing undone or deleted in this period.</td></tr>';
+}
+$('#rp-audit-csv').addEventListener('click', async () => {
+  try { const d = await periodData(); const r = await EXPORTS.find(x => /Undone and deleted/.test(x.name)).run(d); downloadCSV(r[0], r[1]); }
+  catch (err) { showError(err); }
 });
-$('#rp-refresh').addEventListener('click', loadReports);
+// Practice statements, a month at a time
+$('#rp-month').value = sydneyDate().slice(0, 7);
 $('#rp-statement').addEventListener('click', buildStatement);
 $('#rp-statement-print').addEventListener('click', printStatement);
 $('#rp-statement-csv').addEventListener('click', () => {
@@ -2044,209 +2597,6 @@ $('#rp-statement-csv').addEventListener('click', () => {
   statement.groups.forEach(g => g.lines.forEach(l => rows.push([g.name, fmtDate(l.at), fmtTime(l.at), l.clients, l.note || '', g.rate == null ? '' : g.rate, g.rate == null ? '' : (l.clients * g.rate).toFixed(2)])));
   downloadCSV('pool-practice-statement-' + $('#rp-month').value + '.csv', rows);
 });
-$('#rp-audit-csv').addEventListener('click', () => {
-  downloadCSV('pool-undone-and-deleted-' + sydneyDate() + '.csv',
-    [['when', 'what', 'member', 'kind of row', 'entries', 'amount', 'original date', 'reason', 'staff']].concat(
-      rpAudit.map(a => [a.at, a.what, a.who, a.of, a.qty, a.amount == null ? '' : a.amount, a.origAt || '', a.reason || '', a.staff || ''])));
-});
-async function loadReports() {
-  const today = sydneyDate();
-  const fromDate = addDays(today, -(rpDays - 1));
-  const from = sydneyMidnightISO(fromDate);
-  const fromMs = new Date(from).getTime();
-  try {
-    const [members, ledger, deletions, rollovers] = await Promise.all([
-      fetchAll(() => sb.from('pool_member_state').select('*').order('id')),
-      fetchAll(() => sb.from('pool_entries').select('id, at, qty, kind, amount, payment, member_id, adults, children, infants, clients, reverses, note, created_by, pool_products(name)').gte('at', from).order('id')),
-      fetchAll(() => sb.from('pool_deletions').select('*').gte('at', from).order('id')),
-      fetchAll(() => sb.from('pool_rollovers').select('id, at, name, new_barcode, old_card, punches, undone_at, undone_by, created_by').order('id'))
-    ]);
-    const mById = {}; members.forEach(m => { mById[m.id] = m; });
-    const kindOf = id => (mById[id] || {}).kind || 'adult';
-    const nameOf = id => (mById[id] || {}).name || ('member #' + id);
-    const inPeriod = new Set(ledger.map(e => e.id));
-    const reversed = new Set(ledger.filter(e => e.reverses).map(e => e.reverses));
-    const live = ledger.filter(e => e.kind === 'entry' && !reversed.has(e.id));
-    const sales = ledger.filter(e => e.kind === 'purchase' && e.amount != null && !reversed.has(e.id));
-    // a refund whose sale is inside the period is already left out above; one from an
-    // older sale still belongs in this period's takings
-    const refunds = ledger.filter(e => e.amount != null && e.reverses && !inPeriod.has(e.reverses));
-    // ---- aggregate the entries -------------------------------------------------
-    const byDate = {}, byDow = [0, 0, 0, 0, 0, 0, 0], byHour = {}, grid = {}, byWeek = {}, byMonth = {}, byKind = {}, byMember = {};
-    let people = 0;
-    live.forEach(e => {
-      const k = kindOf(e.member_id), p = peopleIn(e, k);
-      people += p;
-      const d = sydneyDate(new Date(e.at)), t = sydneyParts(e.at);
-      byDate[d] = (byDate[d] || 0) + p;
-      if (t.dow >= 0) { byDow[t.dow] += p; grid[t.dow + ':' + t.hour] = (grid[t.dow + ':' + t.hour] || 0) + p; }
-      byHour[t.hour] = (byHour[t.hour] || 0) + p;
-      byWeek[weekStart(d)] = (byWeek[weekStart(d)] || 0) + p;
-      byMonth[d.slice(0, 7)] = (byMonth[d.slice(0, 7)] || 0) + p;
-      byKind[k] = (byKind[k] || 0) + p;
-      byMember[e.member_id] = (byMember[e.member_id] || 0) + p;
-    });
-    const firstData = Object.keys(byDate).sort()[0] || today;
-    const startDate = firstData > fromDate ? firstData : fromDate;
-    const days = [];
-    for (let d = startDate; d <= today; d = addDays(d, 1)) days.push(d);
-    const dowCount = [0, 0, 0, 0, 0, 0, 0];
-    days.forEach(d => { dowCount[(new Date(d + 'T12:00:00Z').getUTCDay() + 6) % 7]++; });
-    // ---- headline --------------------------------------------------------------
-    $('#rp-range').textContent = live.length
-      ? fmtDateLong(startDate + 'T12:00:00Z') + ' to ' + fmtDateLong(today + 'T12:00:00Z') + ' · ' + plural(days.length, 'day') + ' · ' + plural(live.length, 'scan')
-      : 'Nothing scanned in the last ' + plural(rpDays, 'day') + '.';
-    const busiestDate = Object.keys(byDate).sort((a, b) => byDate[b] - byDate[a])[0];
-    const quietDays = days.filter(d => !byDate[d]).length;
-    const soldCount = sales.length - refunds.length;
-    const revenue = sales.reduce((s, x) => s + Number(x.amount), 0) + refunds.reduce((s, x) => s + Number(x.amount), 0);
-    const stat = (v, k) => '<div class="stat"><div class="v">' + v + '</div><div class="k">' + k + '</div></div>';
-    $('#rp-kpis').innerHTML =
-      stat(people, 'people through the gate') +
-      stat(live.length, 'scans at the desk') +
-      stat(days.length ? (people / days.length).toFixed(1) : '0', 'people a day on average') +
-      stat(busiestDate ? byDate[busiestDate] : 0, 'busiest day' + (busiestDate ? ' · ' + fmtDateLong(busiestDate + 'T12:00:00Z') : '')) +
-      stat(soldCount, 'passes sold') +
-      stat(money0(revenue), 'taken for passes');
-    const topDow = byDow.indexOf(Math.max.apply(null, byDow));
-    let quietDow = -1, quietVal = Infinity;
-    byDow.forEach((v, i) => { if (dowCount[i] && v / dowCount[i] < quietVal) { quietVal = v / dowCount[i]; quietDow = i; } });
-    const hoursSeen = Object.keys(byHour).map(Number).sort((a, b) => a - b);
-    let win = null;
-    hoursSeen.forEach(h => { const v = (byHour[h] || 0) + (byHour[h + 1] || 0); if (!win || v > win.v) win = { h: h, v: v }; });
-    $('#rp-insight').innerHTML = live.length
-      ? 'Busiest day of the week is <b>' + DOW_LONG[DOW[topDow]] + '</b> (' + (byDow[topDow] / Math.max(1, dowCount[topDow])).toFixed(1) + ' people on an average one)' +
-        (quietDow >= 0 && quietDow !== topDow ? ', quietest is <b>' + DOW_LONG[DOW[quietDow]] + '</b> (' + quietVal.toFixed(1) + ')' : '') + '. ' +
-        (win ? 'The busiest two hours are <b>' + hh(win.h) + ' to ' + hh(win.h + 2) + '</b>, ' + Math.round(100 * win.v / Math.max(1, people)) + '% of everyone in the period. ' : '') +
-        (quietDays ? '<b>' + quietDays + '</b> of the ' + days.length + ' days had nobody in at all.' : 'Somebody came in on every day of the period.')
-      : '<span class="none">Nothing scanned in this period yet. The dashboard fills itself in as the desk uses the scanner, so give it a few weeks before reading much into it.</span>';
-    // ---- when they come --------------------------------------------------------
-    $('#rp-heat').innerHTML = renderHeat(grid, byHour, byDow);
-    $('#rp-heat-legend').innerHTML = hoursSeen.length
-      ? '<span>quiet</span><i style="opacity:.15"></i><i style="opacity:.4"></i><i style="opacity:.65"></i><i style="opacity:1"></i><span>busy</span><span class="muted">&nbsp;· people through the gate, Sydney time · the last column is the day total</span>'
-      : '';
-    $('#rp-dow').innerHTML = barTable(DOW.map((d, i) => ({
-      label: DOW_LONG[d], value: dowCount[i] ? Number((byDow[i] / dowCount[i]).toFixed(1)) : 0, note: '· ' + (byDow[i] || 0) + ' in total'
-    })));
-    if (hoursSeen.length) {
-      const h0 = hoursSeen[0], h1 = hoursSeen[hoursSeen.length - 1], hourRows = [];
-      for (let h = h0; h <= h1; h++) hourRows.push({ label: hh(h), value: byHour[h] || 0 });
-      $('#rp-hour').innerHTML = barTable(hourRows);
-    } else { $('#rp-hour').innerHTML = '<p class="empty">Nothing in this period.</p>'; }
-    const lastDays = days.slice(-21);
-    $('#rp-days-note').textContent = 'last ' + plural(lastDays.length, 'day');
-    $('#rp-days').innerHTML = barTable(lastDays.map(d => ({ label: fmtDateLong(d + 'T12:00:00Z'), value: byDate[d] || 0 })));
-    const weeks = Object.keys(byWeek).sort().slice(-12);
-    $('#rp-weeks').innerHTML = barTable(weeks.map(w => ({ label: 'w/c ' + fmtDate(w + 'T12:00:00Z'), value: byWeek[w] })));
-    const months = Object.keys(byMonth).sort().slice(-13);
-    $('#rp-months').innerHTML = barTable(months.map(ym => {
-      const ly = byMonth[(Number(ym.slice(0, 4)) - 1) + ym.slice(4)];
-      const diff = ly ? Math.round(100 * (byMonth[ym] - ly) / ly) : null;
-      return { label: monthLabel(ym), value: byMonth[ym], note: diff == null ? '' : '· ' + (diff >= 0 ? '+' : '') + diff + '% on last year' };
-    }));
-    // ---- who they are ----------------------------------------------------------
-    const mixKinds = ['adult', 'senior', 'family', 'account'].filter(k => byKind[k]);
-    $('#rp-mix').innerHTML = mixKinds.length
-      ? '<div class="mixbar">' + mixKinds.map(k => '<span class="kind-' + k + '" style="background:var(--kc);width:' + (100 * byKind[k] / people).toFixed(1) + '%" title="' + KINDS[k] + ': ' + byKind[k] + '"></span>').join('') + '</div>' +
-        '<div class="keyrow">' + mixKinds.map(k => '<span class="kind-' + k + '"><i style="background:var(--kc)"></i>' + KINDS[k] + ' ' + Math.round(100 * byKind[k] / people) + '%</span>').join('') + '</div>' +
-        '<table style="margin-top:12px"><thead><tr><th>Pass</th><th class="num">People</th><th class="num">Cards used</th><th class="num">Per card</th></tr></thead><tbody>' +
-        mixKinds.map(k => {
-          const cards = Object.keys(byMember).filter(id => kindOf(id) === k).length;
-          return '<tr><td>' + kindPill(k) + '</td><td class="num">' + byKind[k] + '</td><td class="num">' + cards + '</td><td class="num">' + (cards ? (byKind[k] / cards).toFixed(1) : '–') + '</td></tr>';
-        }).join('') +
-        '<tr><td><b>All</b></td><td class="num"><b>' + people + '</b></td><td class="num"><b>' + Object.keys(byMember).length + '</b></td><td class="num"><b>' + (Object.keys(byMember).length ? (people / Object.keys(byMember).length).toFixed(1) : '–') + '</b></td></tr></tbody></table>'
-      : '<p class="empty">Nothing in this period.</p>';
-    const top = Object.keys(byMember).map(id => ({ id: id, n: byMember[id], m: mById[id] })).sort((a, b) => b.n - a.n).slice(0, 12);
-    $('#rp-top').innerHTML = top.length
-      ? '<table><thead><tr><th>Name</th><th>Pass</th><th class="num">People</th><th class="num">Left</th></tr></thead><tbody>' +
-        top.map(t => '<tr><td>' + esc(nameOf(t.id)) + '</td><td>' + kindPill(kindOf(t.id)) + '</td><td class="num">' + t.n + '</td><td class="num">' + (t.m ? (t.m.kind === 'account' ? (-t.m.balance) + ' owing' : t.m.balance) : '') + '</td></tr>').join('') + '</tbody></table>'
-      : '<p class="empty">Nothing in this period.</p>';
-    // ---- money ------------------------------------------------------------------
-    const byProduct = {}, byPay = {};
-    sales.forEach(s => {
-      const n = (s.pool_products && s.pool_products.name) || 'Pass';
-      byProduct[n] = byProduct[n] || { n: 0, v: 0 }; byProduct[n].n++; byProduct[n].v += Number(s.amount);
-      const p = s.payment || 'other'; byPay[p] = (byPay[p] || 0) + Number(s.amount);
-    });
-    refunds.forEach(s => {
-      const n = (s.pool_products && s.pool_products.name) || 'Refund';
-      byProduct[n] = byProduct[n] || { n: 0, v: 0 }; byProduct[n].n--; byProduct[n].v += Number(s.amount);
-      const p = s.payment || 'other'; byPay[p] = (byPay[p] || 0) + Number(s.amount);
-    });
-    const prodNames = Object.keys(byProduct).sort((a, b) => byProduct[b].v - byProduct[a].v);
-    $('#rp-money').innerHTML =
-      '<div class="stats">' + stat(money0(revenue), 'taken in the period') + stat(soldCount, 'passes sold') +
-        stat(soldCount ? money0(revenue / soldCount) : '$0', 'average sale') +
-        stat(people ? money(revenue / people) : '$0.00', 'revenue per person through the gate') + '</div>' +
-      (prodNames.length
-        ? '<table style="margin-top:12px"><thead><tr><th>Pass</th><th class="num">Sold</th><th class="num">Value</th></tr></thead><tbody>' +
-          prodNames.map(n => '<tr><td>' + esc(n) + '</td><td class="num">' + byProduct[n].n + '</td><td class="num">' + money(byProduct[n].v) + '</td></tr>').join('') +
-          '<tr><td><b>Total</b></td><td class="num"><b>' + soldCount + '</b></td><td class="num"><b>' + money(revenue) + '</b></td></tr></tbody></table>' +
-          '<h3 style="margin:16px 0 6px;font-size:14px">How it was paid</h3>' +
-          barTable(Object.keys(byPay).sort((a, b) => byPay[b] - byPay[a]).map(p => ({ label: p, value: Math.round(byPay[p]) })), { fmt: v => money0(v) })
-        : '<p class="empty" style="margin-top:12px">No passes sold in this period.</p>');
-    // ---- the liability ----------------------------------------------------------
-    const paying = members.filter(r => r.active && PAYING.includes(r.kind) && r.balance > 0);
-    const fallback = setting('liability_unit_value', 7.25);
-    const unit = r => (r.unit_value == null ? fallback : Number(r.unit_value));
-    $('#rp-liab-value').textContent = money(paying.reduce((s, r) => s + r.balance * unit(r), 0));
-    $('#rp-liab-entries').textContent = paying.reduce((s, r) => s + r.balance, 0);
-    $('#rp-liab-holders').textContent = paying.length;
-    const liabKinds = PAYING.filter(k => paying.some(r => r.kind === k));
-    $('#rp-liab-split').innerHTML = liabKinds.length
-      ? '<table><thead><tr><th>Pass</th><th class="num">Holders</th><th class="num">Entries</th><th class="num">Value</th></tr></thead><tbody>' +
-        liabKinds.map(k => {
-          const rows = paying.filter(r => r.kind === k);
-          return '<tr><td>' + kindPill(k) + '</td><td class="num">' + rows.length + '</td><td class="num">' + rows.reduce((s, r) => s + r.balance, 0) + '</td><td class="num">' + money(rows.reduce((s, r) => s + r.balance * unit(r), 0)) + '</td></tr>';
-        }).join('') + '</tbody></table>'
-      : '';
-    // ---- cards ------------------------------------------------------------------
-    const activePaying = members.filter(r => r.active && PAYING.includes(r.kind));
-    const cardCounts = { new: 0, old: 0, none: 0 };
-    activePaying.forEach(r => { cardCounts[cardState(r)]++; });
-    const rolledPeriod = rollovers.filter(r => !r.undone_at && new Date(r.at).getTime() >= fromMs).length;
-    const totalPaying = Math.max(1, activePaying.length);
-    const cardBits = [['new', 'var(--good)'], ['old', 'var(--warn)'], ['none', 'var(--line-strong)']];
-    $('#rp-cards').innerHTML =
-      '<div class="mixbar">' + cardBits.map(b => '<span style="background:' + b[1] + ';width:' + (100 * cardCounts[b[0]] / totalPaying).toFixed(1) + '%" title="' + CARD_STATE_NAME[b[0]] + ': ' + cardCounts[b[0]] + '"></span>').join('') + '</div>' +
-      '<div class="keyrow">' + cardBits.map(b => '<span><i style="background:' + b[1] + '"></i>' + CARD_STATE_NAME[b[0]] + ' ' + cardCounts[b[0]] + '</span>').join('') + '</div>' +
-      '<div class="stats" style="margin-top:14px">' +
-        stat(Math.round(100 * cardCounts.new / totalPaying) + '%', 'of active pass holders are on a barcode card') +
-        stat(cardCounts.old + cardCounts.none, 'still to roll over') +
-        stat(rolledPeriod, 'rolled over in this period') + '</div>';
-    const soon = members.filter(r => r.active && PAYING.includes(r.kind) && r.balance > 0 && r.expires_on && daysUntil(r.expires_on) <= 30).sort((a, b) => a.expires_on < b.expires_on ? -1 : 1);
-    $('#rp-expiring-body').innerHTML = soon.length
-      ? soon.map(r => '<tr><td>' + esc(r.name) + '</td><td class="mono">' + esc(r.phone) + '</td><td class="num">' + r.balance + '</td><td>' + expiryCell(r) + '</td></tr>').join('')
-      : '<tr><td colspan="4" class="empty">Nothing expiring in the next 30 days.</td></tr>';
-    // ---- undone and deleted ------------------------------------------------------
-    const KIND_WORD = { entry: 'entry', purchase: 'pass sale', adjustment: 'adjustment', opening: 'opening balance', rollover: 'roll-over' };
-    rpAudit = [];
-    ledger.filter(e => e.reverses).forEach(e => {
-      const orig = ledger.find(x => x.id === e.reverses);
-      rpAudit.push({ at: e.at, what: 'Undone', who: nameOf(e.member_id), of: KIND_WORD[orig ? orig.kind : 'entry'] || 'row',
-        qty: Math.abs(orig ? orig.qty : e.qty), amount: e.amount == null ? null : Number(e.amount),
-        origAt: orig ? orig.at : null, reason: e.note, staff: e.created_by });
-    });
-    deletions.forEach(d => {
-      rpAudit.push({ at: d.at, what: d.what === 'rollover' ? 'Roll-over deleted' : 'Deleted', who: d.member_name || nameOf(d.member_id),
-        of: KIND_WORD[d.entry_kind] || d.entry_kind || 'row', qty: Math.abs(d.qty || 0), amount: d.amount == null ? null : Number(d.amount),
-        origAt: d.entry_at, reason: d.reversal_note || d.entry_note, staff: d.deleted_by });
-    });
-    rollovers.filter(r => r.undone_at && new Date(r.undone_at).getTime() >= fromMs).forEach(r => {
-      rpAudit.push({ at: r.undone_at, what: 'Roll-over undone', who: r.name, of: 'roll-over', qty: r.punches, amount: null,
-        origAt: r.at, reason: 'punch card ' + (r.old_card || '?') + ' to card ' + r.new_barcode, staff: r.undone_by });
-    });
-    rpAudit.sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
-    $('#rp-audit-note').textContent = rpAudit.length ? plural(rpAudit.length, 'row') + ' in this period' : '';
-    $('#rp-audit-body').innerHTML = rpAudit.length
-      ? rpAudit.slice(0, 200).map(a => '<tr><td class="mono small" style="white-space:nowrap">' + fmtDate(a.at) + ' ' + fmtTime(a.at) + '</td>' +
-        '<td><span class="pill ' + (a.what === 'Undone' ? 'warn' : 'red') + '">' + esc(a.what) + '</span> <span class="small muted">' + esc(a.of) + '</span></td>' +
-        '<td>' + esc(a.who) + (a.origAt ? '<div class="small muted">from ' + fmtDate(a.origAt) + ' ' + fmtTime(a.origAt) + '</div>' : '') + '</td>' +
-        '<td class="num">' + (a.qty || '') + (a.amount ? '<div class="small muted">' + money(a.amount) + '</div>' : '') + '</td>' +
-        '<td class="small">' + esc(a.reason || '') + '</td><td class="small mono">' + esc(a.staff || '') + '</td></tr>').join('')
-      : '<tr><td colspan="6" class="empty">Nothing undone or deleted in this period.</td></tr>';
-  } catch (err) { showError(err); }
-}
 async function buildStatement() {
   const ym = $('#rp-month').value; if (!ym) return;
   const r = monthRange(ym);
@@ -2264,7 +2614,7 @@ async function buildStatement() {
     const out = $('#rp-statement-out');
     if (!statement.groups.length) { out.innerHTML = '<p class="empty">No practice visits in ' + r.label + '.</p>'; $('#rp-statement-print').hidden = true; $('#rp-statement-csv').hidden = true; return; }
     out.innerHTML = statement.groups.map(g => '<div style="margin-bottom:14px"><div class="row" style="justify-content:space-between"><b>' + esc(g.name) + '</b><span class="mono">' + g.clients + ' clients' + (g.rate != null ? ' &middot; ' + money(g.clients * g.rate) + ' at ' + money(g.rate) : ' &middot; no rate set') + '</span></div>' +
-      '<table><tbody>' + g.lines.map(l => '<tr' + (l.reversal ? ' class="dim"' : '') + '><td class="mono small" style="white-space:nowrap">' + fmtDate(l.at) + ' ' + fmtTime(l.at) + '</td><td class="small">' + esc(l.note) + '</td><td class="num">' + l.clients + '</td></tr>').join('') + '</tbody></table></div>').join('');
+      '<div class="scroll"><table><tbody>' + g.lines.map(l => '<tr' + (l.reversal ? ' class="dim"' : '') + '><td class="mono small nowrap">' + fmtDate(l.at) + ' ' + fmtTime(l.at) + '</td><td class="small wrap">' + esc(l.note) + '</td><td class="num">' + l.clients + '</td></tr>').join('') + '</tbody></table></div></div>').join('');
     $('#rp-statement-print').hidden = false; $('#rp-statement-csv').hidden = false;
   } catch (err) { showError(err); }
 }
@@ -2632,25 +2982,7 @@ $('#s-import-run').addEventListener('click', async () => {
   out.innerHTML = '<b>Done.</b> ' + ok + ' imported' + (bad ? ', ' + bad + ' failed' : '') + '.' + (log.length ? '<ul style="margin:8px 0 0 18px;padding:0">' + log.map(l => '<li>' + esc(l) + '</li>').join('') + '</ul>' : '');
   importRows = null; $('#s-import-file').value = '';
 });
-$('#s-export-members').addEventListener('click', async () => {
-  try {
-    const rows = await fetchAll(() => sb.from('pool_member_state').select('*').order('name'));
-    downloadCSV('pool-members-' + sydneyDate() + '.csv', [['id', 'name', 'kind', 'phone', 'email', 'card', 'card_type', 'balance', 'expires_on', 'last_swim', 'active', 'rate', 'note']].concat(rows.map(r => [r.id, r.name, r.kind, r.phone, r.email, r.barcode, CARD_STATE_NAME[cardState(r)], r.balance, r.expires_on, r.last_entry ? fmtDate(r.last_entry) : '', r.active ? 'yes' : 'no', r.rate, r.note])));
-  } catch (err) { showError(err); }
-});
-$('#s-export-ledger').addEventListener('click', async () => {
-  try {
-    const rows = await fetchAll(() => sb.from('pool_entries').select('*, pool_members(name, kind), pool_products(name)').order('id'));
-    downloadCSV('pool-ledger-' + sydneyDate() + '.csv', [['id', 'at', 'member_id', 'member', 'member_kind', 'kind', 'qty', 'amount', 'product', 'adults', 'children', 'infants', 'clients', 'payment', 'note', 'reverses']].concat(rows.map(e => [e.id, e.at, e.member_id, e.pool_members && e.pool_members.name, e.pool_members && e.pool_members.kind, e.kind, e.qty, e.amount, e.pool_products && e.pool_products.name, e.adults, e.children, e.infants, e.clients, e.payment, e.note, e.reverses])));
-  } catch (err) { showError(err); }
-});
-$('#s-export-deletions').addEventListener('click', async () => {
-  try {
-    const rows = await fetchAll(() => sb.from('pool_deletions').select('*').order('id'));
-    downloadCSV('pool-deletions-' + sydneyDate() + '.csv', [['id', 'deleted_at', 'deleted_by', 'what', 'member_id', 'member', 'member_kind', 'card', 'row_id', 'row_at', 'row_kind', 'qty', 'amount', 'adults', 'children', 'infants', 'clients', 'payment', 'row_note', 'row_by', 'undo_id', 'undone_at', 'undone_by', 'undo_reason']]
-      .concat(rows.map(d => [d.id, d.at, d.deleted_by, d.what, d.member_id, d.member_name, d.member_kind, d.barcode, d.entry_id, d.entry_at, d.entry_kind, d.qty, d.amount, d.adults, d.children, d.infants, d.clients, d.payment, d.entry_note, d.entry_by, d.reversal_id, d.reversal_at, d.reversal_by, d.reversal_note])));
-  } catch (err) { showError(err); }
-});
+$('#s-to-reports').addEventListener('click', () => showPage('reports'));
 // =============================================================================
 init();
 })();
