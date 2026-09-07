@@ -21,6 +21,7 @@
     --k-senior: #6B4FBB;   --k-senior-soft: #E9E3F8;
     --k-family: #C2571A;   --k-family-soft: #FBE5D6;
     --k-account: #8A6100;  --k-account-soft: #FBEFC9;
+    --k-disability: #0E7C6B; --k-disability-soft: #D8F0EA;
     --shadow: 0 1px 2px rgba(23,34,32,.06), 0 10px 28px -14px rgba(23,34,32,.22);
     --display: 'Bricolage Grotesque', 'Atkinson Hyperlegible', system-ui, sans-serif;
     --body: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -39,6 +40,7 @@
       --k-senior: #B39CF0;   --k-senior-soft: #2A2246;
       --k-family: #F0955C;   --k-family-soft: #3D2314;
       --k-account: #F0C15C;  --k-account-soft: #3A2E0C;
+      --k-disability: #57C9B4; --k-disability-soft: #10322C;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
     }
   }
@@ -128,6 +130,7 @@
   .kind-senior   { --kc: var(--k-senior);   --kc-soft: var(--k-senior-soft); }
   .kind-family   { --kc: var(--k-family);   --kc-soft: var(--k-family-soft); }
   .kind-account  { --kc: var(--k-account);  --kc-soft: var(--k-account-soft); }
+  .kind-disability { --kc: var(--k-disability); --kc-soft: var(--k-disability-soft); }
   .pill.kind { background: var(--kc-soft); color: var(--kc); font-weight: 600; }
   .seg { display: flex; flex-wrap: wrap; gap: 6px; }
   .seg button { border-color: var(--kc, var(--line-strong)); color: var(--kc, var(--ink)); background: var(--surface); padding: 8px 12px; }
@@ -242,6 +245,7 @@
   .heat td.hc.on .v { color: #fff; }
   .heat td.hc.zero .v { color: var(--muted); opacity: .5; }
   .heat td.tot { font-family: var(--mono); font-size: 12px; color: var(--muted); padding-left: 6px; }
+  @media (max-width: 1200px) { .heat td.hc { min-width: 31px; } .heat th { font-size: 10px; } .heat td.hc .v { font-size: 11px; } .heat td.lbl { font-size: 12px; padding-right: 5px; } }
   .legend { display: flex; gap: 8px; align-items: center; font-size: 12.5px; color: var(--muted); margin-top: 10px; flex-wrap: wrap; }
   .legend i { width: 26px; height: 11px; border-radius: 3px; background: var(--accent); display: inline-block; }
   .mixbar { display: flex; height: 16px; border-radius: 8px; overflow: hidden; margin: 4px 0 10px; background: var(--code-bg); }
@@ -249,6 +253,11 @@
   .keyrow { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13.5px; color: var(--muted); }
   .keyrow i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; margin-right: 5px; vertical-align: -1px; }
   .ro-hint { font-size: 14px; color: var(--muted); }
+  .logobox { margin-top: 8px; border: 1px dashed var(--line-strong); border-radius: 8px; padding: 10px; min-height: 66px; display: grid; place-items: center; background: #fff; }
+  .logobox.dark { background: #12205A; }
+  .logobox img { max-height: 46px; max-width: 100%; }
+  .logobox .none { color: #8A9490; font-size: 13px; }
+  .logobox.dark .none { color: #C9D6EA; }
   /* Dashboard: sections top to bottom, headline first, detail underneath */
   .dash-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
   .dash-head h2 { font-size: 26px; }
@@ -269,7 +278,7 @@
   .panel .scroll { max-width: 100%; }
   .panel table { max-width: 100%; }
   td.wrap { white-space: normal; overflow-wrap: anywhere; }
-  table.compact th, table.compact td { padding: 7px 8px; }
+  table.compact th, table.compact td { padding: 7px 6px; }
   table.compact .pill { font-size: 11px; padding: 2px 7px; }
   table.compact td.num { padding-left: 4px; }
   .nowrap { white-space: nowrap; }
@@ -295,22 +304,27 @@
   /* front: full-bleed brand face */
   .pcard.front .bleed { position: absolute; left: -2mm; top: -2mm; right: -2mm; bottom: -2mm; overflow: hidden; }
   .pcard.front.standard .bleed { background: #12205A; color: #fff; }
-  .pcard.front.corporate .bleed { background: #F5A623; color: #12205A; }
+  .pcard.front.disability .bleed { background: #F5A623; color: #12205A; }
   .pcard.front.family .bleed { background: #0367AC; color: #fff; }
   .pcard.front .waves { position: absolute; left: 0; bottom: 0; width: 100%; height: 23mm; }
+  .pcard.front.disability .waves { height: 20mm; }
   .pcard.front .safe { position: absolute; left: 7mm; top: 6.5mm; right: 7mm; bottom: 6.5mm; }
   .pcard.front .wm1 { font-size: 5.5pt; letter-spacing: .22em; text-transform: uppercase; font-weight: 700; display: block; }
-  .pcard.front.standard .wm1 { color: #88C9F7; } .pcard.front.corporate .wm1 { color: #12205A; } .pcard.front.family .wm1 { color: #D0EDFF; }
+  .pcard.front.standard .wm1 { color: #88C9F7; } .pcard.front.disability .wm1 { color: #12205A; } .pcard.front.family .wm1 { color: #D0EDFF; }
   .pcard.front .wm2 { font-size: 9.5pt; font-weight: 700; display: block; line-height: 1.1; }
-  .pcard.front .ttl { font-size: 23pt; font-weight: 700; text-transform: uppercase; letter-spacing: -.02em; line-height: .92; margin-top: 5mm; }
+  .pcard.front .ttl { font-size: 19pt; font-weight: 700; text-transform: uppercase; letter-spacing: -.02em; line-height: .92; margin-top: 5mm; }
   .pcard.front .rule { width: 14mm; height: 1.2mm; border-radius: 1mm; margin-top: 2.5mm; }
-  .pcard.front.standard .rule { background: #F5A623; } .pcard.front.corporate .rule { background: #12205A; } .pcard.front.family .rule { background: #F5A623; }
-  .pcard.front .tag { font-size: 6pt; letter-spacing: .04em; margin-top: 2.5mm; opacity: .85; }
-  .pcard.front .fno { position: absolute; right: 0; bottom: 0; font-family: Consolas, "Liberation Mono", monospace; font-size: 6pt; letter-spacing: .12em; opacity: .55; }
+  .pcard.front.standard .rule { background: #F5A623; } .pcard.front.disability .rule { background: #12205A; } .pcard.front.family .rule { background: #F5A623; }
+  .pcard.front .tag { font-size: 5.6pt; letter-spacing: .04em; margin-top: 2mm; opacity: .85; }
+  .pcard.front .logo-mark { width: 27mm; height: auto; display: block; }
+  .pcard.front .logo-mark + .ttl { margin-top: 3mm; }
+  .pcard.single .band .logo-band { height: 11.5mm; width: auto; align-self: center; }
+  .pcard.front .fno { position: absolute; right: 0; top: 1mm; font-family: Consolas, "Liberation Mono", monospace; font-size: 6pt; letter-spacing: .12em; opacity: .55; }
+  .pcard.front.disability .fno { opacity: .75; }
   /* back: barcode face, everything 4 mm inside the trim so a slightly offset print still cuts cleanly */
   .pcard.back .row1 { position: absolute; left: 6mm; right: 6mm; top: 5.5mm; display: flex; justify-content: space-between; font-size: 5.4pt; color: #6B7280; white-space: nowrap; }
   .pcard.back .row1 b { color: #12205A; letter-spacing: .04em; text-transform: uppercase; }
-  .pcard.back.corporate .row1 b { color: #12205A; }
+  .pcard.back.disability .row1 b { color: #12205A; }
   .pcard.back .terms { position: absolute; left: 6mm; right: 6mm; top: 10mm; font-size: 5.8pt; line-height: 1.34; color: #333; }
   .pcard.back .bc { position: absolute; left: 0; right: 0; bottom: 9.5mm; text-align: center; }
   .pcard.back .bc svg { display: block; margin: 0 auto; }
@@ -327,7 +341,7 @@
   .pcard.single .bc .num { font-family: Consolas, "Liberation Mono", monospace; font-size: 9.5pt; letter-spacing: .2em; color: #333; margin-top: 1mm; }
   .pcard.single .foot { position: absolute; left: 4.5mm; right: 4.5mm; bottom: 2.4mm; font-size: 5pt; color: #6B7280; display: flex; justify-content: space-between; gap: 4mm; }
   .pcard.single.standard .band { background: #12205A; color: #fff; } .pcard.single.standard .wm1 { color: #88C9F7; }
-  .pcard.single.corporate .band { background: #F5A623; color: #12205A; } .pcard.single.corporate .wm1 { color: #12205A; }
+  .pcard.single.disability .band { background: #F5A623; color: #12205A; } .pcard.single.disability .wm1 { color: #12205A; }
   .pcard.single.family .band { background: #0367AC; color: #fff; } .pcard.single.family .wm1 { color: #D0EDFF; }
   /* Family card: two barcodes set DIAGONALLY. The adult barcode sits in the top-left
      corner and the child barcode in the bottom-right, so they share neither a row nor a
@@ -535,6 +549,7 @@
           <option value="adult">Adult</option>
           <option value="senior">Senior</option>
           <option value="family">Family</option>
+          <option value="disability">Disability</option>
           <option value="account">Practice account</option>
         </select>
         <select id="m-card">
@@ -723,18 +738,35 @@
       <div class="panel">
         <div class="panel-head"><h3>Print cards</h3><span class="small muted">A4 sheets of 8, each 88 &times; 59 mm to suit a 68 &times; 97 mm laminating pouch. Print at 100% on card stock, cut at the corner marks, laminate.</span></div>
         <div class="grid2">
-          <div class="field"><label for="pc-variant">Card</label><select id="pc-variant"><option value="standard">Standard pool pass</option><option value="family">Family pass (two barcodes)</option><option value="corporate">Corporate pass</option></select></div>
+          <div class="field"><label for="pc-variant">Card</label><select id="pc-variant"><option value="standard">Standard pool pass</option><option value="family">Family pass (two barcodes)</option><option value="disability">Disability pass</option></select></div>
           <div class="field"><label for="pc-sides">Sides</label><select id="pc-sides"><option value="long">Double-sided, flip on long edge</option><option value="short">Double-sided, flip on short edge</option><option value="single">Single-sided, barcode on the front</option></select></div>
           <div class="field"><label for="pc-start">First number</label><input id="pc-start" type="number" min="100001" step="1"></div>
           <div class="field"><label for="pc-count">How many</label><select id="pc-count"><option>8</option><option>16</option><option>24</option><option>40</option><option>80</option></select></div>
         </div>
-        <p class="small muted" id="pc-note">The first number is the next one after the last sheet printed or the highest card in use, whichever is higher. Double-sided prints the brand on the front and the barcode on the back of the same sheet; set the printer to print on both sides and match the flip setting here. The small number on the front should match the barcode behind it. Standard cards are numbered from 100001, family cards from 400001 (the child barcode on each is the card number plus 50000) and corporate cards from 150001. On a family card the adult barcode sits in the top-left corner and the child barcode in the bottom-right, diagonally opposite each other, so the scanner can only ever catch one of them at a time. The card is 88 &times; 59 mm, which leaves about 4.5 mm of plastic all round inside a 68 &times; 97 mm pouch.</p>
+        <p class="small muted" id="pc-note">The first number is the next one after the last sheet printed or the highest card in use, whichever is higher. Double-sided prints the brand on the front and the barcode on the back of the same sheet; set the printer to print on both sides and match the flip setting here. The small number on the front should match the barcode behind it. Standard cards are numbered from 100001, family cards from 400001 (the child barcode on each is the card number plus 50000) and disability cards from 150001. On a family card the adult barcode sits in the top-left corner and the child barcode in the bottom-right, diagonally opposite each other, so the scanner can only ever catch one of them at a time. The card is 88 &times; 59 mm, which leaves about 4.5 mm of plastic all round inside a 68 &times; 97 mm pouch.</p>
         <div class="actions"><button class="primary" id="pc-print" type="button">Print sheet</button></div>
         <div class="row" style="margin-top:18px;align-items:flex-end">
           <div class="field" style="margin:0;max-width:280px"><label for="pc-one">Reprint one card (lost or worn out)</label><input id="pc-one" class="mono" autocomplete="off" placeholder="scan or type the card number"></div>
           <button id="pc-one-print" type="button">Reprint</button>
           <span class="small muted">Same number, same balance. Also available from the member's screen.</span>
         </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Card logo</h3><span class="small muted">Printed on the front of every card, in place of the typed resort name.</span></div>
+        <div class="grid2">
+          <div class="field">
+            <label for="s-logo-file">Full-colour logo &mdash; used on the gold disability card</label>
+            <input type="file" id="s-logo-file" accept="image/png,image/jpeg,image/svg+xml">
+            <div class="logobox" id="s-logo-prev"></div>
+          </div>
+          <div class="field">
+            <label for="s-logo-light-file">White logo &mdash; used on the navy and blue cards</label>
+            <input type="file" id="s-logo-light-file" accept="image/png,image/jpeg,image/svg+xml">
+            <div class="logobox dark" id="s-logo-light-prev"></div>
+          </div>
+        </div>
+        <p class="small muted">The WSLR logo is built in and prints by default. To use a different one choose a PNG with a transparent background, about 400 px wide, under 250 KB. Remove takes the logo off and prints the resort name in type instead.</p>
+        <div class="actions"><button class="primary" id="s-logo-save" type="button">Save logo</button><button id="s-logo-restore" type="button">Use the WSLR logo</button><button id="s-logo-clear" type="button">Remove</button></div>
       </div>
       <div class="panel">
         <div class="panel-head"><h3>Guest balance check</h3><span class="small muted">A separate page where a pass holder types their card number and phone number and sees entries left and the expiry date. Nothing else is shown.</span></div>
@@ -788,17 +820,17 @@ const SUPABASE_KEY = 'sb_publishable_G5ZTmaaLwa8qbkFMBmUCeQ_sJs753qH';
 const TZ = 'Australia/Sydney';
 const SCANNER_GAP_MS = 100;        // keystrokes closer than this are a scanner, not a person
 const TOKEN_KEY = 'poolpass.session';
-const KINDS = { adult: 'Adult', senior: 'Senior', family: 'Family', account: 'Practice account' };
-const PAYING = ['adult', 'senior', 'family'];
+const KINDS = { adult: 'Adult', senior: 'Senior', family: 'Family', disability: 'Disability', account: 'Practice account' };
+const PAYING = ['adult', 'senior', 'family', 'disability'];
 const OLD_SYSTEM_BELOW = 10000;    // card numbers under this are punch cards from the old register, not barcodes
 // Card number ranges. Sheets printed at reception use the first block of each; the PVC
-// print run uses 200001+ (standard), 300001+ (corporate) and 500001+ (family).
+// print run uses 200001+ (standard), 300001+ (disability) and 500001+ (family).
 // A family card carries two barcodes: its number is the ADULT barcode (2 punches a scan)
 // and its number plus 50000 is the CHILD barcode (1 punch a scan).
-const CARD_RANGES = { standard: [100001, 149999], corporate: [150001, 199999], family: [400001, 449999] };
+const CARD_RANGES = { standard: [100001, 149999], disability: [150001, 199999], family: [400001, 449999] };
 const FAMILY_RANGES = [[400001, 449999], [500001, 549999]];
 const FAMILY_CHILD_OFFSET = 50000;
-const VARIANT_NAMES = { standard: 'Standard pool pass', corporate: 'Corporate pass', family: 'Family pass (two barcodes)' };
+const VARIANT_NAMES = { standard: 'Standard pool pass', disability: 'Disability pass', family: 'Family pass (two barcodes)' };
 // Desk logins live in the database (pool_users). Signing in returns a session
 // token; it rides on every request as the x-pool-token header and every table
 // policy and function checks it. No Supabase Auth involved.
@@ -946,11 +978,40 @@ function setSeg(seg, value) {
   $('input[type="hidden"]', seg).value = value;
 }
 // Passes for sale as coloured tiles (radio buttons underneath), coloured by who they are for.
+// A pass with one entry in it is sold a few at a time: the desk types how many
+// and pays that many times the price. Everything else is a fixed pack.
+const flexible = p => !!p && p.entries === 1;
 function productTiles(name, list, selected) {
   return list.map(p => '<label class="prow kind-' + esc(p.holder_kind) + (selected && p.id === selected.id ? ' on' : '') + '">' +
     '<input type="radio" name="' + name + '" value="' + p.id + '"' + (selected && p.id === selected.id ? ' checked' : '') + '>' +
-    '<span style="flex:1"><b>' + esc(p.name) + '</b> <span class="muted small">' + kindPill(p.holder_kind) + ' ' + p.entries + ' ' + (p.holder_kind === 'family' ? 'punches' : 'entries') + ', ' + (p.expiry_months ? p.expiry_months + ' months' : 'no expiry') + '</span></span>' +
-    '<span class="mono">' + money(p.price) + '</span></label>').join('');
+    '<span style="flex:1"><b>' + esc(p.name) + '</b> <span class="muted small">' + kindPill(p.holder_kind) + ' ' +
+      (flexible(p) ? 'any number, ' + money(p.price) + ' each' : p.entries + ' ' + (p.holder_kind === 'family' ? 'punches' : 'entries')) +
+      ', ' + (p.expiry_months ? p.expiry_months + ' months' : 'no expiry') + '</span></span>' +
+    '<span class="mono">' + (flexible(p) ? money(p.price) + ' ea' : money(p.price)) + '</span></label>').join('');
+}
+// The "how many" row that appears under the tiles when a flexible pass is picked.
+function unitsRow(id) {
+  return '<div class="field" id="' + id + '-row" hidden><label for="' + id + '">How many entries</label>' +
+    '<div class="row"><input id="' + id + '" type="number" min="1" step="1" value="10" style="max-width:130px">' +
+    '<span class="small" id="' + id + '-total"></span></div></div>';
+}
+function bindUnits(root, id, radioName, list) {
+  const picked = () => {
+    const el = root.querySelector('input[name="' + radioName + '"]:checked');
+    return el && el.value ? list.find(x => String(x.id) === String(el.value)) : null;
+  };
+  const sync = () => {
+    const p = picked(), row = $('#' + id + '-row', root);
+    row.hidden = !flexible(p);
+    if (flexible(p)) {
+      const u = Math.max(1, Number($('#' + id, root).value) || 1);
+      $('#' + id + '-total', root).innerHTML = '<b>' + plural(u, 'entry', 'entries') + '</b> &middot; ' + u + ' &times; ' + money(p.price) + ' = <b>' + money(u * p.price) + '</b>';
+    }
+  };
+  $$('input[name="' + radioName + '"]', root).forEach(r => r.addEventListener('change', sync));
+  $('#' + id, root).addEventListener('input', sync);
+  sync();
+  return () => { const p = picked(); return flexible(p) ? Math.max(1, Number($('#' + id, root).value) || 1) : 1; };
 }
 function bindTiles(root) {
   $$('.prow input[type="radio"]', root).forEach(r => r.addEventListener('change', () => {
@@ -982,7 +1043,7 @@ const cardCode = code => familyParent(code) || String(code == null ? '' : code).
 function cardVariant(code) {
   const n = cardNum(code);
   if (n == null) return 'standard';
-  if ((n >= 150001 && n <= 199999) || (n >= 300001 && n <= 399999)) return 'corporate';
+  if ((n >= 150001 && n <= 199999) || (n >= 300001 && n <= 399999)) return 'disability';
   if (familyChild(code)) return 'family';
   return 'standard';
 }
@@ -1244,7 +1305,7 @@ function memberLine(m, balance) {
   if (m.expires_on && PAYING.includes(m.kind)) bits.push('expires ' + fmtDate(m.expires_on));
   return bits.join(' &middot; ');
 }
-const KINDS_SHORT = { adult: 'Adult', senior: 'Senior', family: 'Family', account: 'Practice' };
+const KINDS_SHORT = { adult: 'Adult', senior: 'Senior', family: 'Family', disability: 'Disability', account: 'Practice' };
 function kindPill(k, short) { return '<span class="pill kind kind-' + esc(k) + '"' + (short ? ' title="' + esc(KINDS[k] || k) + '"' : '') + '>' + esc((short ? KINDS_SHORT[k] : KINDS[k]) || k) + '</span>'; }
 async function undoEntry(entryId, note) {
   await rpc('pool_reverse', { p_entry_id: entryId, p_note: note || 'undone at the desk' });
@@ -1400,23 +1461,26 @@ function openSell(m, opts) {
     '<h2>Sell a pass &middot; ' + esc(m.name) + '</h2>' +
     '<p class="lead">Expiry restarts from today. Any unused balance carries over.</p>' +
     '<div class="field">' + productTiles('sell-product', list, preferred) + '</div>' +
+    unitsRow('sell-units') +
     '<div class="grid2"><div class="field"><label for="sell-pay">Paid by</label><select id="sell-pay"><option value="card">Card</option><option value="cash">Cash</option><option value="other">Other / account</option></select></div>' +
     '<div class="field"><label for="sell-note">Note</label><input id="sell-note" placeholder="optional" autocomplete="off"></div></div>' +
     (m.kind !== preferred.holder_kind ? '<p class="small muted">This member is set as ' + esc(KINDS[m.kind]) + '. Selling a different pass type changes them to match.</p>' : '') +
     '<div class="actions"><button type="button" id="sell-cancel">Cancel</button><button type="button" class="primary big" id="sell-go">Record sale</button></div>');
   bindTiles(modal);
+  const sellUnits = bindUnits(modal, 'sell-units', 'sell-product', list);
   $('#sell-cancel', modal).addEventListener('click', closeModal);
   $('#sell-go', modal).addEventListener('click', async btn => {
     const pid = Number((modal.querySelector('input[name="sell-product"]:checked') || {}).value);
     if (!pid) return;
     $('#sell-go', modal).disabled = true;
     try {
-      const r = await rpc('pool_sell', { p_member_id: m.id, p_product_id: pid, p_payment: $('#sell-pay', modal).value, p_note: $('#sell-note', modal).value.trim() || null });
+      const units = sellUnits();
+      const r = await rpc('pool_sell', { p_member_id: m.id, p_product_id: pid, p_payment: $('#sell-pay', modal).value, p_note: $('#sell-note', modal).value.trim() || null, p_units: units });
       const p = list.find(x => x.id === pid);
       closeModal();
-      toast('Sold ' + p.name + ' to ' + m.name);
+      toast('Sold ' + (units > 1 ? units + ' \u00d7 ' : '') + p.name + ' to ' + m.name);
       if (opts.fromScan) {
-        setResult({ tone: 'ok', state: 'Pass sold', name: m.name, line: esc(p.name) + ' &middot; ' + money(p.price) + ' &middot; <b>' + r.balance + '</b> ' + (p.holder_kind === 'family' ? 'punches' : 'entries') + ' now on the card',
+        setResult({ tone: 'ok', state: 'Pass sold', name: m.name, line: (units > 1 ? units + ' &times; ' : '') + esc(p.name) + ' &middot; ' + money(p.price * units) + ' &middot; <b>' + r.balance + '</b> ' + (p.holder_kind === 'family' ? 'punches' : 'entries') + ' now on the card',
           sub: r.member.expires_on ? 'Expires ' + fmtDate(r.member.expires_on) + '. Scan the card again to enter.' : 'Scan the card again to enter.', beep: 'ok' });
         loadToday();
       }
@@ -1477,23 +1541,24 @@ function openNewPass(code) {
   code = cardCode(code);
   const list = products.filter(p => p.active);
   const variant = cardVariant(code);
-  // a family card (two barcodes) starts on the family pass; a corporate card on no pass
-  const first = variant === 'family' ? (list.find(p => p.holder_kind === 'family') || list[0]) : variant === 'corporate' ? null : list[0];
+  // a family card starts on the family pass, a disability card on the concession entry
+  const first = variant === 'family' ? (list.find(p => p.holder_kind === 'family') || list[0]) : variant === 'disability' ? (list.find(p => p.holder_kind === 'disability') || list[0]) : list[0];
   const modal = openModal(
     '<h2>New pass &middot; card ' + esc(code) + '</h2>' +
     '<p class="lead">Name and phone go in the system against this card. Pick the pass they are buying, or none if they already have entries to carry over.</p>' +
     (variant === 'family' ? '<p class="small soft" style="margin:-8px 0 12px">Family card: the adult barcode is ' + esc(code) + ', the child barcode is ' + esc(familyChild(code)) + '. One scan per person at the desk.</p>' : '') +
-    (variant === 'corporate' ? '<p class="small soft" style="margin:-8px 0 12px">Corporate card. Practice accounts are added on the Members page (Add member, type Practice account) and the card assigned there.</p>' : '') +
+    (variant === 'disability' ? '<p class="small soft" style="margin:-8px 0 12px">Disability card: entries are sold a few at a time at the concession rate. Pick the pass below and say how many.</p>' : '') +
     '<div class="grid2">' + field('Name', '<input id="np-name" autocomplete="off" required>') + field('Phone', '<input id="np-phone" autocomplete="off" inputmode="tel">') + '</div>' +
     '<div id="np-dupe" class="found" hidden style="margin:-4px 0 12px"></div>' +
     '<div class="field"><label>Pass</label>' + productTiles('np-product', list, first) +
       '<label class="prow' + (first ? '' : ' on') + '"><input type="radio" name="np-product" value=""' + (first ? '' : ' checked') + '><span style="flex:1"><b style="color:var(--ink)">No pass today</b> <span class="muted small">card only, or carrying entries over</span></span></label>' +
-    '</div>' +
+    '</div>' + unitsRow('np-units') +
     '<div class="grid2">' + field('Paid by', '<select id="np-pay"><option value="card">Card</option><option value="cash">Cash</option><option value="other">Other</option></select>') +
       field('Entries carried over', '<input id="np-carry" type="number" min="0" step="1" value="0">') + '</div>' +
-    field('Type if no pass is bought today', kindSeg('np-kind', ['adult', 'senior', 'family'], variant === 'family' ? 'family' : 'adult')) +
+    field('Type if no pass is bought today', kindSeg('np-kind', ['adult', 'senior', 'family', 'disability'], variant === 'family' ? 'family' : variant === 'disability' ? 'disability' : 'adult')) +
     '<div class="actions"><button type="button" id="np-cancel">Cancel</button><button type="button" id="np-existing">Existing member instead</button><button type="button" class="primary big" id="np-go">Create pass</button></div>');
   bindSeg(modal); bindTiles(modal);
+  const npUnits = bindUnits(modal, 'np-units', 'np-product', list);
   $('#np-cancel', modal).addEventListener('click', () => { closeModal(); resetResult(); });
   $('#np-existing', modal).addEventListener('click', () => { closeModal(); openAssign(code); });
   // Someone with this name or phone already on record? Say so before a duplicate is made.
@@ -1525,14 +1590,15 @@ function openNewPass(code) {
     const carry = Number($('#np-carry', modal).value) || 0;
     $('#np-go', modal).disabled = true;
     try {
+      const units = npUnits();
       const r = await rpc('pool_new_pass', { p_barcode: code, p_name: name, p_phone: $('#np-phone', modal).value.trim() || null,
         p_product_id: pid ? Number(pid) : null, p_payment: $('#np-pay', modal).value, p_carry_over: carry,
-        p_kind: pid ? null : $('#np-kind', modal).value });
+        p_kind: pid ? null : $('#np-kind', modal).value, p_units: units });
       const p = pid ? list.find(x => x.id === Number(pid)) : null;
       const m = r.member;
       closeModal(); toast('New pass for ' + m.name);
       setResult({ tone: 'ok', state: 'New pass', name: m.name, member: m, code: code,
-        line: (p ? esc(p.name) + ' &middot; ' + money(p.price) + ' &middot; ' : '') + '<b>' + r.balance + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + ' on card ' + esc(code) + (carry ? ' (' + carry + ' carried over)' : ''),
+        line: (p ? (units > 1 ? units + ' &times; ' : '') + esc(p.name) + ' &middot; ' + money(p.price * units) + ' &middot; ' : '') + '<b>' + r.balance + '</b> ' + (m.kind === 'family' ? 'punches' : 'entries') + ' on card ' + esc(code) + (carry ? ' (' + carry + ' carried over)' : ''),
         sub: (m.expires_on ? 'Expires ' + fmtDate(m.expires_on) + '. ' : '') + (familyChild(code) ? 'Scan the adult barcode for each adult and the child barcode for each child going in.' : 'Going in now?'),
         actions: [{ label: 'Enter now', cls: 'primary', run: () => onScan(code) }], beep: 'ok' });
       loadToday();
@@ -1774,7 +1840,7 @@ async function showCheck(memberId, opts) {
 //   instead of making a second person; a card the system has never seen makes a
 //   new record. Every transfer is logged and can be undone from the list.
 // =============================================================================
-const ROLL_KINDS = ['adult', 'senior', 'family'];
+const ROLL_KINDS = ['adult', 'senior', 'family', 'disability'];
 $('#ro-kind-seg').innerHTML = kindSeg('ro-kind', ROLL_KINDS, 'adult');
 bindSeg($('#ro-kind-seg'));
 let roLinked = null;          // the existing record the transfer goes onto, if any
@@ -1960,7 +2026,7 @@ let membersCache = [], selectedId = null, mTimer;
 let mSort = { key: 'name', dir: 1 };          // click a heading to sort by it
 const M_SORT = {
   name: r => (r.name || '').toLowerCase(),
-  kind: r => ['adult', 'senior', 'family', 'account'].indexOf(r.kind),
+  kind: r => ['adult', 'senior', 'family', 'disability', 'account'].indexOf(r.kind),
   card: r => { const n = cardNum(r.barcode); return n == null ? (r.barcode ? 1e14 : 1e15) : n; },
   cardstate: r => ['new', 'old', 'none'].indexOf(cardState(r)),
   balance: r => (r.kind === 'account' ? -(r.balance || 0) : (r.balance || 0)),
@@ -2571,7 +2637,7 @@ async function loadDashboard() {
     return { label: monthLabel(ym), value: d.byMonth[ym], note: diff == null ? '' : '· ' + (diff >= 0 ? '+' : '') + diff + '% on last year' };
   }));
   // who
-  const mixKinds = ['adult', 'senior', 'family', 'account'].filter(k => d.byKind[k]);
+  const mixKinds = ['adult', 'senior', 'family', 'disability', 'account'].filter(k => d.byKind[k]);
   const cardsUsed = Object.keys(d.byMember).length;
   $('#db-mix').innerHTML = mixKinds.length
     ? '<div class="mixbar">' + mixKinds.map(k => '<span class="kind-' + k + '" style="background:var(--kc);width:' + (100 * d.byKind[k] / d.people).toFixed(1) + '%" title="' + KINDS[k] + ': ' + d.byKind[k] + '"></span>').join('') + '</div>' +
@@ -2828,9 +2894,57 @@ async function loadSettingsPage() {
   $('#s-low').value = setting('low_balance', 4);
   $('#s-undo').value = setting('undo_minutes', 10);
   $('#s-liab').value = setting('liability_unit_value', 7.25);
+  paintLogo('#s-logo-prev', cardLogo());
+  paintLogo('#s-logo-light-prev', cardLogoLight());
+  logoPending = {};
   $('#s-guest').checked = String(settings.guest_lookup) === 'true';
   $('#s-guest-url').textContent = guestUrl();
 }
+// Card logo: read the file here, keep it in pool_settings as a data URI.
+let logoPending = {};
+function paintLogo(sel, data) {
+  const box = $(sel);
+  box.innerHTML = data ? '<img src="' + data + '" alt="logo">' : '<span class="none">none saved</span>';
+}
+function bindLogoInput(inputSel, key, prevSel) {
+  $(inputSel).addEventListener('change', async e => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    if (f.size > 400 * 1024) { toast('That file is ' + Math.round(f.size / 1024) + ' KB. Please use one under 250 KB.', true); e.target.value = ''; return; }
+    try {
+      const data = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error('Could not read that file')); r.readAsDataURL(f); });
+      logoPending[key] = data;
+      paintLogo(prevSel, data);
+      toast('Ready. Press Save logo.');
+    } catch (err) { showError(err); }
+  });
+}
+bindLogoInput('#s-logo-file', 'card_logo', '#s-logo-prev');
+bindLogoInput('#s-logo-light-file', 'card_logo_light', '#s-logo-light-prev');
+$('#s-logo-save').addEventListener('click', async () => {
+  const rows = Object.keys(logoPending).map(k => ({ key: k, value: logoPending[k] }));
+  if (!rows.length) { toast('Choose a file first', true); return; }
+  try { await q(sb.from('pool_settings').upsert(rows, { onConflict: 'key' })); await loadSettings(); logoPending = {}; toast('Logo saved. It prints on the next sheet.'); }
+  catch (err) { showError(err); }
+});
+$('#s-logo-clear').addEventListener('click', async () => {
+  if (!confirm('Take the logo off the cards?')) return;
+  try {
+    await q(sb.from('pool_settings').upsert([{ key: 'card_logo', value: 'none' }, { key: 'card_logo_light', value: 'none' }], { onConflict: 'key' }));
+    await loadSettings(); logoPending = {};
+    paintLogo('#s-logo-prev', ''); paintLogo('#s-logo-light-prev', '');
+    $('#s-logo-file').value = ''; $('#s-logo-light-file').value = '';
+    toast('Logo removed');
+  } catch (err) { showError(err); }
+});
+$('#s-logo-restore').addEventListener('click', async () => {
+  try {
+    await q(sb.from('pool_settings').upsert([{ key: 'card_logo', value: '' }, { key: 'card_logo_light', value: '' }], { onConflict: 'key' }));
+    await loadSettings(); logoPending = {};
+    paintLogo('#s-logo-prev', cardLogo()); paintLogo('#s-logo-light-prev', cardLogoLight());
+    $('#s-logo-file').value = ''; $('#s-logo-light-file').value = '';
+    toast('Back to the WSLR logo');
+  } catch (err) { showError(err); }
+});
 function guestUrl() {
   const here = location.href.split(/[?#]/)[0];
   return /\.html?$/i.test(here) ? here.replace(/[^/]*$/, 'balance.html') : here.replace(/\/?$/, '/balance.html');
@@ -2848,7 +2962,7 @@ function bindProductRows() {
 }
 function productRow(p) {
   return '<tr data-id="' + (p.id || '') + '" data-code="' + esc(p.code || '') + '"><td class="kc kind-' + esc(p.holder_kind) + '"><input name="name" value="' + esc(p.name) + '"></td>' +
-    '<td><select name="holder_kind">' + ['adult', 'senior', 'family'].map(k => '<option value="' + k + '"' + (k === p.holder_kind ? ' selected' : '') + '>' + KINDS[k] + '</option>').join('') + '</select></td>' +
+    '<td><select name="holder_kind">' + ['adult', 'senior', 'family', 'disability'].map(k => '<option value="' + k + '"' + (k === p.holder_kind ? ' selected' : '') + '>' + KINDS[k] + '</option>').join('') + '</select></td>' +
     '<td><input name="entries" type="number" min="1" step="1" value="' + p.entries + '"></td>' +
     '<td><input name="price" type="number" min="0" step="0.01" value="' + p.price + '"></td>' +
     '<td><input name="expiry_months" type="number" min="0" step="1" value="' + p.expiry_months + '"></td>' +
@@ -2905,15 +3019,15 @@ const CARD_WAVES = '<svg class="waves" viewBox="0 0 856 200" preserveAspectRatio
   '<path d="M-20 150 C 120 90, 220 90, 340 150 S 560 210, 700 150 S 840 100, 900 140" fill="none" stroke="{c2}" stroke-width="9" stroke-linecap="round" opacity="0.7"/>' +
   '<path d="M-20 178 C 120 118, 220 118, 340 178 S 560 238, 700 178 S 840 128, 900 168" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity="0.5"/></svg>';
 const CARD_MARKS = ['tl-h', 'tl-v', 'tr-h', 'tr-v', 'bl-h', 'bl-v', 'br-h', 'br-v'].map(c => '<i class="mark ' + (c.endsWith('-h') ? 'h ' : 'v ') + c + '"></i>').join('');
-// Three faces: standard (navy), corporate (gold) and family (blue, two barcodes).
+// Three faces: standard (navy), disability (gold) and family (blue, two barcodes).
 const FACE = {
   standard:  { title: 'Pool<br>pass',      tag: 'Pool entry &middot; present at reception before every swim', foot: 'Present at reception before every swim', c2: '#88C9F7' },
-  corporate: { title: 'Corporate<br>pass', tag: 'Practice account &middot; client visits invoiced monthly',   foot: 'Client visits invoiced monthly',         c2: '#12205A' },
+  disability: { title: 'Pool<br>pass',    tag: 'Concession entry &middot; present at reception before every swim', foot: 'Present at reception before every swim', c2: '#12205A' },
   family:    { title: 'Family<br>pass',    tag: 'Adults 2 punches &middot; children 1 &middot; under-5s free', foot: 'One scan per person, adult or child barcode', c2: '#12205A' }
 };
 const TERMS = {
   standard:  'Present this card at reception before every swim. Entries are recorded against the card and expire 12 months from purchase. Not transferable. Lost cards are replaced at reception and your balance moves across.',
-  corporate: 'Client visits are recorded against your practice account and invoiced monthly. Present this card at reception with each group. Not transferable.',
+  disability: 'Present this card at reception before every swim. Entries are recorded against the card and expire 12 months from purchase. Not transferable. Lost cards are replaced at reception and your balance moves across.',
   family:    'Scan the ADULT barcode once per adult (2 punches) and the CHILD barcode once per child aged 5 to 17 (1 punch). Under-5s are free with a paying adult. Punches expire 12 months from purchase. Not transferable.'
 };
 // The barcode block: one barcode, or the adult and child pair on a family card. The pair
@@ -2928,23 +3042,37 @@ function barcodeBlock(n, variant, cls) {
     '<div class="bcx adult">' + bc(n) + lab('Adult', '2 punches each') + '</div>' +
     '<div class="bcx child">' + lab('Child', '1 punch each') + bc(child) + '</div></div>';
 }
+// The WSLR logo is built into the page, so the cards print it with nothing to set up.
+// Settings can override it with another file, or switch it off (stored as 'none').
+const LOGO_FULL = 'data:image/png;base64,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';
+const LOGO_WHITE = 'data:image/png;base64,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';
+const logoOr = (v, built) => (v === 'none' ? '' : (typeof v === 'string' && v ? v : built));
+const cardLogo = () => logoOr(settings.card_logo, LOGO_FULL);
+const cardLogoLight = () => logoOr(settings.card_logo_light, LOGO_WHITE);
+const faceLogo = variant => (variant === 'disability' ? (cardLogo() || cardLogoLight()) : (cardLogoLight() || cardLogo()));
 function cardFront(n, variant) {
   const f = FACE[variant];
   return '<div class="pcard front ' + variant + '"><div class="bleed">' + CARD_WAVES.replace('{c2}', f.c2) +
-    '<div class="safe"><span class="wm1">Wollongong</span><span class="wm2">Surf Leisure Resort</span>' +
+    '<div class="safe">' + (faceLogo(variant)
+      ? '<img class="logo-mark" src="' + faceLogo(variant) + '" alt="Wollongong Surf Leisure Resort">'
+      : '<span class="wm1">Wollongong</span><span class="wm2">Surf Leisure Resort</span>') +
     '<div class="ttl">' + f.title + '</div><div class="rule"></div>' +
     '<div class="tag">' + f.tag + '</div>' +
     '<div class="fno">' + n + '</div></div></div>' + CARD_MARKS + '</div>';
 }
 function cardBack(n, variant) {
-  return '<div class="pcard back ' + variant + '"><div class="row1"><b>Wollongong Surf Leisure Resort</b><span>wslr.com.au &middot; 02 4283 6999</span></div>' +
+  return '<div class="pcard back ' + variant + '"><div class="row1"><b>Wollongong Surf Leisure Resort</b>' +
+    '<span>wslr.com.au &middot; 02 4283 6999</span></div>' +
     '<div class="terms">' + TERMS[variant] + '</div>' + barcodeBlock(n, variant, 'bc') +
     '<div class="addr">201 Pioneer Road, Fairy Meadow NSW 2519</div></div>';
 }
 function cardSingle(n, variant) {
   const f = FACE[variant];
   return '<div class="pcard single ' + variant + '">' +
-    '<div class="band"><div><span class="wm1">Wollongong</span><span class="wm2">Surf Leisure Resort</span></div><div class="ttl">' + f.title + '</div></div>' +
+    '<div class="band">' + (faceLogo(variant)
+      ? '<img class="logo-band" src="' + faceLogo(variant) + '" alt="Wollongong Surf Leisure Resort">'
+      : '<div><span class="wm1">Wollongong</span><span class="wm2">Surf Leisure Resort</span></div>') +
+    '<div class="ttl">' + f.title + '</div></div>' +
     barcodeBlock(n, variant, 'bc') +
     '<div class="foot"><span>' + f.foot + '</span><span>wslr.com.au &middot; 02 4283 6999</span></div></div>';
 }
